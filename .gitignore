@@ -1,5 +1,5 @@
-.o
+*.o
 out/
 
-.sh
-.bat
+*.sh
+*.bat
