@@ -1,7 +1,7 @@
 CC = $(CXX)
 CXXFLAGS = -std=c++11 -pedantic -Wall
 
-all: main
+all: main.exe
 
-main: programme_test.o
+main.exe: programme_test.o
 	$(CC) $(CXXFLAGS) $^ -o $@

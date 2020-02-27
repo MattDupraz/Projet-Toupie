@@ -1,5 +1,8 @@
 *.o
-out/
-
+*.exe
 *.sh
 *.bat
+
+# Scripts locaux
+git-add-commit
+src/clean-up
