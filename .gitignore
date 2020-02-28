@@ -1,8 +1,7 @@
+bin/
+build/
+
 *.o
 *.exe
 *.sh
 *.bat
-
-# Scripts locaux
-git-add-commit
-src/clean-up
