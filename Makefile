@@ -53,10 +53,10 @@ OBJECTS_DIR   = build/
 ####### Files
 
 SOURCES       = src/main.cpp \
-		src/gl_widget.cpp build/qrc_resource.cpp
+		src/gl_widget.cpp build/qrc_resources.cpp
 OBJECTS       = build/main.o \
 		build/gl_widget.o \
-		build/qrc_resource.o
+		build/qrc_resources.o
 DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt/mkspecs/common/unix.conf \
 		/usr/lib/qt/mkspecs/common/linux.conf \
@@ -241,7 +241,7 @@ Makefile: project.pro /usr/lib/qt/mkspecs/linux-g++/qmake.conf /usr/lib/qt/mkspe
 		/usr/lib/qt/mkspecs/features/yacc.prf \
 		/usr/lib/qt/mkspecs/features/lex.prf \
 		project.pro \
-		src/resource.qrc
+		res/resources.qrc
 	$(QMAKE) -o Makefile project.pro
 /usr/lib/qt/mkspecs/features/spec_pre.prf:
 /usr/lib/qt/mkspecs/common/unix.conf:
@@ -328,7 +328,7 @@ Makefile: project.pro /usr/lib/qt/mkspecs/linux-g++/qmake.conf /usr/lib/qt/mkspe
 /usr/lib/qt/mkspecs/features/yacc.prf:
 /usr/lib/qt/mkspecs/features/lex.prf:
 project.pro:
-src/resource.qrc:
+res/resources.qrc:
 qmake: FORCE
 	@$(QMAKE) -o Makefile project.pro
 
@@ -343,7 +343,7 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents src/resource.qrc $(DISTDIR)/
+	$(COPY_FILE) --parents res/resources.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/qt/mkspecs/features/data/dummy.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents src/gl_widget.h src/vertex_shader.h $(DISTDIR)/
 	$(COPY_FILE) --parents src/main.cpp src/gl_widget.cpp $(DISTDIR)/
@@ -370,14 +370,14 @@ check: first
 
 benchmark: first
 
-compiler_rcc_make_all: build/qrc_resource.cpp
+compiler_rcc_make_all: build/qrc_resources.cpp
 compiler_rcc_clean:
-	-$(DEL_FILE) build/qrc_resource.cpp
-build/qrc_resource.cpp: src/resource.qrc \
+	-$(DEL_FILE) build/qrc_resources.cpp
+build/qrc_resources.cpp: res/resources.qrc \
 		/usr/bin/rcc \
-		src/fragment_shader.glsl \
-		src/vertex_shader.glsl
-	/usr/bin/rcc -name resource src/resource.qrc -o build/qrc_resource.cpp
+		res/fragment_shader.glsl \
+		res/vertex_shader.glsl
+	/usr/bin/rcc -name resources res/resources.qrc -o build/qrc_resources.cpp
 
 compiler_moc_predefs_make_all: build/moc_predefs.h
 compiler_moc_predefs_clean:
@@ -410,8 +410,8 @@ build/gl_widget.o: src/gl_widget.cpp src/gl_widget.h \
 		src/vertex_shader.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o build/gl_widget.o src/gl_widget.cpp
 
-build/qrc_resource.o: build/qrc_resource.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o build/qrc_resource.o build/qrc_resource.cpp
+build/qrc_resources.o: build/qrc_resources.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o build/qrc_resources.o build/qrc_resources.cpp
 
 ####### Install
 

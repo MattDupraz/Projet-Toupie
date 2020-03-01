@@ -5,7 +5,7 @@ win32:LIBS += -lopengl32
 
 SOURCES += src/main.cpp src/gl_widget.cpp
 HEADERS += src/gl_widget.h src/vertex_shader.h
-RESOURCES += src/resource.qrc
+RESOURCES += res/resources.qrc
 
 DESTDIR = bin
 OBJECTS_DIR = build

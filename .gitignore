@@ -1,6 +1,7 @@
 bin/
 build/
 
+/Makefile
 .qmake.stash
 
 *.o
