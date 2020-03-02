@@ -1,0 +1,10 @@
+bin/
+build/
+
+Makefile
+.qmake.stash
+
+*.o
+*.exe
+*.sh
+*.bat
