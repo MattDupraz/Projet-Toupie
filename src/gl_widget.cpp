@@ -67,7 +67,7 @@ void GLWidget::paintGL() {
 	
 	// Assigne la matrice de translation a la valeur uniforme pour
 	// l'acceeder depuis le shader
-	prog.setUniformValue("translation", viewport_matrix);
+	prog.setUniformValue("translation", translation_matrix);
 
 	// Debut du dessin, dessine un triangle avec chaque coin
 	// qui a une couleur associee (qui est definie au prealable avec
