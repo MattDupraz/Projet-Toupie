@@ -42,8 +42,6 @@ class Vector {
 
 };
 
-//Vector operator*(double d, Vector const& v) {
-//	return v*d;
-//}
+Vector operator*(double d, Vector const& v);
 
 #endif

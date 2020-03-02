@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
 	(v1 + v2).print(); // addition
 	(v1 ^ v2).print(); // produit vectoriel
 	std::cout << (v1 * v2) << std::endl; // produit scalaire
-	(v1 * 3.0).print(); // multiplication scalaire
+	(3.0 * v1).print(); // multiplication scalaire
 	(v1 - v2).print(); // soustraction
 	std::cout << v1.norm() << " " << v1.norm2() << std::endl;
 	std::cout << v2.norm() << " " << v2.norm2() << std::endl;

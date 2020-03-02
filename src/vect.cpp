@@ -69,6 +69,11 @@ Vector Vector::operator*(double scalar) const {
 	return result;
 }
 
+// Multiplication d'un vecteur par un scalaire a gauche
+Vector operator*(double d, Vector const& v) {
+		return v*d;
+}
+
 // Ajoute une coordonnee au vecteur
 void Vector::augment(double val){
 	coords_.push_back(val);
@@ -101,3 +106,6 @@ double Vector::norm2() const {
 Vector Vector::unitVector() const {
 	return (*this) * (1.0 / norm());
 }
+
+
+
