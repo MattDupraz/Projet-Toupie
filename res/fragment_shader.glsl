@@ -1,3 +1,5 @@
+// FRAGMENT SHADER
+
 varying vec3 result_color;
 
 void main() {

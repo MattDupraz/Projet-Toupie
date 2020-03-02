@@ -1,3 +1,5 @@
+// VERTEX SHADER
+
 attribute vec3 vertex;
 attribute vec3 color;
 
