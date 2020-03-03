@@ -11,6 +11,9 @@ class Vector {
 		Vector(std::initializer_list<double> l)
 			: coords_(l)
 		{}
+		Vector(std::size_t s)
+			: coords_(s, 0.0)
+		{}
 		Vector(Vector const& other)
 			: coords_(other.coords_)
 		{}

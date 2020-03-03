@@ -3,13 +3,12 @@
 
 #include "vect.h"
 
-
-// Retourne le vecteur unitaire avec la meme direction
+// Vecteur unitaire avec la meme direction
 Vector operator~(Vector const& v) {
 	return v * (1.0 / v.norm());
 }
 
-// Retourne le vecteur oppose
+// Vecteur oppose
 Vector operator-(Vector const& v) {
 	Vector result;
 	for (std::size_t i(0); i < v.size(); ++i){
@@ -33,82 +32,55 @@ Vector operator*(Vector const& v, double d) {
 
 }
 
+// Addition des vecteurs
 Vector operator+(Vector const& u, Vector const& v) {
-
-}
-
-Vector operator-(Vector const& u, Vector const& v) {
-
-}
-
-Vector operator^(Vector const& u, Vector const& v) {
-
-}
-
-double operator*(Vector const& u, Vector const& v) {
-
-}
-
-bool operator==(Vector const& u, Vector const& v) {
-
-}
-
-// Additionne deux vecteurs
-Vector Vector::operator+(Vector const& other) const {
-	if (other.size() > size()) {
-		return other + *this;
-	}
-	Vector result(*this);	
-	for (size_t i(0); i < std::min(size(), other.size()); i++){
-		result.set(i, get(i) + other.get(i));
+	Vector result((u.size() > v.size()) ? u : v);	
+	for (size_t i(0); i < std::min(u.size(), v.size()); i++){
+		result[i] = u[i] + v[i];
 	}
 	return result;
+}
+
+// Soustraction des vecteurs
+Vector operator-(Vector const& u, Vector const& v) {
+	return u + (-v);
 }
 
 // Produit vectoriel
-Vector Vector::operator^(Vector const& other) const {
-	if (size() != 3 || other.size() != 3) {
-		return Vector(); // a reconsiderer...
+Vector operator^(Vector const& u, Vector const& v) {
+	Vector result(std::size_t(3));
+	if (u.size() != 3 || v.size() != 3) {
+		return result; // == vecteur nul; a reconsiderer
 	}
-	Vector result(*this);
-	result[0] = (*this)[1] * other.get(2) - get(2)*other.get(1);
-	result.set(1, get(2)*other.get(0) - get(0)*other.get(2));
-	result.set(2, get(0)*other.get(1) - get(1)*other.get(0));
+	result[0] = u[1]*v[2] - u[2]*v[1];
+	result[1] = u[2]*v[0] - u[0]*v[2];
+	result[2] = u[0]*v[1] - u[1]*v[0];
 	return result;
+
 }
 
 // Produit scalaire
-double Vector::operator*(Vector const& other) const {
+double operator*(Vector const& u, Vector const& v) {
 	double result(0);
-	for (std::size_t i(0); i < std::min(size(), other.size()); ++i){
-		result += get(i) * other.get(i);
+	for (std::size_t i(0); i < std::min(u.size(), v.size()); ++i){
+		result += u[i] * v[i];
 	}
 	return result;
 }
 
-// Soustrait deux vecteurs
-Vector Vector::operator-(Vector const& other) const {
-	return *this + (-other);
-}
-
 // Verifie l'egalite de deux vecteurs
-bool Vector::operator==(Vector const& other) const {
-	if (size() != other.size()) {
+bool operator==(Vector const& u, Vector const& v) {
+	if (u.size() != v.size()) {
 		return false;
 	} else {
-		for (std::size_t i(0); i < size(); ++i){
-			if (!(std::abs(other.get(i) - get(i)) < 1e-10)){
+		for (std::size_t i(0); i < u.size(); ++i){
+			if (!(std::abs(u[i] - v[i]) < 1e-10)){
 				return false;
 			}
 		}
 	}
 	return true;
 }
-
-// Multiplie un vecteur par un scalaire
-Vector Vector::operator*(double scalar) const {
-}
-
 
 // Gere les streams -> cout << vect; affiche le vecteur
 std::ostream &operator<<(std::ostream& os, Vector const& v) {
