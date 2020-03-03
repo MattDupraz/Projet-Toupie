@@ -14,6 +14,9 @@ Vector Vector::operator-() const {
 
 // Additionne deux vecteurs
 Vector Vector::operator+(Vector const& other) const {
+	if (other.size() > size()) {
+		return other + *this;
+	}
 	Vector result(*this);	
 	for (size_t i(0); i < std::min(size(), other.size()); i++){
 		result.set(i, get(i) + other.get(i));
@@ -23,9 +26,10 @@ Vector Vector::operator+(Vector const& other) const {
 
 // Produit vectoriel
 Vector Vector::operator^(Vector const& other) const {
+	if (size() != 3 || other.size() != 3) {
+		return Vector(); // a reconsiderer...
+	}
 	Vector result(*this);
-	//ATTENTION LES VECTEURS NE SONT PAS FORCEMENT 3D
-	//A REVOIR
 	result.set(0, get(1)*other.get(2) - get(2)*other.get(1));
 	result.set(1, get(2)*other.get(0) - get(0)*other.get(2));
 	result.set(2, get(0)*other.get(1) - get(1)*other.get(0));
@@ -62,9 +66,9 @@ bool Vector::operator==(Vector const& other) const {
 
 // Multiplie un vecteur par un scalaire
 Vector Vector::operator*(double scalar) const {
-	Vector result(*this);
+	Vector result;
 	for (std::size_t i(0); i < size(); ++i){
-		result.set(i, scalar * get(i));
+		result.augment(scalar * get(i));
 	}
 	return result;
 }
