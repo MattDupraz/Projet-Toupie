@@ -1,15 +1,56 @@
-#include <iostream>
 #include <cmath>
+#include <iostream>
 
 #include "vect.h"
 
+
+// Retourne le vecteur unitaire avec la meme direction
+Vector operator~(Vector const& v) {
+	return v * (1.0 / v.norm());
+}
+
 // Retourne le vecteur oppose
-Vector Vector::operator-() const {
+Vector operator-(Vector const& v) {
 	Vector result;
-	for (std::size_t i(0); i < size(); ++i){
-		result.augment(-get(i));
+	for (std::size_t i(0); i < v.size(); ++i){
+		result.augment(-v[i]);
 	}
 	return result;
+}
+
+// Multiplication par un scalaire a gauche
+Vector operator*(double d, Vector const& v) {
+	return v * d;
+}
+
+// Multiplication par un scalaire a droite
+Vector operator*(Vector const& v, double d) {
+	Vector result;
+	for (std::size_t i(0); i < v.size(); ++i){
+		result.augment(d * v[i]);
+	}
+	return result;
+
+}
+
+Vector operator+(Vector const& u, Vector const& v) {
+
+}
+
+Vector operator-(Vector const& u, Vector const& v) {
+
+}
+
+Vector operator^(Vector const& u, Vector const& v) {
+
+}
+
+double operator*(Vector const& u, Vector const& v) {
+
+}
+
+bool operator==(Vector const& u, Vector const& v) {
+
 }
 
 // Additionne deux vecteurs
@@ -30,7 +71,7 @@ Vector Vector::operator^(Vector const& other) const {
 		return Vector(); // a reconsiderer...
 	}
 	Vector result(*this);
-	result.set(0, get(1)*other.get(2) - get(2)*other.get(1));
+	result[0] = (*this)[1] * other.get(2) - get(2)*other.get(1);
 	result.set(1, get(2)*other.get(0) - get(0)*other.get(2));
 	result.set(2, get(0)*other.get(1) - get(1)*other.get(0));
 	return result;
@@ -66,29 +107,24 @@ bool Vector::operator==(Vector const& other) const {
 
 // Multiplie un vecteur par un scalaire
 Vector Vector::operator*(double scalar) const {
-	Vector result;
-	for (std::size_t i(0); i < size(); ++i){
-		result.augment(scalar * get(i));
-	}
-	return result;
 }
 
-// Multiplication d'un vecteur par un scalaire a gauche
-Vector operator*(double d, Vector const& v) {
-		return v*d;
+
+// Gere les streams -> cout << vect; affiche le vecteur
+std::ostream &operator<<(std::ostream& os, Vector const& v) {
+	os << "(";
+	for (std::size_t i(0); i < v.size(); ++i) {
+		if (i != 0) {
+			os << ", ";
+		}
+		os << v[i];
+	}
+	return os << ")";
 }
 
 // Ajoute une coordonnee au vecteur
 void Vector::augment(double val){
 	coords_.push_back(val);
-}
-
-// Fonction afficher le vecteur
-void Vector::print() const {
-	for (double c : coords_) {
-		std::cout << c << "  ";
-	}
-	std::cout << std::endl;
 }
 
 // Retourne la norme du vecteur
@@ -106,10 +142,6 @@ double Vector::norm2() const {
 }
 
 
-// Retourne le vecteur unitaire avec la meme direction
-Vector Vector::unitVector() const {
-	return (*this) * (1.0 / norm());
-}
 
 
 
