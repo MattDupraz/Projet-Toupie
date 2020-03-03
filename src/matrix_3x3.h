@@ -1,5 +1,4 @@
-#ifndef MATRIX_3X3_H
-#define MATRIX_3X3_H
+#pragma once
 
 #include <array>
 #include "vect.h"
@@ -33,5 +32,3 @@ Vector operator*(Matrix3x3 const& A, Vector v);
 
 bool operator==(Matrix3x3 const& A, Matrix3x3 const& B);
 std::ostream &operator<<(std::ostream& os, Matrix3x3 const& A);
-
-#endif

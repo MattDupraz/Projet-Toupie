@@ -1,5 +1,4 @@
-#ifndef VECTOR_H
-#define VECTOR_H
+#pragma once
 
 #include <iostream>
 #include <vector>
@@ -41,5 +40,3 @@ Vector operator-(Vector const& u, Vector const& v);
 Vector operator^(Vector const& u, Vector const& v);
 double operator*(Vector const& u, Vector const& v);
 bool operator==(Vector const& u, Vector const& v);
-
-#endif

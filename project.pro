@@ -3,8 +3,10 @@ CONFIG += c++11
 
 win32:LIBS += -lopengl32
 
-SOURCES += src/main.cpp src/gl_widget.cpp src/vect.cpp
-HEADERS += src/gl_widget.h src/vertex_shader.h src/vect.h
+SOURCES += src/main.cpp src/gl_widget.cpp src/vect.cpp \
+           src/matrix_3x3.cpp
+HEADERS += src/gl_widget.h src/vertex_shader.h src/vect.h \
+           src/matrix_3x3.h
 RESOURCES += res/resources.qrc
 
 DESTDIR = bin

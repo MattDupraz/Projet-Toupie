@@ -1,5 +1,4 @@
-#ifndef GLWIDGET_H
-#define GLWIDGET_H
+#pragma once
 
 #include <QOpenGLWidget>
 #include <QOpenGLShaderProgram>
@@ -16,5 +15,3 @@ class GLWidget : public QOpenGLWidget {
 		
 		QOpenGLShaderProgram prog;
 };
-
-#endif
