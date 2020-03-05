@@ -13,13 +13,17 @@ class Matrix3x3 {
 				}
 			}
 		}
+		Matrix3x3(std::array<std::array<double, 3>, 3> data)
+		: data_(data)
+		{}
+
 
 		std::array<double, 3> operator[](std::size_t i) const { return data_[i]; }
 		std::array<double, 3>& operator[](std::size_t i) { return data_[i]; }
 
 		Matrix3x3 transp() const;
 		double det() const;
-		Matrix3x4 inv() const;
+		Matrix3x3 inv() const;
 	private:
 		std::array<std::array<double, 3>, 3> data_;
 }
@@ -27,7 +31,7 @@ class Matrix3x3 {
 Matrix3x3 operator+(Matrix3x3 const& A, Matrix3x3 const& B);
 Matrix3x3 operator-(Matrix3x3 const& A, Matrix3x3 const& B);
 Matrix3x3 operator*(Matrix3x3 const& A, Matrix3x3 const& B);
-Matrix3x3 operator*(double d, Matrix const& A);
+Matrix3x3 operator*(double d, Matrix3x3 const& A);
 Vector operator*(Matrix3x3 const& A, Vector v);
 
 bool operator==(Matrix3x3 const& A, Matrix3x3 const& B);

@@ -2,7 +2,7 @@
 
 ## Semaine 2 :
 
-Nous avons lu les objectifs.
+Nous avons lu les objectifs. On a 
 
 --------------------------------------------------
 ## Semaine 3 :
