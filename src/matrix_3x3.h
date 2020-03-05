@@ -14,14 +14,14 @@ class Matrix3x3 {
 			}
 		}
 
-		array<double, 3> operator[](std::size_t i) const { return data_[i]; }
-		array<double, 3>& operator[](std::size_t i) { return data_[i]; }
+		std::array<double, 3> operator[](std::size_t i) const { return data_[i]; }
+		std::array<double, 3>& operator[](std::size_t i) { return data_[i]; }
 
 		Matrix3x3 transp() const;
 		double det() const;
 		Matrix3x4 inv() const;
 	private:
-		array<array<double, 3>, 3> data_;
+		std::array<std::array<double, 3>, 3> data_;
 }
 
 Matrix3x3 operator+(Matrix3x3 const& A, Matrix3x3 const& B);
