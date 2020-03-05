@@ -4,6 +4,8 @@
 #include <vector>
 #include <initializer_list>
 
+enum VectorException { INDEX_OUT_OF_BOUND, INCOMPATIBLE_VECTOR_SIZE };
+
 class Vector {
 	public:
 	  	Vector() {}
@@ -17,13 +19,19 @@ class Vector {
 			: coords_(other.coords_)
 		{}
 	
-		void augment(double val);
+		Vector& augment(double val);
 		double norm() const;
 		double norm2() const;
 
 		std::size_t size() const { return coords_.size(); }
-		double operator[](std::size_t i) const { return coords_[i]; }
-		double& operator[](std::size_t i) { return coords_[i]; }
+		double operator[](std::size_t i) const {
+			if (i >= size()) throw INDEX_OUT_OF_BOUND;
+			return coords_[i];
+		}
+		double& operator[](std::size_t i) {
+			if (i >= size()) throw INDEX_OUT_OF_BOUND;
+			return coords_[i];
+		}
 
 	private:
 		std::vector<double> coords_;

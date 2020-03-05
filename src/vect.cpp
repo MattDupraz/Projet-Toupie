@@ -10,11 +10,7 @@ Vector operator~(Vector const& v) {
 
 // Vecteur oppose
 Vector operator-(Vector const& v) {
-	Vector result;
-	for (std::size_t i(0); i < v.size(); ++i){
-		result.augment(-v[i]);
-	}
-	return result;
+	return v * (-1.0);
 }
 
 // Multiplication par un scalaire a gauche
@@ -34,9 +30,11 @@ Vector operator*(Vector const& v, double d) {
 
 // Addition des vecteurs
 Vector operator+(Vector const& u, Vector const& v) {
-	Vector result((u.size() > v.size()) ? u : v);	
-	for (size_t i(0); i < std::min(u.size(), v.size()); i++){
-		result[i] = u[i] + v[i];
+	if (u.size() != v.size())
+		throw INCOMPATIBLE_VECTOR_SIZE;
+	Vector result;	
+	for (size_t i(0); i < u.size(); i++){
+		result.augment(u[i] + v[i]);
 	}
 	return result;
 }
@@ -48,10 +46,10 @@ Vector operator-(Vector const& u, Vector const& v) {
 
 // Produit vectoriel
 Vector operator^(Vector const& u, Vector const& v) {
-	Vector result(std::size_t(3));
 	if (u.size() != 3 || v.size() != 3) {
-		return result; // == vecteur nul; a reconsiderer
+		throw INCOMPATIBLE_VECTOR_SIZE;
 	}
+	Vector result(std::size_t(3));
 	result[0] = u[1]*v[2] - u[2]*v[1];
 	result[1] = u[2]*v[0] - u[0]*v[2];
 	result[2] = u[0]*v[1] - u[1]*v[0];
@@ -61,8 +59,10 @@ Vector operator^(Vector const& u, Vector const& v) {
 
 // Produit scalaire
 double operator*(Vector const& u, Vector const& v) {
+	if (u.size() != v.size())
+		throw INCOMPATIBLE_VECTOR_SIZE;
 	double result(0);
-	for (std::size_t i(0); i < std::min(u.size(), v.size()); ++i){
+	for (std::size_t i(0); i < u.size(); ++i){
 		result += u[i] * v[i];
 	}
 	return result;
@@ -95,8 +95,9 @@ std::ostream &operator<<(std::ostream& os, Vector const& v) {
 }
 
 // Ajoute une coordonnee au vecteur
-void Vector::augment(double val){
+Vector& Vector::augment(double val){
 	coords_.push_back(val);
+	return *this;
 }
 
 // Retourne la norme du vecteur
