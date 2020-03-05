@@ -13,7 +13,7 @@ class Matrix3x3 {
 				}
 			}
 		}
-		Matrix3x3(std::array<std::array<double, 3>, 3> data)
+		Matrix3x3(std::array<std::array<double, 3>, 3> const& data)
 		: data_(data)
 		{}
 
@@ -24,9 +24,14 @@ class Matrix3x3 {
 		Matrix3x3 transp() const;
 		double det() const;
 		Matrix3x3 inv() const;
+
+		Matrix3x3& swapLines(std::size_t l1, std::size_t l2);
+		Matrix3x3& multLine(std::size_t l, double scal);
+		Matrix3x3& addLine(std::size_t dst, std::size_t src, double scal);
 	private:
+
 		std::array<std::array<double, 3>, 3> data_;
-}
+};
 
 Matrix3x3 operator+(Matrix3x3 const& A, Matrix3x3 const& B);
 Matrix3x3 operator-(Matrix3x3 const& A, Matrix3x3 const& B);
