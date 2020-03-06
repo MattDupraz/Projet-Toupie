@@ -15,9 +15,6 @@ class Vector {
 		Vector(std::size_t s)
 			: coords_(s, 0.0)
 		{}
-		Vector(Vector const& other)
-			: coords_(other.coords_)
-		{}
 	
 		Vector& augment(double val);
 		double norm() const;

@@ -5,6 +5,7 @@ Makefile
 .qmake.stash
 
 *.o
+*.out
 *.exe
 *.sh
 *.bat
