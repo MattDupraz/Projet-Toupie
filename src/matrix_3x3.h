@@ -17,9 +17,18 @@ class Matrix3x3 {
 		: data_(data)
 		{}
 
+		// Constructeur de la matrice composee d'un seul double
+		Matrix3x3(double d){
+			for (std::size_t i(0); i < 3; ++i) {
+				for (std::size_t j(0); j < 3; ++j) {
+					data_[i][j] = 0;
+				}
+			}
+		}
+
 
 		std::array<double, 3> operator[](std::size_t i) const { return data_[i]; }
-		std::array<double, 3>& operator[](std::size_t i) { return data_[i]; }
+		std::array<double, 3>& operator[](std::size_t i){ return data_[i]; }
 
 		Matrix3x3 transp() const;
 		double det() const;
@@ -36,6 +45,7 @@ class Matrix3x3 {
 Matrix3x3 operator+(Matrix3x3 const& A, Matrix3x3 const& B);
 Matrix3x3 operator-(Matrix3x3 const& A, Matrix3x3 const& B);
 Matrix3x3 operator*(Matrix3x3 const& A, Matrix3x3 const& B);
+
 Matrix3x3 operator*(double d, Matrix3x3 const& A);
 Vector operator*(Matrix3x3 const& A, Vector v);
 

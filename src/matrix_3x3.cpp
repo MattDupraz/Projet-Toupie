@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <iostream>
 
+
+
 //  Retourne la transposee
 
 Matrix3x3 Matrix3x3::transp() const{
@@ -55,6 +57,78 @@ std::ostream &operator<<(std::ostream& os, Matrix3x3 const& A){
 	return os;
 }
 
+
+
+Matrix3x3 operator+(Matrix3x3 const& A, Matrix3x3 const& B){
+	Matrix3x3 M;
+	for (size_t i(0); i < 3; ++i){
+		for (size_t j(0); j < 3; ++j){
+			M[i][j] = A[i][j] + B[i][j];
+		}
+	}
+	return M;
+}
+
+Matrix3x3 operator-(Matrix3x3 const& A, Matrix3x3 const& B){
+	Matrix3x3 M;
+	for (std::size_t i(0); i < 3; ++i){
+		for (std::size_t j(0); j < 3; ++j){
+			M[i][j] = A[i][j] - B[i][j];
+		}
+	}
+	return M;
+}
+
+Matrix3x3 operator*(Matrix3x3 const& A, Matrix3x3 const& B){
+	Matrix3x3 M(0);
+	for (std::size_t i(0); i < 3; ++i){
+		for (std::size_t j(0); j < 3; ++j){
+			for (std::size_t k(0); k < 3 ; ++k){
+				M[i][j] += A[i][k] * B[k][j];
+			}
+		}
+	}
+	return M;
+}
+
+Matrix3x3 operator*(double d, Matrix3x3 const& A){
+	Matrix3x3 M(A);
+	for (std::size_t i(0); i < 3 ; ++i){
+		for (std::size_t j(0); j < 3 ; ++j){
+			M[i][j] = d*A[i][j];
+		}
+	}
+	return M;
+}
+
+Vector operator*(Matrix3x3 const& A, Vector const& v){
+	Vector w({0,0,0});
+	for (size_t i(0); i < 3 ; ++i){
+		for (size_t j(0); j < 3 ; ++j){
+			w[i]=A[i][j]*v[j];
+		}
+	}
+	return v;
+}
+
+bool operator ==(Matrix3x3 const& A, Matrix3x3 const& B){
+	bool t(true);
+	double prec(1e-10);
+	
+	for (std::size_t i(0); i < 3 ; ++i){
+		for (std::size_t j(0); j < 3 ; ++j){
+			
+			if (not (abs(A[i][j] - B[i][j]) < prec)){
+				t = false;
+			}
+		}
+	}
+	return t;
+}
+
+
+/*
+
 Matrix3x3 Matrix3x3::inv() const {
 	Matrix3x3 mat(*this);
 	Matrix3x3 result;
@@ -89,21 +163,14 @@ Matrix3x3 Matrix3x3::inv() const {
 	return result;
 }
 
-
+*/
 
 int main(){
 	Matrix3x3 M;
-	std::cout << M;
-	M.addLine(2, 0, 0.2);
-	M.addLine(1, 0, 4.1);
-	M.addLine(0,1,2.1);
-	M.addLine(0,2,3.8);
-	M.addLine(2,1,0.4);
-	M.multLine(0,12.4);
-	M.addLine(1,2,3.1);
-	M.addLine(0,1,-2.3);
-	std::cout << M;
-	std::cout << M.inv();
+	Matrix3x3 N;
+	
+	
+	std::cout << (M- 3*N);
 	
 	return 0;
 }
