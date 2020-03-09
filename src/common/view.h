@@ -1,6 +1,6 @@
 #pragma once
 
-#include "top.h"
+class Top;
 
 class View {
 	public:

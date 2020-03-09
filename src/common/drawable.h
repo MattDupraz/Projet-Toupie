@@ -1,12 +1,14 @@
 #pragma once
 
+class View;
+
 class Drawable {
 	public:
-		Drawable(View v)
+		Drawable(View* v)
 			: view_(v)
 		{}
 
-		virtual ~Drawable {}
+		virtual ~Drawable() {}
 
 		virtual void draw() = 0;
 
