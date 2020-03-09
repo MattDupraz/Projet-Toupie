@@ -8,7 +8,10 @@ void ViewOpenGL::draw(Top const& top) {
 	// Translate la "camera" par (0, 0, -2.0)
 	// (voir /res/vertex_shader.glsl)
 	QMatrix4x4 translation_matrix;
-	translation_matrix.translate(0.0, 0.0, -2.0);
+	translation_matrix.translate(0.0, 0.0, -4.0);
+	translation_matrix.rotate(60.0, 0.0, 1.0, 0.0);
+	translation_matrix.rotate(45.0, 0.0, 0.0, 1.0);
+
 	
 	// Assigne la matrice de translation a la valeur uniforme pour
 	// l'acceeder depuis le shader
@@ -23,16 +26,48 @@ void ViewOpenGL::draw(Top const& top) {
 	//
 	// Les couleurs sont en format (rouge, vert, bleu)
 	// Les coordonnees sont cartesiennes (x, y, z)
-	glBegin(GL_TRIANGLES);
-	//
-	prog_.setAttributeValue(ID_COLOR, 1.0, 0.0, 0.0);
-	prog_.setAttributeValue(ID_VERTEX, 0.0, 0.0, 0.0);
-	//green
-	prog_.setAttributeValue(ID_COLOR, 0.0, 1.0, 0.0);
-	prog_.setAttributeValue(ID_VERTEX, 1.0, 0.0, 0.0);
-	//blue
-	prog_.setAttributeValue(ID_COLOR, 0.0, 0.0, 1.0);
-	prog_.setAttributeValue(ID_VERTEX, 0.0, 1.0, 0.0);
+	glBegin(GL_QUADS);
+	  // face coté X = +1
+	prog_.setAttributeValue(ID_COLOR, 1.0, 0.0, 0.0); // rouge
+	prog_.setAttributeValue(ID_VERTEX, +1.0, -1.0, -1.0);
+	prog_.setAttributeValue(ID_VERTEX, +1.0, +1.0, -1.0);
+	prog_.setAttributeValue(ID_VERTEX, +1.0, +1.0, +1.0);
+	prog_.setAttributeValue(ID_VERTEX, +1.0, -1.0, +1.0);
+
+	// face coté X = -1
+	prog_.setAttributeValue(ID_COLOR, 0.0, 1.0, 0.0); // vert
+	prog_.setAttributeValue(ID_VERTEX, -1.0, -1.0, -1.0);
+	prog_.setAttributeValue(ID_VERTEX, -1.0, -1.0, +1.0);
+	prog_.setAttributeValue(ID_VERTEX, -1.0, +1.0, +1.0);
+	prog_.setAttributeValue(ID_VERTEX, -1.0, +1.0, -1.0);
+
+	// face coté Y = +1
+	prog_.setAttributeValue(ID_COLOR, 0.0, 0.0, 1.0); // bleu
+	prog_.setAttributeValue(ID_VERTEX, -1.0, +1.0, -1.0);
+	prog_.setAttributeValue(ID_VERTEX, -1.0, +1.0, +1.0);
+	prog_.setAttributeValue(ID_VERTEX, +1.0, +1.0, +1.0);
+	prog_.setAttributeValue(ID_VERTEX, +1.0, +1.0, -1.0);
+
+	// face coté Y = -1
+	prog_.setAttributeValue(ID_COLOR, 0.0, 1.0, 1.0); // cyan
+	prog_.setAttributeValue(ID_VERTEX, -1.0, -1.0, -1.0);
+	prog_.setAttributeValue(ID_VERTEX, +1.0, -1.0, -1.0);
+	prog_.setAttributeValue(ID_VERTEX, +1.0, -1.0, +1.0);
+	prog_.setAttributeValue(ID_VERTEX, -1.0, -1.0, +1.0);
+
+	// face coté Z = +1
+	prog_.setAttributeValue(ID_COLOR, 1.0, 1.0, 0.0); // jaune
+	prog_.setAttributeValue(ID_VERTEX, -1.0, -1.0, +1.0);
+	prog_.setAttributeValue(ID_VERTEX, +1.0, -1.0, +1.0);
+	prog_.setAttributeValue(ID_VERTEX, +1.0, +1.0, +1.0);
+	prog_.setAttributeValue(ID_VERTEX, -1.0, +1.0, +1.0);
+
+	// face coté Z = -1
+	prog_.setAttributeValue(ID_COLOR, 1.0, 0.0, 1.0); // magenta
+	prog_.setAttributeValue(ID_VERTEX, -1.0, -1.0, -1.0);
+	prog_.setAttributeValue(ID_VERTEX, -1.0, +1.0, -1.0);
+	prog_.setAttributeValue(ID_VERTEX, +1.0, +1.0, -1.0);
+	prog_.setAttributeValue(ID_VERTEX, +1.0, -1.0, -1.0);
 	glEnd();
 	// Fin de l'affichage du triangle.
 }
