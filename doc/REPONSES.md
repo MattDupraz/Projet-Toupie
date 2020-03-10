@@ -16,9 +16,9 @@ les méthodes qu'on a implementé sont publiques. Nous avons choisi
 d'implémenter les opérations sur les vecteurs à l'aide de la surcharge 
 d'opérateurs, qu'on a placé à l'extérieur de la classe.
 
-Un `Vector` est constructible a l'aide d'un `initializer\_list<double>`
+Un `Vector` est constructible a l'aide d'un `initializer_list<double>`
 pour créer le vecteur avec des valeurs spécifiques, ou d'un
-`size\_t` pour creer un vecteur nulle de la dimension spécifié.
+`size_t` pour creer un vecteur nulle de la dimension spécifié.
 Nous n'avons pas implementé de constructeur par copie, car nous ne
 pensons pas qu'il soit nécessaire, le constructeur par copie 
 par défaut est suffisant.
