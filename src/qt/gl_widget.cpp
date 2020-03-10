@@ -1,10 +1,21 @@
 #include <QMatrix4x4>
+#include <QTimerEvent>
 #include "gl_widget.h"
 #include "vertex_shader.h"
 
 // Appelee une fois au debut du programme
 void GLWidget::initializeGL() {
 	view_.init();
+	
+	startTimer(20);
+	timer_.restart();
+}
+
+void GLWidget::timerEvent(QTimerEvent* event) {
+	Q_UNUSED(event);
+	double dt = timer_.restart() / 1000.0;
+	top_.update(dt);
+	update();
 }
 
 // Appellee a chaque fois que la taille de la fenetre change

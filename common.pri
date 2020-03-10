@@ -1,7 +1,8 @@
 CONFIG += c++11
 
 SOURCES += src/common/vect.cpp \
-           src/common/matrix_3x3.cpp
+           src/common/matrix_3x3.cpp \
+           src/common/top.cpp
 HEADERS += src/common/vect.h \
            src/common/matrix_3x3.h \
            src/common/view.h \

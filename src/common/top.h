@@ -7,8 +7,8 @@
 class Top : public Drawable {
 	public:
 		Top(View* v, double mass = 0.0, //Matrix3x3 const& tensor,
-				Vector const& pos = Vector(), Vector const& vel = Vector(),
-				Vector const& angPos = Vector(), Vector const& angVel = Vector())
+				Vector const& pos = Vector(3), Vector const& vel = Vector(3),
+				Vector const& angPos = Vector(3), Vector const& angVel = Vector{50, 0, 0})
 			: Drawable(v), pos_(pos), vel_(vel),
 				angPos_(angPos), angVel_(angVel),
 				//tensorInert_(tensor), mass_(mass)

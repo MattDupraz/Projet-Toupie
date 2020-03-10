@@ -94,6 +94,22 @@ std::ostream &operator<<(std::ostream& os, Vector const& v) {
 	return os << ")";
 }
 
+// Operateurs d'assignment
+Vector& operator*=(Vector& u, double d) {
+	u = u * d;
+	return u;
+}
+
+Vector& operator+=(Vector& u, Vector const& v) {
+	u = u + v;
+	return u;
+}
+
+Vector& operator-=(Vector& u, Vector const& v) {
+	u = u - v;
+	return u;
+}
+
 // Ajoute une coordonnee au vecteur
 Vector& Vector::augment(double val){
 	coords_.push_back(val);

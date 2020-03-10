@@ -9,9 +9,13 @@ void ViewOpenGL::draw(Top const& top) {
 	// (voir /res/vertex_shader.glsl)
 	QMatrix4x4 translation_matrix;
 	translation_matrix.translate(0.0, 0.0, -4.0);
+
+	double angle(top.getAngPos().norm());
+	Vector rotationAxis(~top.getAngPos());
+	translation_matrix.rotate(angle, rotationAxis[0], rotationAxis[1], rotationAxis[2]);
+
 	translation_matrix.rotate(60.0, 0.0, 1.0, 0.0);
 	translation_matrix.rotate(45.0, 0.0, 0.0, 1.0);
-
 	
 	// Assigne la matrice de translation a la valeur uniforme pour
 	// l'acceeder depuis le shader
