@@ -20,9 +20,7 @@ Matrix3x3 Matrix3x3::transp() const{
 double Matrix3x3::det() const{
 	double det(0);
 	for (std::size_t i(0); i < 3 ; ++i) {
-		
 		det += data_[i][0] * data_[(i+1)%3][1] * data_[(i+2)%3][2];
-		
 		det -= data_[(i+2)%3][0] * data_[(i+1)%3][1] * data_[i][2];
 	}
 	return det;
@@ -47,7 +45,7 @@ Matrix3x3&  Matrix3x3::addLine(std::size_t dst, std::size_t src, double scal){
 	return *this;
 }
 
-std::ostream &operator<<(std::ostream& os, Matrix3x3 const& A){
+std::ostream& operator<<(std::ostream& os, Matrix3x3 const& A){
 	for (std::size_t i(0); i < 3 ; ++i){
 		for (std::size_t j(0); j < 3 ; ++j){
 			std::cout << A[i][j] << ", ";
@@ -61,8 +59,8 @@ std::ostream &operator<<(std::ostream& os, Matrix3x3 const& A){
 
 Matrix3x3 operator+(Matrix3x3 const& A, Matrix3x3 const& B){
 	Matrix3x3 M;
-	for (size_t i(0); i < 3; ++i){
-		for (size_t j(0); j < 3; ++j){
+	for (std::size_t i(0); i < 3; ++i){
+		for (std::size_t j(0); j < 3; ++j){
 			M[i][j] = A[i][j] + B[i][j];
 		}
 	}
@@ -92,42 +90,37 @@ Matrix3x3 operator*(Matrix3x3 const& A, Matrix3x3 const& B){
 }
 
 Matrix3x3 operator*(double d, Matrix3x3 const& A){
-	Matrix3x3 M(A);
-	for (std::size_t i(0); i < 3 ; ++i){
-		for (std::size_t j(0); j < 3 ; ++j){
-			M[i][j] = d*A[i][j];
+	Matrix3x3 M;
+	for (std::size_t i(0); i < 3; ++i){
+		for (std::size_t j(0); j < 3; ++j){
+			M[i][j] = d * A[i][j];
 		}
 	}
 	return M;
 }
 
 Vector operator*(Matrix3x3 const& A, Vector const& v){
-	Vector w({0,0,0});
-	for (size_t i(0); i < 3 ; ++i){
-		for (size_t j(0); j < 3 ; ++j){
-			w[i]=A[i][j]*v[j];
+	Vector w(std::size_t(3));
+	for (std::size_t i(0); i < 3 ; ++i){
+		for (std::size_t j(0); j < 3 ; ++j){
+			w[i] += A[i][j] * v[j];
 		}
 	}
-	return v;
+	return w;
 }
 
 bool operator ==(Matrix3x3 const& A, Matrix3x3 const& B){
-	bool t(true);
 	double prec(1e-10);
 	
 	for (std::size_t i(0); i < 3 ; ++i){
 		for (std::size_t j(0); j < 3 ; ++j){
-			
 			if (not (abs(A[i][j] - B[i][j]) < prec)){
-				t = false;
+				return false;
 			}
 		}
 	}
-	return t;
+	return true;
 }
-
-
-/*
 
 Matrix3x3 Matrix3x3::inv() const {
 	Matrix3x3 mat(*this);
@@ -161,17 +154,5 @@ Matrix3x3 Matrix3x3::inv() const {
 		}
 	}
 	return result;
-}
-
-*/
-
-int main(){
-	Matrix3x3 M;
-	Matrix3x3 N;
-	
-	
-	std::cout << (M- 3*N);
-	
-	return 0;
 }
 
