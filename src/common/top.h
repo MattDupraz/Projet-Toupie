@@ -15,11 +15,15 @@ class Top : public Drawable {
 				mass_(mass)
 		{}
 
+
+
 		virtual ~Top() {}
 
 		virtual void draw() override {
 			view_->draw(*this);
 		}
+
+
 
 		Vector getPos() const { return pos_; }
 		Vector getVel() const { return vel_; }
@@ -28,9 +32,11 @@ class Top : public Drawable {
 		//Matrix3x3 getTensorInert() const { return tensorInert_; }
 		double getMass() const { return mass_; }
 
-		void update(double dt);
+		Vector update(double dt, Vector pos, Vector Vel);	// Integrator 
 
 	private:
+		
+
 		Vector pos_; // Spatial coordinates
 		Vector vel_; // Velocity vector
 		Vector angPos_; // Angular position vector (Euler coordinates)
@@ -38,3 +44,18 @@ class Top : public Drawable {
 		//Matrix3x3 const tensorInert_; // Moment of inertia tensor
 		double const mass_;
 };
+
+
+std::ostream& operator<<(srd::ostream& os, Top const& top){
+	std::cout << " Position   : ";
+	for ()top.getPos()
+	
+
+
+	return os;
+}
+
+
+
+
+
