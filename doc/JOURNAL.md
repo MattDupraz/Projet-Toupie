@@ -38,6 +38,7 @@ Nous avons terminé de défninir les principaux opérateurs de la classe "Matrix
 Prise en main des animations OpenGL et simulation en temps reel. Defini la classe
 Top (toupie) pour completer la structure du projet, sans ayant commence a implementer
 ses methodes. Nous commençons a etudier le complément mathématico-physique.
+Cree les tests unitaires pour les classes Vector et Matrix3x3.
 
 --------------------------------------------------
 ## Semaine 5 :
