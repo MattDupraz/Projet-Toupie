@@ -4,7 +4,7 @@
 
 TARGET = project_test
 
-SOURCES += src/test/main.cpp \
+SOURCES += src/test/main_test.cpp \
            src/test/tests.cpp
 
 HEADERS += src/test/tests.h
