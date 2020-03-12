@@ -46,12 +46,20 @@ Matrix3x3&  Matrix3x3::addLine(std::size_t dst, std::size_t src, double scal){
 }
 
 std::ostream& operator<<(std::ostream& os, Matrix3x3 const& A){
+	os.precision(2);
+	os << std::fixed;
 	for (std::size_t i(0); i < 3 ; ++i){
+		os << (i == 0 ? "[[" : " [");
 		for (std::size_t j(0); j < 3 ; ++j){
-			std::cout << A[i][j] << ", ";
+			os.width(7);
+			os << A[i][j];
+			if (j != 2) 
+				os << " ";
 		}
-		std::cout << std::endl;
+		os << (i == 2 ? "]]" : "]") << std::endl;
 	}
+	os.unsetf(std::ios_base::floatfield);
+
 	return os;
 }
 
@@ -122,6 +130,10 @@ bool operator ==(Matrix3x3 const& A, Matrix3x3 const& B){
 	return true;
 }
 
+bool operator !=(Matrix3x3 const& A, Matrix3x3 const& B){
+	return !(A == B);
+}
+
 Matrix3x3 Matrix3x3::inv() const {
 	Matrix3x3 mat(*this);
 	Matrix3x3 result;
@@ -136,7 +148,8 @@ Matrix3x3 Matrix3x3::inv() const {
 					success = true;
 				}
 			}
-			// if !success throw EXCEPTION
+			if (!success)
+				throw NOT_INVERSIBLE;
 		}
 
 		// On multiplie la ligne pour assurer que la valeur de l'echelon c'est 1

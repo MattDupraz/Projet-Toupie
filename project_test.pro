@@ -6,7 +6,7 @@ INCLUDEPATH += src/text
 
 TARGET = project_test
 
-SOURCES += src/test/main.cpp \
+SOURCES += src/test/main_test.cpp \
            src/test/tests.cpp \
            src/txt/view_text.cpp
 

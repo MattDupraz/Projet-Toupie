@@ -65,6 +65,51 @@ void Tests::testVector() {
 
 void Tests::testMatrix3x3() {
 
+	cout << endl << "-= BEGIN TEST MATRIX 3X3 =-" << endl << endl;
+
+	Matrix3x3 A;
+	cout << "A = " << endl << A;
+
+	A.addLine(1, 0, 3.0);
+	cout << "A.addLine(1, 0, 3.0) -> A = " << endl << A;
+	A.addLine(2, 1, 2.3);
+	cout << "A.addLine(2, 1, 2.3) -> A = " << endl << A;
+	A.addLine(0, 2, 1.7);
+	cout << "A.addLine(0, 2, 1.7) -> A = " << endl << A;
+	A.addLine(2, 1, 1.2);
+	cout << "A.addLine(2, 1, 1.2) -> A = " << endl << A;
+	A.swapLines(1, 2);
+	cout << "A.swapLines(1, 2) -> A = " << endl << A;
+	A.multLine(1, 1.3);
+	cout << "A.multLine(1, 1.3) -> A = " << endl << A;
+	cout << "3.2 * A = " << endl << 3.2 * A;
+
+	Matrix3x3 B({{1, 2, 3}, {2, 1, 3}, {4, 2, 1}});
+	cout << "B = " << endl << B;
+	cout << "B == Matrix3x3({{1, 2, 3},{2, 1, 3},{4, 2, 1}}) -> " 
+		<< (B == Matrix3x3({{1, 2, 3}, {2, 1, 3}, {4, 2, 1}})) << endl;
+	cout << "A != B -> " << (A != B) << endl;
+
+	cout << "A * B = " << endl << A * B;
+	cout << "B * A = " << endl << B * A;
+
+	cout << "A + B = " << endl << A + B;
+	cout << "B + A = " << endl << B + A;
+
+	Vector v{2.3, 1.2, 5.7};
+	cout << "v = " << v << endl;
+	cout << "A * v = " << A * v << endl;
+
+	cout << "A.inv() -> " << endl << A.inv();
+
+	cout << "A.inv() * A = " << endl << A.inv() * A;
+	cout << "A * A.inv() = " << endl << A * A.inv();
+
+	cout << "A.transp() -> " << endl << A.transp();
+	cout << "A.det() -> " << A.det() << endl;
+
+	cout << endl << "-= END TEST MATRIX 3X3 =-" << endl << endl;
+
 }
 
 void Tests::testTop() {

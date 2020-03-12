@@ -3,6 +3,8 @@
 #include <array>
 #include "vect.h"
 
+enum MatrixException { NOT_INVERSIBLE };
+
 class Matrix3x3 {
 	public:
 		// Constructeur d'une  matrice scalaire
@@ -44,4 +46,5 @@ Matrix3x3 operator*(double d, Matrix3x3 const& A);
 Vector operator*(Matrix3x3 const& A, Vector const& v);
 
 bool operator==(Matrix3x3 const& A, Matrix3x3 const& B);
+bool operator!=(Matrix3x3 const& A, Matrix3x3 const& B);
 std::ostream& operator<<(std::ostream& os, Matrix3x3 const& A);
