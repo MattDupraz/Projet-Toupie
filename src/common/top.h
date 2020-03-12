@@ -7,8 +7,8 @@
 class Top : public Drawable {
 	public:
 		Top(View* v, double mass = 0.0, //Matrix3x3 const& tensor,
-			Vector const& pos = Vector(3), Vector const& vel = Vector(3),
-			Vector const& angPos = Vector(3), Vector const& angVel = Vector{50, 0, 0})
+			Vector const& pos = Vector(3), Vector const& vel = Vector{0, 0, 5},
+			Vector const& angPos = Vector(3), Vector const& angVel = Vector{50, 20, 100})
 			: Drawable(v), pos_(pos), vel_(vel),
 				angPos_(angPos), angVel_(angVel),
 				//tensorInert_(tensor), mass_(mass)
@@ -32,7 +32,7 @@ class Top : public Drawable {
 		//Matrix3x3 getTensorInert() const { return tensorInert_; }
 		double getMass() const { return mass_; }
 
-		Vector update(double dt, Vector pos, Vector Vel);
+		void update(double dt);
 
 
 	private:

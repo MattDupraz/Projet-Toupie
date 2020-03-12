@@ -10,6 +10,9 @@ void ViewOpenGL::draw(Top const& top) {
 	QMatrix4x4 translation_matrix;
 	translation_matrix.translate(0.0, 0.0, -4.0);
 
+	Vector pos(top.getPos());
+	translation_matrix.translate(pos[0], pos[1], -pos[2]);
+
 	double angle(top.getAngPos().norm());
 	Vector rotationAxis(~top.getAngPos());
 	translation_matrix.rotate(angle, rotationAxis[0], rotationAxis[1], rotationAxis[2]);
