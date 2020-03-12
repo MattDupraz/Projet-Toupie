@@ -10,6 +10,17 @@ HEADERS += src/common/vect.h \
 
 INCLUDEPATH = src/common
 
+unix|macx {
+	system(mkdir -p build)
+	system(mkdir -p bin)
+}
+
+win32|win64 {
+	system(md build)
+	system(md bin)
+}
+
+
 DESTDIR = bin
 OBJECTS_DIR = build
 MOC_DIR = build
