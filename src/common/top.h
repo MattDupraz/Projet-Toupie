@@ -7,8 +7,8 @@
 class Top : public Drawable {
 	public:
 		Top(View* v, double mass = 0.0, //Matrix3x3 const& tensor,
-				Vector const& pos = Vector(3), Vector const& vel = Vector(3),
-				Vector const& angPos = Vector(3), Vector const& angVel = Vector{50, 0, 0})
+			Vector const& pos = Vector(3), Vector const& vel = Vector(3),
+			Vector const& angPos = Vector(3), Vector const& angVel = Vector{50, 0, 0})
 			: Drawable(v), pos_(pos), vel_(vel),
 				angPos_(angPos), angVel_(angVel),
 				//tensorInert_(tensor), mass_(mass)
@@ -25,14 +25,15 @@ class Top : public Drawable {
 
 
 
-		Vector getPos() const { return pos_; }
+		Vector const& getPos() const { return pos_; }
 		Vector getVel() const { return vel_; }
 		Vector getAngPos() const { return angPos_; }
 		Vector getAngVel() const { return angVel_; }
 		//Matrix3x3 getTensorInert() const { return tensorInert_; }
 		double getMass() const { return mass_; }
 
-		Vector update(double dt, Vector pos, Vector Vel);	// Integrator 
+		Vector update(double dt, Vector pos, Vector Vel);
+
 
 	private:
 		
@@ -45,15 +46,6 @@ class Top : public Drawable {
 		double const mass_;
 };
 
-
-std::ostream& operator<<(srd::ostream& os, Top const& top){
-	std::cout << " Position   : ";
-	for ()top.getPos()
-	
-
-
-	return os;
-}
 
 
 
