@@ -2,5 +2,5 @@
 	error("Couldn't find the common.pri file!")
 }
 
-TARGET = project_text
+TARGET = project_txt
 

@@ -45,6 +45,7 @@ Vector operator-(Vector const& u, Vector const& v);
 Vector operator^(Vector const& u, Vector const& v);
 double operator*(Vector const& u, Vector const& v);
 bool operator==(Vector const& u, Vector const& v);
+bool operator!=(Vector const& u, Vector const& v);
 
 Vector& operator*=(Vector& u, double d);
 Vector& operator+=(Vector& u, Vector const& v);

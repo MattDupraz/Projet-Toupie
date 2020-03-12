@@ -82,6 +82,10 @@ bool operator==(Vector const& u, Vector const& v) {
 	return true;
 }
 
+bool operator!=(Vector const& u, Vector const& v) {
+	return !(u == v);
+}
+
 // Gere les streams -> cout << vect; affiche le vecteur
 std::ostream &operator<<(std::ostream& os, Vector const& v) {
 	os << "(";

@@ -15,7 +15,7 @@ void ViewOpenGL::draw(Top const& top) {
 	translation_matrix.rotate(angle, rotationAxis[0], rotationAxis[1], rotationAxis[2]);
 
 	translation_matrix.rotate(60.0, 0.0, 1.0, 0.0);
-	translation_matrix.rotate(45.0, 0.0, 0.0, 1.0);
+	//translation_matrix.rotate(45.0, 0.0, 0.0, 1.0);
 	
 	// Assigne la matrice de translation a la valeur uniforme pour
 	// l'acceeder depuis le shader
