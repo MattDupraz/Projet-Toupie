@@ -9,19 +9,12 @@ du type `vector` (des tableaux de taille variable) car le
 programme doit pouvoir augmenter un vecteur d'une coordonnée 
 par le biais de la méthode `augmente()`.
 
-Nous avons défini comme attribut prive un objet du type `vector` 
+Nous avons défini comme attribut privé un objet du type `vector` 
 qui contient les coordonnées du vecteur. Celles-ci sont accessibles 
 et modifiable de l'extérieur a l'aide de l'opérateur `[]`. Toutes 
-les méthodes qu'on a implementé sont publiques. Nous avons choisi 
+les méthodes qu'on a implementées sont publiques. Nous avons choisi 
 d'implémenter les opérations sur les vecteurs à l'aide de la surcharge 
 d'opérateurs, qu'on a placé à l'extérieur de la classe.
-
-Un `Vector` est constructible a l'aide d'un `initializer_list<double>`
-pour créer le vecteur avec des valeurs spécifiques, ou d'un
-`size_t` pour creer un vecteur nulle de la dimension spécifié.
-Nous n'avons pas implementé de constructeur par copie, car nous ne
-pensons pas qu'il soit nécessaire, le constructeur par copie 
-par défaut est suffisant.
 
 ### QUESTION 1.2
 
@@ -33,8 +26,12 @@ dans la réalisation de notre projet.
 
 ### QUESTION 4.1
 
-
-
+Un `Vector` est constructible a l'aide d'un `initializer_list<double>`
+pour créer le vecteur avec des valeurs spécifiques, ou d'un
+`size_t` pour créer un vecteur nulle de la dimension spécifié.
+Nous n'avons pas implementé de constructeur par copie, car nous ne
+pensons pas qu'il soit nécessaire, le constructeur par copie 
+par défaut est suffisant.
 
 ### QUESTION 4.2
 
