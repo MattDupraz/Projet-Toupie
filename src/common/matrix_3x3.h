@@ -1,8 +1,9 @@
 #pragma once
 
 #include <array>
+#include <ostream>
 
-class Vector;
+#include "vect.h"
 
 enum MatrixException { NOT_INVERSIBLE };
 

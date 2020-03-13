@@ -1,7 +1,5 @@
 #include <algorithm>
-#include <iostream>
 
-#include "vect.h"
 #include "matrix_3x3.h"
 #include "math_utils.h"
 

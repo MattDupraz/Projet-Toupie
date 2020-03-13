@@ -1,5 +1,4 @@
 #include "view_opengl.h"
-#include "top.h"
 #include "vertex_shader.h"
 
 void ViewOpenGL::draw(Top const& top) {

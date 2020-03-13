@@ -4,6 +4,7 @@
 #include <QOpenGLShaderProgram>
 
 #include "view.h"
+#include "top.h"
 
 class ViewOpenGL : public View {
 	public:

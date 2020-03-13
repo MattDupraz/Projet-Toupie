@@ -1,7 +1,7 @@
 #pragma once
 
-#include <iostream>
 #include <vector>
+#include <ostream>
 #include <initializer_list>
 
 enum VectorException { INCOMPATIBLE_VECTOR_SIZE };

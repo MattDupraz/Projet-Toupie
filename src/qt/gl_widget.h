@@ -2,6 +2,7 @@
 
 #include <QOpenGLWidget>
 #include <QElapsedTimer>
+#include <QTimerEvent>
 
 #include "view_opengl.h"
 #include "top.h"

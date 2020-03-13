@@ -1,5 +1,4 @@
 #include <QMatrix4x4>
-#include <QTimerEvent>
 #include "gl_widget.h"
 #include "vertex_shader.h"
 
