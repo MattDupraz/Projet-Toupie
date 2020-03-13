@@ -1,14 +1,35 @@
-#include "matrix_3x3.h"
 #include <algorithm>
 #include <iostream>
 
+#include "vect.h"
+#include "matrix_3x3.h"
+#include "math_utils.h"
 
+// Constructeur d'une  matrice scalaire
+Matrix3x3::Matrix3x3(double val) {
+	for (std::size_t i(0); i < 3; ++i) {
+		for (std::size_t j(0); j < 3; ++j) {
+			data_[i][j] = (i == j) ? val : 0.0;
+		}
+	}
+}
+// Constructeur permettant d'intialiser
+Matrix3x3::Matrix3x3(double (&&data)[3][3]) {
+	for (std::size_t i(0); i < 3; ++i) {
+		for (std::size_t j(0); j < 3; ++j) {
+			data_[i][j] = data[i][j];
+		}
+	}
+}
+// Constructeur pour eviter l'initialisation inutile
+// d'une matrice identite, s'il y en a pas besoin
+Matrix3x3::Matrix3x3(DoubleArray3x3& data)
+	: data_(std::move(data))
+{}
 
-//  Retourne la transposee
-
+// Retourne la transposee
 Matrix3x3 Matrix3x3::transp() const{
-	Matrix3x3 result(*this);
-	
+	Matrix3x3 result(*this);	
 	for (std::size_t i(0); i < 3; ++i) {
 		for (std::size_t j(0); j < i; ++j) {
 			std::swap(result[i][j], result[j][i]);
@@ -17,20 +38,62 @@ Matrix3x3 Matrix3x3::transp() const{
 	return result;
 }
 
-double Matrix3x3::det() const{
+// Retourne le mineur
+double Matrix3x3::minor(std::size_t row, std::size_t col) const {
+	// On trouve les indices pour la sous-matrice 2x2
+	std::size_t i1((row == 0) ? 1 : 0);
+	std::size_t i2((row == 2) ? 1 : 2);
+	std::size_t j1((col == 0) ? 1 : 0);
+	std::size_t j2((col == 2) ? 1 : 2);
+	// On retourne son determinant
+	return data_[i1][j1]*data_[i2][j2] - data_[i1][j2]*data_[i2][j1];
+}
+
+// Retourne le cofacteur
+double Matrix3x3::cofactor(std::size_t row, std::size_t col) const {
+	return ((row + col) % 2 == 0) ? minor(row, col) : -minor(row, col);
+}
+
+// Retourne la matrice des cofacteurs
+Matrix3x3 Matrix3x3::cofactorMatrix() const {
+	// On cree un array au lieu d'initialiser une matrice
+	// pour eviter l'overhead de la creation de la matrice identite
+	DoubleArray3x3 arr;
+	for (std::size_t i(0); i < 3; ++i) {
+		for (std::size_t j(0); j < 3; ++j) {
+			arr[i][j] = cofactor(i, j);
+		}
+	}
+	return Matrix3x3(arr);
+}
+
+// Retourne le determinant de la matrice
+double Matrix3x3::det() const {
 	double det(0);
-	for (std::size_t i(0); i < 3 ; ++i) {
+	// On utilise la regle de Sarrus pour calculer le determinant
+	for (std::size_t i(0); i < 3 ;++i) {
 		det += data_[i][0] * data_[(i+1)%3][1] * data_[(i+2)%3][2];
 		det -= data_[(i+2)%3][0] * data_[(i+1)%3][1] * data_[i][2];
 	}
 	return det;
 }
 
+// Retourne l'inverse de la matrice
+Matrix3x3 Matrix3x3::inv() const {
+	double determinant(det());
+	if (isEqual(determinant, 0.0)) {
+		throw NOT_INVERSIBLE;
+	}
+	return (1.0 / determinant) * cofactorMatrix().transp();
+}
+
+// Echange de deux lignes (operation elementaire)
 Matrix3x3& Matrix3x3::swapLines(std::size_t l1, std::size_t l2){
 	std::swap(data_[l1], data_[l2]);
 	return *this;
 }
 
+// Multiplication d'une ligne par un scalaire (operation elementaire)
 Matrix3x3&  Matrix3x3::multLine(std::size_t l, double scal){
 	for (double& val : data_[l]){
 		val *= scal;
@@ -38,6 +101,7 @@ Matrix3x3&  Matrix3x3::multLine(std::size_t l, double scal){
 	return *this;
 }
 
+// Addition d'une ligne `scal` fois a une autre (operation elementaire)
 Matrix3x3&  Matrix3x3::addLine(std::size_t dst, std::size_t src, double scal){
 	for (std::size_t i(0) ; i < 3 ; ++i){
 		data_[dst][i] += scal*data_[src][i];
@@ -45,44 +109,45 @@ Matrix3x3&  Matrix3x3::addLine(std::size_t dst, std::size_t src, double scal){
 	return *this;
 }
 
-std::ostream& operator<<(std::ostream& os, Matrix3x3 const& A){
-	os.precision(2);
-	os << std::fixed;
-	for (std::size_t i(0); i < 3 ; ++i){
-		os << (i == 0 ? "[[" : " [");
-		for (std::size_t j(0); j < 3 ; ++j){
-			os.width(7);
-			os << A[i][j];
-			if (j != 2) 
-				os << " ";
-		}
-		os << (i == 2 ? "]]" : "]") << std::endl;
-	}
-	os.unsetf(std::ios_base::floatfield);
+////////////////////////////////////////////////////
+// OPERATIONS USUELLES SUR L'ALGEBRE DES MATRICES //
+////////////////////////////////////////////////////
 
-	return os;
-}
-
-
-
-Matrix3x3 operator+(Matrix3x3 const& A, Matrix3x3 const& B){
-	Matrix3x3 M;
+Matrix3x3& Matrix3x3::operator+=(Matrix3x3 const& other) {
 	for (std::size_t i(0); i < 3; ++i){
 		for (std::size_t j(0); j < 3; ++j){
-			M[i][j] = A[i][j] + B[i][j];
+			data_[i][j] += other[i][j];
 		}
 	}
-	return M;
+	return *this;
 }
 
-Matrix3x3 operator-(Matrix3x3 const& A, Matrix3x3 const& B){
-	Matrix3x3 M;
+Matrix3x3& Matrix3x3::operator-=(Matrix3x3 const& other) {
 	for (std::size_t i(0); i < 3; ++i){
 		for (std::size_t j(0); j < 3; ++j){
-			M[i][j] = A[i][j] - B[i][j];
+			data_[i][j] -= other[i][j];
 		}
 	}
-	return M;
+	return *this;
+}
+
+Matrix3x3& Matrix3x3::operator*=(double scal) {
+	for (std::size_t i(0); i < 3; ++i){
+		for (std::size_t j(0); j < 3; ++j){
+			data_[i][j] *= scal;
+		}
+	}
+	return *this;	
+}
+
+Matrix3x3 operator+(Matrix3x3 A, Matrix3x3 const& B){
+	A += B;
+	return A;
+}
+
+Matrix3x3 operator-(Matrix3x3 A, Matrix3x3 const& B){
+	A -= B;
+	return B;
 }
 
 Matrix3x3 operator*(Matrix3x3 const& A, Matrix3x3 const& B){
@@ -97,14 +162,9 @@ Matrix3x3 operator*(Matrix3x3 const& A, Matrix3x3 const& B){
 	return M;
 }
 
-Matrix3x3 operator*(double d, Matrix3x3 const& A){
-	Matrix3x3 M;
-	for (std::size_t i(0); i < 3; ++i){
-		for (std::size_t j(0); j < 3; ++j){
-			M[i][j] = d * A[i][j];
-		}
-	}
-	return M;
+Matrix3x3 operator*(double d, Matrix3x3 A){
+	A *= d;	
+	return A;
 }
 
 Vector operator*(Matrix3x3 const& A, Vector const& v){
@@ -117,12 +177,10 @@ Vector operator*(Matrix3x3 const& A, Vector const& v){
 	return w;
 }
 
-bool operator ==(Matrix3x3 const& A, Matrix3x3 const& B){
-	double prec(1e-10);
-	
+bool operator==(Matrix3x3 const& A, Matrix3x3 const& B){
 	for (std::size_t i(0); i < 3 ; ++i){
 		for (std::size_t j(0); j < 3 ; ++j){
-			if (not (abs(A[i][j] - B[i][j]) < prec)){
+			if (!isEqual(A[i][j], B[i][j])){
 				return false;
 			}
 		}
@@ -134,38 +192,24 @@ bool operator !=(Matrix3x3 const& A, Matrix3x3 const& B){
 	return !(A == B);
 }
 
-Matrix3x3 Matrix3x3::inv() const {
-	Matrix3x3 mat(*this);
-	Matrix3x3 result;
-	for (std::size_t i(0); i < 3; ++i) {
-		// Il faut mettre une valeur non-nulle sur l'echelon
-		if (std::abs(mat[i][i]) < 1e-10) {
-			bool success(false);
-			for (std::size_t j(i + 1); i < 3 && !success; ++i) {
-				if (std::abs(mat[j][i]) > 1e-10) {
-					mat.swapLines(i, j);
-					result.swapLines(i, j);
-					success = true;
-				}
-			}
-			if (!success)
-				throw NOT_INVERSIBLE;
+// Affiche la matrice dans un flot
+// (sur multiples lignes, avec un arret de ligne a apres la matrice)
+std::ostream& operator<<(std::ostream& os, Matrix3x3 const& A){
+	os.precision(2);
+	os << std::fixed;
+	for (std::size_t i(0); i < 3 ; ++i){
+		os << (i == 0 ? "[[" : " [");
+		for (std::size_t j(0); j < 3 ; ++j){
+			os.width(7);
+			double val(A[i][j]);
+			// Check pour eviter d'imprimmer des 0 negatifs
+			os << (isEqual(val, 0.0) ? 0 : val);
+			if (j != 2) 
+				os << " ";
 		}
-
-		// On multiplie la ligne pour assurer que la valeur de l'echelon c'est 1
-		double val(1.0/mat[i][i]);
-		mat.multLine(i, val);
-		result.multLine(i, val);
-
-		// On annule toutes les autres valeurs dans la colonne
-		for (std::size_t j(0); j < 3; ++j) {
-			if (j != i && std::abs(mat[j][i]) > 1e-10) {
-				val = mat[j][i];
-				mat.addLine(j, i, -val);
-				result.addLine(j, i, -val);
-			}
-		}
+		os << (i == 2 ? "]]" : "]") << std::endl;
 	}
-	return result;
-}
+	os.unsetf(std::ios_base::floatfield);
 
+	return os;
+}

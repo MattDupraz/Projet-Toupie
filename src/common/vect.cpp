@@ -1,7 +1,56 @@
-#include <cmath>
 #include <iostream>
+#include <cmath>
 
 #include "vect.h"
+#include "math_utils.h"
+
+// Operateurs d'assignment
+Vector& Vector::operator*=(double d) {
+	for (std::size_t i(0); i < size(); ++i){
+		coords_[i] *= d;
+	}
+	return *this;
+}
+
+// Additionne (modifie) a un vecteur un autre vecteur
+Vector& Vector::operator+=(Vector const& other) {
+	if (size() != other.size())
+		throw INCOMPATIBLE_VECTOR_SIZE;
+	for (size_t i(0); i < size(); i++){
+		coords_[i] += other[i];
+	}
+	return *this;
+}
+
+// Soustrait (modifie) a un vecteur un autre vecteur
+Vector& Vector::operator-=(Vector const& other) {
+	if (size() != other.size())
+		throw INCOMPATIBLE_VECTOR_SIZE;
+	for (size_t i(0); i < size(); i++){
+		coords_[i] -= other[i];
+	}
+	return *this;
+}
+
+// Ajoute une coordonnee au vecteur
+Vector& Vector::augment(double val){
+	coords_.push_back(val);
+	return *this;
+}
+
+// Retourne la norme du vecteur
+double Vector::norm() const {
+	return std::sqrt(norm2());
+}
+
+// Retourne la norme du vecteur au carre		
+double Vector::norm2() const {
+	double result(0);
+	for (double d : coords_){
+		result += d*d;
+	}
+	return result;
+}
 
 // Vecteur unitaire avec la meme direction
 Vector operator~(Vector const& v) {
@@ -11,37 +60,6 @@ Vector operator~(Vector const& v) {
 // Vecteur oppose
 Vector operator-(Vector const& v) {
 	return v * (-1.0);
-}
-
-// Multiplication par un scalaire a gauche
-Vector operator*(double d, Vector const& v) {
-	return v * d;
-}
-
-// Multiplication par un scalaire a droite
-Vector operator*(Vector const& v, double d) {
-	Vector result;
-	for (std::size_t i(0); i < v.size(); ++i){
-		result.augment(d * v[i]);
-	}
-	return result;
-
-}
-
-// Addition des vecteurs
-Vector operator+(Vector const& u, Vector const& v) {
-	if (u.size() != v.size())
-		throw INCOMPATIBLE_VECTOR_SIZE;
-	Vector result;	
-	for (size_t i(0); i < u.size(); i++){
-		result.augment(u[i] + v[i]);
-	}
-	return result;
-}
-
-// Soustraction des vecteurs
-Vector operator-(Vector const& u, Vector const& v) {
-	return u + (-v);
 }
 
 // Produit vectoriel
@@ -74,12 +92,35 @@ bool operator==(Vector const& u, Vector const& v) {
 		return false;
 	} else {
 		for (std::size_t i(0); i < u.size(); ++i){
-			if (!(std::abs(u[i] - v[i]) < 1e-10)){
+			if (!isEqual(u[i], v[i])){
 				return false;
 			}
 		}
 	}
 	return true;
+}
+
+// Multiplication par un scalaire a gauche
+Vector operator*(double d, Vector v) {
+	return v * d;
+}
+
+// Multiplication par un scalaire a droite
+Vector operator*(Vector v, double d) {
+	v *= d;
+	return v;
+}
+
+// Addition des vecteurs
+Vector operator+(Vector u, Vector const& v) {
+	u += v;
+	return u;
+}
+
+// Soustraction des vecteurs
+Vector operator-(Vector u, Vector const& v) {
+	u -= v;
+	return u;
 }
 
 bool operator!=(Vector const& u, Vector const& v) {
@@ -98,41 +139,6 @@ std::ostream &operator<<(std::ostream& os, Vector const& v) {
 	return os << ")";
 }
 
-// Operateurs d'assignment
-Vector& operator*=(Vector& u, double d) {
-	u = u * d;
-	return u;
-}
-
-Vector& operator+=(Vector& u, Vector const& v) {
-	u = u + v;
-	return u;
-}
-
-Vector& operator-=(Vector& u, Vector const& v) {
-	u = u - v;
-	return u;
-}
-
-// Ajoute une coordonnee au vecteur
-Vector& Vector::augment(double val){
-	coords_.push_back(val);
-	return *this;
-}
-
-// Retourne la norme du vecteur
-double Vector::norm() const {
-	return std::sqrt(norm2());
-}
-
-// Retourne la norme du vecteur au carre		
-double Vector::norm2() const {
-	double result(0);
-	for (double d : coords_){
-		result += d*d;
-	}
-	return result;
-}
 
 
 
