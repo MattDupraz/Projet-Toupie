@@ -3,16 +3,20 @@
 #include "vect.h"
 #include "drawable.h"
 #include "view.h"
+#include "integrator.h"
+
 
 class Top : public Drawable {
 	public:
 		Top(View* v, double mass = 0.0, //Matrix3x3 const& tensor,
 			Vector const& pos = Vector(3), Vector const& vel = Vector{0, 0, 5},
-			Vector const& angPos = Vector(3), Vector const& angVel = Vector{50, 20, 100})
+			Vector const& angPos = Vector(3), 
+			Vector const& angVel = Vector{50, 20, 100}, 
+			integrator& i=EulerCromerIntegrator()  )
 			: Drawable(v), pos_(pos), vel_(vel),
 				angPos_(angPos), angVel_(angVel),
 				//tensorInert_(tensor), mass_(mass)
-				mass_(mass)
+				mass_(mass), integ(i)
 		{}
 
 
@@ -32,7 +36,7 @@ class Top : public Drawable {
 		//Matrix3x3 getTensorInert() const { return tensorInert_; }
 		double getMass() const { return mass_; }
 
-		void update(double dt);
+		void update();
 
 
 	private:
@@ -44,6 +48,8 @@ class Top : public Drawable {
 		Vector angVel_; // Angular velocity vector (Euler coordinates)
 		//Matrix3x3 const tensorInert_; // Moment of inertia tensor
 		double const mass_;
+		// Integrator
+		Integrator integ;
 };
 
 
