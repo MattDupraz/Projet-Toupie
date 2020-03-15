@@ -36,7 +36,7 @@ class Top : public Drawable {
 		//Matrix3x3 getTensorInert() const { return tensorInert_; }
 		double getMass() const { return mass_; }
 
-		void update();
+		void update(double dt);
 
 
 	private:
