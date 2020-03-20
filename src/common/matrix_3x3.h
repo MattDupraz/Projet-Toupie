@@ -33,7 +33,7 @@ class Matrix3x3 {
 		Matrix3x3 transp() const;
 		double det() const;
 		Matrix3x3 inv() const;
-		double minor(std::size_t i, std::size_t j) const;
+		double mino(std::size_t i, std::size_t j) const;
 		double cofactor(std::size_t i, std::size_t j) const;
 		Matrix3x3 cofactorMatrix() const;
 

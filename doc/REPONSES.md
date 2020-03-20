@@ -51,7 +51,24 @@ En réalité, nous avons décider lors de la conception de la première partie
 général semblables à des opérateurs mathématiques, la définition de ces 
 opérateurs semblaient tout à fait naturelle.
 
+### QUESTION 6.1
 
+La classe ConeSimple hérite tout naturellement de la classe Toupie car 
+un cone simple est une toupie.
+
+### QUESTION 7.1
+
+La classe Integrator est une classe abstraite sans attributs qui ne contient
+qu'une méthode vituelle integ. Les classes EulerCromerIntegrator, Newmark et
+Runge_Kutta hérite toutes de la classe Integrator car toutes ces classes sont
+des intégrateurs de plus l'utilisation du polymorphisme est toute trouvée car
+nous voulons appliquer un traitement similaire à des objets différents
+(les intégrateurs en l'occurence).
+
+### QUESTION 7.2
+
+La classe EulerCromerIntegrator hérite de la classe Integrator car l'intégrateur
+d'Euler-Cromer est un intégrateur.
 
 
 

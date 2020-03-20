@@ -14,14 +14,19 @@ void Newmark::integ(Vector& pos,
 					Vector& vel, 
 					Vector& acc,
 					double dt){
+
 	
-	Vector q(pos);
-	//Vector (vel);
-	Vector a(acc);
+}
+
+
+
+void Runge_Kutta::integ(Vector& pos, 
+					Vector& vel, 
+					Vector& acc,
+					double dt){
+
 	
-	do{
-		vel= vel+(dt/2)*() 
-	
-	
-	}while();
+}
+
+
 

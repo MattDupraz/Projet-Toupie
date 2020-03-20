@@ -1,18 +1,19 @@
 #include "vect.h"
 
 class Integrator{
-	virtual void integVector& pos, 
+	virtual void integ(Vector& pos, 
 			   Vector& vel, 
-			   Vector& acc)=0;
+			   Vector& acc,
+			   double dt);
 	
 };
 
 
 class EulerCromerIntegrator : public Integrator{
 	public : 
-	void integ(Vector& pos, 
+		void integ(Vector& pos, 
 			   Vector& vel, 
-			   Vector& acc
+			   Vector& acc,
 			   double dt);
 	
 };
@@ -20,14 +21,27 @@ class EulerCromerIntegrator : public Integrator{
 
 class Newmark : public Integrator{
 	public :
-	void integ(Vector& pos, 
+		void integ(Vector& pos, 
 			   Vector& vel, 
-			   Vector& acc
+			   Vector& acc,
 			   double dt);
 	
-	void setPrecision(double t){epsilon = t;}
-	double getPrecsion(){return epsilon;}
+		void setPrecision(double t){epsilon = t;}
+		double getPrecsion(){return epsilon;}
 	
 	private : 
-	double epsilon;
+		double epsilon;
+};
+
+
+class Runge_Kutta : public Integrator{
+
+
+		void integ(Vector& pos, 
+			   Vector& vel, 
+			   Vector& acc,
+			   double dt);
+
+
+
 };

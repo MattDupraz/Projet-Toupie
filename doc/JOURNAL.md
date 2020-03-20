@@ -43,6 +43,9 @@ Cree les tests unitaires pour les classes Vector et Matrix3x3.
 --------------------------------------------------
 ## Semaine 5 :
 
+Nous avons défini la classe abstraite Integrator et la classe EulerCromerIntegrator
+ainsi que les méthodes associées. Nous avons aussi défini la classe ConeSimple et
+remanié la classe Matrix3x3 pour le calcul de l'inverse.
 
 
 --------------------------------------------------
