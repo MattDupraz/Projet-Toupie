@@ -13,7 +13,7 @@ void GLWidget::initializeGL() {
 void GLWidget::timerEvent(QTimerEvent* event) {
 	Q_UNUSED(event);
 	double dt = timer_.restart() / 1000.0;
-	top_.update(dt);
+	integrator_.evolve(simpleCone_, dt);
 	update();
 }
 
@@ -43,5 +43,5 @@ void GLWidget::paintGL() {
 	// Necessaire pour ne pas avoir de surprises
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	top_.draw();
+	simpleCone_.draw();
 }

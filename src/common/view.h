@@ -1,9 +1,9 @@
 #pragma once
 
-class Top;
+class SimpleCone;
 
 class View {
 	public:
 		virtual ~View() {}
-		virtual void draw(Top const& top) = 0;
+		virtual void draw(SimpleCone const& top) = 0;
 };

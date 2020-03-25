@@ -1,29 +1,19 @@
 #include <iostream>
-#include "vect.h"
+#include "integrator.h"
 
-void EulerCromerIntegrator::integ(Vector& pos, 
-								  Vector& vel, 
-								  Vector& acc,
-								  double dt){
-	vel =vel+ dt*acc;
-	pos =pos+ dt*vel;
-	}
-
-
-void Newmark::integ(Vector& pos, 
-					Vector& vel, 
-					Vector& acc,
-					double dt){
-
-	
+void EulerCromerIntegrator::evolve(
+		Top& top, double dt){
+	top.setDP(top.getDP() + dt*top.getDDP());
+	top.setP(top.getP() + dt*top.getDP());
 }
 
+void NewmarkIntegrator::evolve(
+		Top& top, double dt){
 
+}
 
-void Runge_Kutta::integ(Vector& pos, 
-					Vector& vel, 
-					Vector& acc,
-					double dt){
+void RungeKuttaIntegrator::evolve(
+		Top& top, double dt){
 
 	
 }

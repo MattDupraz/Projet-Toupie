@@ -4,9 +4,7 @@
 
 TARGET = project_txt
 
-SOURCES += src/txt/view_text.cpp\
-	   src/common/matrix_3x3.cpp
+SOURCES += src/txt/view_text.cpp
 
-HEADERS += src/txt/view_text.h\
-	   src/common/matrix_3x3.h
+HEADERS += src/txt/view_text.h
 

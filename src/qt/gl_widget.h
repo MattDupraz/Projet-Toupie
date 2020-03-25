@@ -6,11 +6,21 @@
 
 #include "view_opengl.h"
 #include "top.h"
+#include "integrator.h"
+
+#include "math.h"
 
 class GLWidget : public QOpenGLWidget {
 	public:
 		GLWidget(QWidget* parent = nullptr)
-			:QOpenGLWidget(parent), top_(&view_) {}
+			:QOpenGLWidget(parent),
+			simpleCone_( &view_,
+					Vector {0, M_PI / 6.0, 0},
+					Vector {0, 0, 60.0},
+					0.1,
+					1.5,
+					0.5)
+	  	{}
 		virtual ~GLWidget() {}
 	private:
 		virtual void initializeGL() override;
@@ -19,7 +29,9 @@ class GLWidget : public QOpenGLWidget {
 		virtual void timerEvent(QTimerEvent* event) override;
 		
 		ViewOpenGL view_;
-		Top top_;
+
+		SimpleCone simpleCone_;
+		EulerCromerIntegrator integrator_;
 
 		QElapsedTimer timer_;
 };

@@ -3,77 +3,70 @@
 #include "vect.h"
 #include "drawable.h"
 #include "view.h"
-#include "integrator.h"
-#include "matrix3x3.h"
-
+#include "matrix_3x3.h"
 
 class Top : public Drawable {
 	public:
-		Top(View* v, double mass = 0.0, Vector const& fd = Vector(5), 
-			Vector const& dd = Vector(5),
-			integrator& i=EulerCromerIntegrator()  )
-			: Drawable(v), freeDegree_(fd), DegreeDerivative_(dd),
-			  mass_(mass), integ(i)
+		Top(View* v, Vector const& P, 
+			Vector const& DP)
+			: Drawable(v), P_(P), DP_(DP)
 		{}
 
-
-
 		virtual ~Top() {}
+
+		// Getters and setters
+		Vector getP() const { return P_; }
+		Vector getDP() const { return DP_; }
+		void setP(Vector const& P) { P_ = P; }
+		void setDP(Vector const& DP) { DP_ = DP; } 
+		
+		// Returns the second derivative
+		virtual Vector getDDP() const = 0;
+
+	protected :	
+		Vector P_; // Degrees of freedom
+		Vector DP_; // First derivative of P
+};
+
+class Gyroscope : public Top {
+	// P = [psi, theta, phi]
+	public:	
+		Gyroscope(View* v, Vector const& P,	Vector const& DP,
+				double m, double d, double I_A1, double I_A3)
+			: Top(v, P, DP), m(m), d(d), I_A1(I_A1), I_A3(I_A3)
+		{}
+
+		virtual Vector getDDP() const override;	
+
+		double psi() const { return P_[0]; }
+		double theta() const { return P_[1]; }
+		double phi() const { return P_[2]; }
+
+		double d_psi() const { return DP_[0]; }
+		double d_theta() const { return DP_[1]; }
+		double d_phi() const { return DP_[2]; }
+
+	protected:	
+		Gyroscope(View* v, Vector const& P,	Vector const& DP)
+			: Top(v, P, DP)
+		{}
+
+		double m; // Mass
+		double d; // Distance from contact point to center of mass
+		// Moments of inertia with respect to A (point of contact)
+		double I_A1; // Moment of inertia - horizontal axes
+		double I_A3; // Moment of inertia - vertical axis
+};
+
+class SimpleCone : public Gyroscope {
+	public:
+		// rho = masse volumique
+		// L = hauteur 
+		// R = rayon a la base
+		SimpleCone(View* v, Vector const& P, Vector const& DP,
+				double rho, double L, double R);
 
 		virtual void draw() override {
 			view_->draw(*this);
 		}
-
-		Vector getFD(){return freeDegree;}
-
-		Vector getDD(){return DegreeDerivative;}
-
-		
-		double getMass() const { return mass_; }
-
-		void update(double dt);
-
-	protected :
-		
-
-		Vector freeDegree_; // Spatial coordinates + Euler's angle
-		Vector DegreeDerivative_; // The derivative of the precedant vector
-		
-		 
-		Matrix3x3 const tensorInert_; // Moment of inertia tensor
-		double const mass_;
-		Integrator* integ;
 };
-
-
-class ConeSimple : public Top{
-	private :
-		Matrix3x3 const tensorInert_={};
-
-
-
-	public :
-
-		ConeSimple(View* v, double mass = 0.0, Vector const& fd = Vector(5), 
-			Vector const& dd = Vector(5),
-			integrator& i=EulerCromerIntegrator()  )
-			: Top(v,mass,fd,ff,i)
-		{}
-
-
-	void init_tendor(double length, double raduis);
-
-
-
-
-
-
-};
-
-
-
-
-
-
-
-

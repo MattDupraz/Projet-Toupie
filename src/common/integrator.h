@@ -1,47 +1,31 @@
 #include "vect.h"
+#include "top.h"
 
 class Integrator{
-	virtual void integ(Vector& pos, 
-			   Vector& vel, 
-			   Vector& acc,
-			   double dt);
-	
+	public:
+		virtual void evolve(Top& top, double dt) = 0;
 };
 
 
 class EulerCromerIntegrator : public Integrator{
 	public : 
-		void integ(Vector& pos, 
-			   Vector& vel, 
-			   Vector& acc,
-			   double dt);
-	
+		virtual void evolve(Top& top, double dt) override;
 };
 
 
-class Newmark : public Integrator{
+class NewmarkIntegrator : public Integrator{
 	public :
-		void integ(Vector& pos, 
-			   Vector& vel, 
-			   Vector& acc,
-			   double dt);
+		virtual void evolve(Top& top, double dt) override;
 	
-		void setPrecision(double t){epsilon = t;}
-		double getPrecsion(){return epsilon;}
+		void setPrecision(double t){ epsilon = t; }
+		double getPrecsion(){ return epsilon; }
 	
 	private : 
 		double epsilon;
 };
 
 
-class Runge_Kutta : public Integrator{
-
-
-		void integ(Vector& pos, 
-			   Vector& vel, 
-			   Vector& acc,
-			   double dt);
-
-
-
+class RungeKuttaIntegrator : public Integrator{
+	public:
+		virtual void evolve(Top& top, double dt) override;
 };
