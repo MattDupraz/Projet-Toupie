@@ -1,5 +1,6 @@
 #include <iostream>
 #include "integrator.h"
+#include "math.h"
 
 void EulerCromerIntegrator::evolve(
 		Top& top, double dt){
@@ -15,23 +16,22 @@ void EulerCromerIntegrator::evolve(
 
 void NewmarkIntegrator::evolve(
 		Top& top, double dt){
-		
-	Vector s(top.getDDP());
-	Vector q(top.getP());
-	
-	do{
-		Vector q(top.getP());
-		
-		Vector u(top.getDP());
-		
-		Vector r(top.getDDP());
-		
-		top.setDP(r+dt*0.5*(r+s));
-		
-		top.setP(q+dt*u+dt*dt/3*(0.5*r+s));
-		
-		}while((top.getP()- q ).norm()>=epsilon);
+	Vector oldP(top.getP());
+	Vector oldDP(top.getDP());
+	Vector P(oldP);
+	Vector DP(oldDP);
 
+	Vector s(top.getDDP(P, DP));
+	Vector q(P);
+	do{
+		q = P;
+		Vector r(top.getDDP(P, DP));
+		
+		DP = oldDP + dt/2.0 * (r + s);
+		P = oldP + dt*oldDP + pow(dt, 2)/3.0 * (1.0/2.0 * r + s);
+	} while ((P - q).norm() >= epsilon);
+	top.setP(P);
+	top.setDP(DP);
 }
 
 void RungeKuttaIntegrator::evolve(
