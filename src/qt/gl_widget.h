@@ -16,7 +16,7 @@ class GLWidget : public QOpenGLWidget {
 			:QOpenGLWidget(parent),
 			simpleCone_( &view_,
 					Vector {0, M_PI / 6.0, 0},
-					Vector {0, 0, 60.0},
+					Vector {0, 0, 160.0},
 					0.1,
 					1.5,
 					0.5)

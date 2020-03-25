@@ -6,7 +6,7 @@
 void GLWidget::initializeGL() {
 	view_.init();
 	
-	startTimer(20);
+	startTimer(10);
 	timer_.restart();
 }
 

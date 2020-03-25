@@ -3,8 +3,14 @@
 
 void EulerCromerIntegrator::evolve(
 		Top& top, double dt){
-	top.setDP(top.getDP() + dt*top.getDDP());
-	top.setP(top.getP() + dt*top.getDP());
+	Vector P(top.getP());
+	Vector DP(top.getDP());
+
+	DP += dt*top.getDDP(P, DP);
+	P += dt*DP;
+
+	top.setP(P);
+	top.setDP(DP);
 }
 
 void NewmarkIntegrator::evolve(
@@ -30,7 +36,6 @@ void NewmarkIntegrator::evolve(
 
 void RungeKuttaIntegrator::evolve(
 		Top& top, double dt){
-
 	
 }
 
