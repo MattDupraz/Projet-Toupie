@@ -37,7 +37,7 @@ Matrix3x3 Matrix3x3::transp() const{
 }
 
 // Retourne le mineur
-double Matrix3x3::minor(std::size_t row, std::size_t col) const {
+double Matrix3x3::getMinor(std::size_t row, std::size_t col) const {
 	// On trouve les indices pour la sous-matrice 2x2
 	std::size_t i1((row == 0) ? 1 : 0);
 	std::size_t i2((row == 2) ? 1 : 2);
@@ -49,7 +49,7 @@ double Matrix3x3::minor(std::size_t row, std::size_t col) const {
 
 // Retourne le cofacteur
 double Matrix3x3::cofactor(std::size_t row, std::size_t col) const {
-	return ((row + col) % 2 == 0) ? minor(row, col) : -minor(row, col);
+	return ((row + col) % 2 == 0) ? getMinor(row, col) : -getMinor(row, col);
 }
 
 // Retourne la matrice des cofacteurs
