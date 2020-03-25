@@ -21,7 +21,7 @@ class Top : public Drawable {
 		void setDP(Vector const& DP) { DP_ = DP; } 
 		
 		// Returns the second derivative
-		virtual Vector getDDP() const = 0;
+		virtual Vector getDDP(Vector P, Vector DP) const = 0;
 
 	protected :	
 		Vector P_; // Degrees of freedom
@@ -36,7 +36,7 @@ class Gyroscope : public Top {
 			: Top(v, P, DP), m(m), d(d), I_A1(I_A1), I_A3(I_A3)
 		{}
 
-		virtual Vector getDDP() const override;	
+		virtual Vector getDDP(Vector P, Vector DP) const override;	
 
 		double psi() const { return P_[0]; }
 		double theta() const { return P_[1]; }

@@ -12,7 +12,7 @@ void ViewOpenGL::draw(SimpleCone const& top) {
 	translation_matrix.translate(0.0, 0.0, -5.0);
 	std::cout << top.getP()
 	  << " " << top.getDP()
-  		<< " " << top.getDDP()	  << std::endl;
+  		<< " " << top.getDDP(top.getP(), top.getDP())  << std::endl;
 	translation_matrix.rotate(toDegrees(top.psi()), 0.0, 1.0, 0.0);
 	translation_matrix.rotate(toDegrees(top.theta()), 1.0, 0.0, 0.0);
 	translation_matrix.rotate(toDegrees(top.phi()), 0.0, 1.0, 0.0);
