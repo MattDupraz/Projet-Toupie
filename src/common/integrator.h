@@ -19,6 +19,8 @@ class NewmarkIntegrator : public Integrator{
 	
 		void setPrecision(double t){ epsilon = t; }
 		double getPrecsion(){ return epsilon; }
+		NewmarkIntegrator(double eps=0.002)
+		:epsilon(eps){}
 	
 	private : 
 		double epsilon;
