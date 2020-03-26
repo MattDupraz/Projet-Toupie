@@ -26,32 +26,42 @@ maintenir un ordre dans les fichier du projet.
 ## Semaine 3 :
 
 Prise en main de d'OpenGL avec le tutoriel. Modularisation du projet suivant 
-les exercices sur OpenGL. Nous avons decide de suivre l'exemple et de separer
+les exercices sur OpenGL. Nous avons décidé de suivre l'exemple et de séparer
 la compilation de la version graphique et textuelle du programme. 
-Nous avons finalise la classe Vector et commencé a implémenter les matrices 3x3.
+Nous nous sommes familiarisés avec `qmake` pour la compilation séparée.
+Nous avons finalisé la classe Vector et commencé a implémenter les matrices 3x3.
 
 
 --------------------------------------------------
 ## Semaine 4 :
 
-Nous avons terminé de défninir les principaux opérateurs de la classe "Matrix3x3".
-Prise en main des animations OpenGL et simulation en temps reel. Defini la classe
-Top (toupie) pour completer la structure du projet, sans ayant commence a implementer
-ses methodes. Nous commençons a etudier le complément mathématico-physique.
-Cree les tests unitaires pour les classes Vector et Matrix3x3.
+Nous avons terminé de défninir les principaux opérateurs de la classe
+"Matrix3x3" et on a créé les tests unitaires pour les classes Vector et Matrix3x3.
+Prise en main des animations OpenGL et simulation en temps réel. Défini la classe
+Top (toupie) pour compléter la structure du projet, sans ayant commencé a implémenter
+ses méthodes. Nous commençons a étudier le complément mathématico-physique.
 
 --------------------------------------------------
 ## Semaine 5 :
 
 Nous avons défini la classe abstraite Integrator et la classe EulerCromerIntegrator
-ainsi que les méthodes associées. Nous avons aussi défini la classe ConeSimple et
+ainsi que les méthodes associées. Nous avons aussi défini la classe SimpleCone et
 remanié la classe Matrix3x3 pour le calcul de l'inverse.
-
+La manière dont le classes Top et Integrator dépendent une de l'autre nous
+paraît pas très claire pour l'instant.
 
 --------------------------------------------------
 ## Semaine 6 :
 
-
+Nous avons trouvé un moyen de mettre la classe Top et Integrator en relation et
+implémenté les trois intégrateurs proposés dans le complément mathématique.
+Nous avons créé la classe abstraite Gyroscope qui correspond à une toupie sans
+déplacement et t.q. son point de contact est contenu dans son axe de symétrie.
+On a écrit les équations de mouvement pour cette classe et créé
+une sous-classe SimpleCone.
+On a implémenté l'affichage 3D pour le cône, ainsi que des fonctionalités
+interactives pour l'affichage OpenGL - déplacement, rotation du point de vue,
+affichage du sol.
 
 --------------------------------------------------
 ## Semaine 7 :
