@@ -6,6 +6,11 @@
 #include "math.h"
 
 void ViewOpenGL::draw(SimpleCone const& top) {
+	
+	prog_.setUniformValue("lightPos", 0.0, 3.0, 5.0);
+	prog_.setUniformValue("lightColor", 1.0, 1.0, 1.0);
+
+
 	// Translate la "camera" par (0, 0, -2.0)
 	// (voir /res/vertex_shader.glsl)
 	QMatrix4x4 view_matrix;
@@ -28,74 +33,33 @@ void ViewOpenGL::draw(SimpleCone const& top) {
 	double R(0.5);
 	double L(1.5);
 
-	uint sides(20);
+	uint sides(50);
 	double sideAngle(2 * M_PI / sides);
 	glBegin(GL_TRIANGLES);
 	for (uint i(0); i < sides; i++) {
 		Vector v1 {R * cos(sideAngle * i), L, R * sin(sideAngle * i)};
 		Vector v2 {R * cos(sideAngle * (i + 1)), L, R * sin(sideAngle * (i + 1))};	
+		Vector n = ~(v1 ^ v2);
 		
-		if (i % 2) prog_.setAttributeValue(ID_COLOR, 1.0, 0.0, 0.0); // rouge
-		else prog_.setAttributeValue(ID_COLOR, 0.5, 0.0, 0.0); // bleu
+		if (i % 2) prog_.setAttributeValue(aColor, 1.0, 1.0, 1.0); // rouge
+		else prog_.setAttributeValue(aColor, 0.8, 0.8, 0.8); // rouge fonce
+		
+		prog_.setAttributeValue(aNormal, n[0], n[1], n[2]);
 
-		prog_.setAttributeValue(ID_VERTEX, 0.0, 0.0, 0.0);
-		prog_.setAttributeValue(ID_VERTEX, v1[0], v1[1], v1[2]);
-		prog_.setAttributeValue(ID_VERTEX, v2[0], v2[1], v2[2]);
+		prog_.setAttributeValue(aVertex, 0.0, 0.0, 0.0);
+		prog_.setAttributeValue(aVertex, v1[0], v1[1], v1[2]);
+		prog_.setAttributeValue(aVertex, v2[0], v2[1], v2[2]);
 
-		if (i % 2) prog_.setAttributeValue(ID_COLOR, 1.0, 1.0, 1.0); // blanc
-		else prog_.setAttributeValue(ID_COLOR, 0.5, 0.5, 0.5); // noir
+		if (i % 2) prog_.setAttributeValue(aColor, 1.0, 1.0, 1.0); // blanc
+		else prog_.setAttributeValue(aColor, 0.9, 0.9, 0.9); // noir
 
-		prog_.setAttributeValue(ID_VERTEX, 0.0, L, 0.0);
-		prog_.setAttributeValue(ID_VERTEX, v2[0], v2[1], v2[2]);
-		prog_.setAttributeValue(ID_VERTEX, v1[0], v1[1], v1[2]);
+		prog_.setAttributeValue(aNormal, 0.0, 1.0, 0.0);
+
+		prog_.setAttributeValue(aVertex, 0.0, L, 0.0);
+		prog_.setAttributeValue(aVertex, v2[0], v2[1], v2[2]);
+		prog_.setAttributeValue(aVertex, v1[0], v1[1], v1[2]);
 	}
 	glEnd();
-	/*
-	// Debut du dessin, dessine un triangle avec chaque coin
-	// qui a une couleur associee (qui est definie au prealable avec
-	// ID_COLOR). Les coordonnees du triangle ne sont PAS
-	// les coordonnees des pixels sur l'ecran, plutot des coordonnees
-	// dans un plan 3D. La camera est placee par rapport aux matrices
-	// de projection et translation.
-	//
-	// Les couleurs sont en format (rouge, vert, bleu)
-	// Les coordonnees sont cartesiennes (x, y, z)
-	glBegin(GL_QUADS); 
-	// face coté Y = +1
-	prog_.setAttributeValue(ID_COLOR, 0.0, 0.0, 1.0); // bleu
-	prog_.setAttributeValue(ID_VERTEX, -R, L, -R);
-	prog_.setAttributeValue(ID_VERTEX, -R, L,  R);
-	prog_.setAttributeValue(ID_VERTEX,  R, L,  R);
-	prog_.setAttributeValue(ID_VERTEX,  R, L, -R);
-
-	glEnd();
-
-	glBegin(GL_TRIANGLES);
-	// face coté Y = -1
-	prog_.setAttributeValue(ID_COLOR, 0.0, 1.0, 1.0); // cyan
-	prog_.setAttributeValue(ID_VERTEX,  0.0,  0.0,  0.0);
-	prog_.setAttributeValue(ID_VERTEX,  R,  L, -R);
-	prog_.setAttributeValue(ID_VERTEX,  R,  L,  R);
-
-	// face coté Y = -1
-	prog_.setAttributeValue(ID_COLOR, 1.0, 0.0, 0.0); // red
-	prog_.setAttributeValue(ID_VERTEX,  0.0,  0.0,  0.0);
-	prog_.setAttributeValue(ID_VERTEX, -R, L, -R);
-	prog_.setAttributeValue(ID_VERTEX,  R, L, -R);
-	// face coté Z = +1
-	prog_.setAttributeValue(ID_COLOR, 1.0, 1.0, 0.0); // jaune
-	prog_.setAttributeValue(ID_VERTEX,  0.0,  0.0,  0.0);
-	prog_.setAttributeValue(ID_VERTEX, -R, L,  R);
-	prog_.setAttributeValue(ID_VERTEX, -R, L, -R);
-
-	// face coté Z = -1
-	prog_.setAttributeValue(ID_COLOR, 1.0, 0.0, 1.0); // magenta
-	prog_.setAttributeValue(ID_VERTEX,  0.0,  0.0,  0.0);
-	prog_.setAttributeValue(ID_VERTEX,  R, L,  R);
-	prog_.setAttributeValue(ID_VERTEX, -R, L,  R);
-	glEnd();
-	// Fin de l'affichage du triangle.
-	*/
 }
 
 void ViewOpenGL::init() {
@@ -112,8 +76,9 @@ void ViewOpenGL::init() {
 
 	// Attribue une ID unique aux attributs qu'on veux transmettre
 	// aux shaders, voir vertex_shader.h
-	prog_.bindAttributeLocation("vertex", ID_VERTEX);
-	prog_.bindAttributeLocation("color", ID_COLOR);
+	prog_.bindAttributeLocation("aVertex", aVertex);
+	prog_.bindAttributeLocation("aColor", aColor);
+	prog_.bindAttributeLocation("aNormal", aNormal);
 
 	// Compile les shaders
 	prog_.link();
