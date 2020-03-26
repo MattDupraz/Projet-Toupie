@@ -31,7 +31,7 @@ class GLWidget : public QOpenGLWidget {
 		ViewOpenGL view_;
 
 		SimpleCone simpleCone_;
-		NewmarkIntegrator integrator_;
+		RungeKuttaIntegrator integrator_;
 
 		QElapsedTimer timer_;
 };
