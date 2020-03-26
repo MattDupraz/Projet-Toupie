@@ -1,5 +1,7 @@
 #pragma once
 
+typedef unsigned int uint;
+
 // Precision used for determining whether two doubles are equal
 const double D_PREC(1e-10);
 

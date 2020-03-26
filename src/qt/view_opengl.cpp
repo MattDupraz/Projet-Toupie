@@ -3,28 +3,54 @@
 
 #include <iostream>
 #include "math_utils.h"
+#include "math.h"
 
 void ViewOpenGL::draw(SimpleCone const& top) {
 	// Translate la "camera" par (0, 0, -2.0)
 	// (voir /res/vertex_shader.glsl)
-	QMatrix4x4 translation_matrix;
+	QMatrix4x4 view_matrix;
+	view_matrix.translate(0.0, 0.0, -5.0);
+	prog_.setUniformValue("view", view_matrix);
 
-	translation_matrix.translate(0.0, 0.0, -5.0);
+	QMatrix4x4 model_matrix;
 	std::cout << top.getP()
 	  << " " << top.getDP()
   		<< " " << top.getDDP(top.getP(), top.getDP())  << std::endl;
-	translation_matrix.rotate(toDegrees(top.psi()), 0.0, 1.0, 0.0);
-	translation_matrix.rotate(toDegrees(top.theta()), 1.0, 0.0, 0.0);
-	translation_matrix.rotate(toDegrees(top.phi()), 0.0, 1.0, 0.0);
+	model_matrix.rotate(toDegrees(top.psi()), 0.0, 1.0, 0.0);
+	model_matrix.rotate(toDegrees(top.theta()), 1.0, 0.0, 0.0);
+	model_matrix.rotate(toDegrees(top.phi()), 0.0, 1.0, 0.0);
 	
 	// Assigne la matrice de translation a la valeur uniforme pour
 	// l'acceeder depuis le shader
-	prog_.setUniformValue("translation", translation_matrix);
+	prog_.setUniformValue("model", model_matrix);
 
 
 	double R(0.5);
 	double L(1.5);
 
+	uint sides(20);
+	double sideAngle(2 * M_PI / sides);
+	glBegin(GL_TRIANGLES);
+	for (uint i(0); i < sides; i++) {
+		Vector v1 {R * cos(sideAngle * i), L, R * sin(sideAngle * i)};
+		Vector v2 {R * cos(sideAngle * (i + 1)), L, R * sin(sideAngle * (i + 1))};	
+		
+		if (i % 2) prog_.setAttributeValue(ID_COLOR, 1.0, 0.0, 0.0); // rouge
+		else prog_.setAttributeValue(ID_COLOR, 0.5, 0.0, 0.0); // bleu
+
+		prog_.setAttributeValue(ID_VERTEX, 0.0, 0.0, 0.0);
+		prog_.setAttributeValue(ID_VERTEX, v1[0], v1[1], v1[2]);
+		prog_.setAttributeValue(ID_VERTEX, v2[0], v2[1], v2[2]);
+
+		if (i % 2) prog_.setAttributeValue(ID_COLOR, 1.0, 1.0, 1.0); // blanc
+		else prog_.setAttributeValue(ID_COLOR, 0.5, 0.5, 0.5); // noir
+
+		prog_.setAttributeValue(ID_VERTEX, 0.0, L, 0.0);
+		prog_.setAttributeValue(ID_VERTEX, v2[0], v2[1], v2[2]);
+		prog_.setAttributeValue(ID_VERTEX, v1[0], v1[1], v1[2]);
+	}
+	glEnd();
+	/*
 	// Debut du dessin, dessine un triangle avec chaque coin
 	// qui a une couleur associee (qui est definie au prealable avec
 	// ID_COLOR). Les coordonnees du triangle ne sont PAS
@@ -69,6 +95,7 @@ void ViewOpenGL::draw(SimpleCone const& top) {
 	prog_.setAttributeValue(ID_VERTEX, -R, L,  R);
 	glEnd();
 	// Fin de l'affichage du triangle.
+	*/
 }
 
 void ViewOpenGL::init() {
