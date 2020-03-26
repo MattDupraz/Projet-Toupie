@@ -4,7 +4,8 @@
 
 TARGET = project_txt
 
-SOURCES += src/txt/view_text.cpp
+SOURCES += main_txt.cpp\
+	   src/txt/view_text.cpp
 
 HEADERS += src/txt/view_text.h
 
