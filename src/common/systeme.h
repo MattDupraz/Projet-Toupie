@@ -18,7 +18,7 @@ class System : public Drawable{
 		}
 		}
 
-		System(System const& s)=delete;		
+		System(System const& s)=0;		
 
 		virtual void draw(){
 			for (auto& ptr : list_top){
