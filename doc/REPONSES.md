@@ -70,12 +70,23 @@ nous voulons appliquer un traitement similaire à des objets différents
 La classe EulerCromerIntegrator hérite de la classe Integrator car l'intégrateur
 d'Euler-Cromer est un intégrateur.
 
+### QUESTION 8.1
 
+La nature de la méthode dessine est virtuelle pure car on ne sait pas comment desiner
+un dessinable avant de savoir quel dessinable le programme est en train de traiter.
 
+### QUESTION 8.2
 
+Une manière de faire est de considérer qu'un système est une collection hétérogène
+de différentes toupies.
 
+### QUESTION 8.3
 
+Il faut faire attention à la gestion des pointeurs et l'espace mémoire pointé.
+Il faut donc penser à définir les constructeurs par copie, destructeurs et l'opérateur
+d'affectation.
 
+!!!!!!!!!!!!!!!! Attention la réponse 8.3 n'est pas complète !!!!!!!!!!!!!!!!!!!
 
 
 
