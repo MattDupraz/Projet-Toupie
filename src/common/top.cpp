@@ -5,7 +5,7 @@
 // Initialisation d'un cone simple
 SimpleCone::SimpleCone(View* v, Vector const& P, Vector const& DP,
 		double rho, double L, double R)
-	: Gyroscope( v, P, DP )
+	: Gyroscope( v, P, DP ), rho(rho), L(L), R(R)
 {
 	m = 1.0/3.0 * M_PI * rho * pow(R, 2) * L;
 	d = 0.75 * L;

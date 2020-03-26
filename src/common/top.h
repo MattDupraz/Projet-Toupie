@@ -46,6 +46,7 @@ class Gyroscope : public Top {
 		double d_theta() const { return DP_[1]; }
 		double d_phi() const { return DP_[2]; }
 
+		double getMass() const { return m; }
 	protected:	
 		Gyroscope(View* v, Vector const& P,	Vector const& DP)
 			: Top(v, P, DP)
@@ -69,4 +70,12 @@ class SimpleCone : public Gyroscope {
 		virtual void draw() override {
 			view_->draw(*this);
 		}
+
+		double getDensity() const { return rho; };
+		double getHeight() const { return L; };
+		double getRadius() const { return R; };
+	private:
+		double rho;
+		double L;
+		double R;
 };

@@ -97,8 +97,8 @@ void ViewOpenGL::draw(SimpleCone const& top) {
 	prog.setUniformValue("model", modelMatrix);
 
 
-	double R(0.5);
-	double L(1.5);
+	double R(top.getRadius());
+	double L(top.getHeight());
 
 	uint sides(50);
 	double sideAngle(2 * M_PI / sides);
