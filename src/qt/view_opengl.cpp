@@ -41,8 +41,10 @@ void ViewOpenGL::draw(SimpleCone const& top) {
 		Vector v2 {R * cos(sideAngle * (i + 1)), L, R * sin(sideAngle * (i + 1))};	
 		Vector n = ~(v1 ^ v2);
 		
-		if (i % 2) prog_.setAttributeValue(aColor, 1.0, 1.0, 1.0); // rouge
-		else prog_.setAttributeValue(aColor, 0.8, 0.8, 0.8); // rouge fonce
+		double red(1.0);
+		double green(0.4 + cos(sideAngle * i) * 0.4);
+		double blue(0.0);
+		prog_.setAttributeValue(aColor, red, green, blue);
 		
 		prog_.setAttributeValue(aNormal, n[0], n[1], n[2]);
 
@@ -50,8 +52,7 @@ void ViewOpenGL::draw(SimpleCone const& top) {
 		prog_.setAttributeValue(aVertex, v1[0], v1[1], v1[2]);
 		prog_.setAttributeValue(aVertex, v2[0], v2[1], v2[2]);
 
-		if (i % 2) prog_.setAttributeValue(aColor, 1.0, 1.0, 1.0); // blanc
-		else prog_.setAttributeValue(aColor, 0.9, 0.9, 0.9); // noir
+		//prog_.setAttributeValue(aColor, 0.9, 0.9, 0.9); // noir
 
 		prog_.setAttributeValue(aNormal, 0.0, 1.0, 0.0);
 
