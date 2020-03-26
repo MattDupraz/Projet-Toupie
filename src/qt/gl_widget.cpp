@@ -12,8 +12,13 @@ void GLWidget::initializeGL() {
 
 void GLWidget::timerEvent(QTimerEvent* event) {
 	Q_UNUSED(event);
+
 	double dt = timer_.restart() / 1000.0;
 	integrator_.evolve(simpleCone_, dt);
+	view_.rotateCamera(cameraYawSpeed_ * dt,
+			cameraPitchSpeed_ * dt);
+	view_.translateCamera(cameraSpeed_ * dt);
+
 	update();
 }
 
@@ -42,6 +47,84 @@ void GLWidget::paintGL() {
 	// Reinitialise le buffer de couleur et de profondeur
 	// Necessaire pour ne pas avoir de surprises
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
+	view_.setupScene();
 	simpleCone_.draw();
+}
+
+void GLWidget::keyPressEvent(QKeyEvent* event) {
+	constexpr double dAngle(80.0);
+	constexpr double dPos(5.0);
+	switch(event->key()) {
+		case Qt::Key_Left:
+			cameraYawSpeed_ += dAngle;
+			break; 
+		case Qt::Key_Right:
+			cameraYawSpeed_ -= dAngle;
+			break;
+		case Qt::Key_Up:
+			cameraPitchSpeed_ += dAngle;
+			break;
+		case Qt::Key_Down:
+			cameraPitchSpeed_ -= dAngle;
+			break;
+		case Qt::Key_W:
+			cameraSpeed_ += Vector{0.0, 0.0, -dPos};
+			break;
+		case Qt::Key_S:
+			cameraSpeed_ += Vector{0.0, 0.0, dPos};
+			break;
+		case Qt::Key_A:
+			cameraSpeed_ += Vector{-dPos, 0.0, 0.0};
+			break;
+		case Qt::Key_D:
+			cameraSpeed_ += Vector{dPos, 0.0, 0.0};
+			break;
+		case Qt::Key_Shift:
+			cameraSpeed_ += Vector{0.0, -dPos, 0.0};
+			break;
+		case Qt::Key_Space:
+			cameraSpeed_ += Vector{0.0, dPos, 0.0};
+			break;
+		case Qt::Key_F:
+			view_.triggerFloor();
+			break;
+	}
+}
+
+void GLWidget::keyReleaseEvent(QKeyEvent* event) {
+	constexpr double dAngle(80.0);
+	constexpr double dPos(5.0);
+	switch(event->key()) {
+		case Qt::Key_Left:
+			cameraYawSpeed_ -= dAngle;
+			break; 
+		case Qt::Key_Right:
+			cameraYawSpeed_ += dAngle;
+			break;
+		case Qt::Key_Up:
+			cameraPitchSpeed_ -= dAngle;
+			break;
+		case Qt::Key_Down:
+			cameraPitchSpeed_ += dAngle;
+			break;
+		case Qt::Key_W:
+			cameraSpeed_ += Vector{0.0, 0.0, dPos};
+			break;
+		case Qt::Key_S:
+			cameraSpeed_ += Vector{0.0, 0.0, -dPos};
+			break;
+		case Qt::Key_A:
+			cameraSpeed_ += Vector{dPos, 0.0, 0.0};
+			break;
+		case Qt::Key_D:
+			cameraSpeed_ += Vector{-dPos, 0.0, 0.0};
+			break;
+		case Qt::Key_Shift:
+			cameraSpeed_ += Vector{0.0, dPos, 0.0};
+			break;
+		case Qt::Key_Space:
+			cameraSpeed_ += Vector{0.0, -dPos, 0.0};
+			break;
+	}
 }

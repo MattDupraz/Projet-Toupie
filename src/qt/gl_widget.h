@@ -3,6 +3,7 @@
 #include <QOpenGLWidget>
 #include <QElapsedTimer>
 #include <QTimerEvent>
+#include <QKeyEvent>
 
 #include "view_opengl.h"
 #include "top.h"
@@ -19,7 +20,10 @@ class GLWidget : public QOpenGLWidget {
 					Vector {0, 0, 60.0},
 					0.1,
 					1.5,
-					0.5)
+					0.5),
+			cameraYawSpeed_(0.0),
+			cameraPitchSpeed_(0.0),
+			cameraSpeed_({0.0, 0.0, 0.0})
 	  	{}
 		virtual ~GLWidget() {}
 	private:
@@ -27,6 +31,8 @@ class GLWidget : public QOpenGLWidget {
 		virtual void resizeGL(int width, int height) override;
 		virtual void paintGL() override;
 		virtual void timerEvent(QTimerEvent* event) override;
+		virtual void keyPressEvent(QKeyEvent* event) override;
+		virtual void keyReleaseEvent(QKeyEvent* event) override;
 		
 		ViewOpenGL view_;
 
@@ -34,4 +40,8 @@ class GLWidget : public QOpenGLWidget {
 		RungeKuttaIntegrator integrator_;
 
 		QElapsedTimer timer_;
+
+		double cameraYawSpeed_;
+		double cameraPitchSpeed_;
+		Vector cameraSpeed_;
 };
