@@ -4,6 +4,7 @@
 #include "drawable.h"
 #include "view.h"
 #include "matrix_3x3.h"
+#include <iostream>
 
 class Top : public Drawable {
 	public:
@@ -22,6 +23,10 @@ class Top : public Drawable {
 		
 		// Returns the second derivative
 		virtual Vector getDDP(Vector P, Vector DP) const = 0;
+
+		// Print the parametres
+		void print(){
+			std::cout << (*this).getP() << "   " << (*this).getDP() << std::endl; 			}
 
 	protected :	
 		Vector P_; // Degrees of freedom

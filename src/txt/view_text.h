@@ -9,6 +9,6 @@ public :
 
 	virtual void draw(SimpleCone const& top) override;
 
-
+	void print(Top const& top)const;
 
 };

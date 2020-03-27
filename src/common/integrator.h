@@ -1,3 +1,4 @@
+#pragma once
 #include "vect.h"
 #include "top.h"
 
