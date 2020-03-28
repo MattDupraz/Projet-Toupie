@@ -8,9 +8,10 @@ Pour compiler le programme (sous Linux):
 
 Les fichers executables seraient crees dans le repertoire `bin/`. Tout autre fichier temporaire serait cree dans le repertoire `build/`.
 
-Contrôles:
+Contrôle:
   - Mouvement horizontal: `W`, `A`, `S`, `D`
   - Mouvement vertical: `Shift`, `Space`
-  - Caméra: `←`, `↓`, `↑`, `→`
+  - Caméra: souris ou `←`, `↓`, `↑`, `→`
   - Afficher/cacher le sol: `F`
+  - Libérer la souris: `Esc`
 

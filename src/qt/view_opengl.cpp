@@ -1,7 +1,7 @@
 #include "view_opengl.h"
 #include "vertex_shader.h"
+#include "system.h"
 
-#include <iostream>
 #include "math_utils.h"
 #include "math.h"
 
@@ -40,7 +40,7 @@ void ViewOpenGL::init() {
 	prog.setUniformValue("lightColor", 1.0, 1.0, 1.0);
 }
 
-void ViewOpenGL::setupScene() {
+void ViewOpenGL::draw(System const& system) {
 	QMatrix4x4 viewMatrix;
 	viewMatrix.rotate(-cameraPitch, 1.0, 0.0, 0.0);
 	viewMatrix.rotate(-cameraYaw, 0.0, 1.0, 0.0);
@@ -66,6 +66,10 @@ void ViewOpenGL::setupScene() {
 		}
 		glEnd();
 	}
+
+	for (std::size_t i(0); i < system.size(); ++i) {
+		system.getTop(i).draw();
+	}
 }
 
 void ViewOpenGL::rotateCamera(double yaw, double pitch) {
@@ -85,9 +89,9 @@ void ViewOpenGL::translateCamera(Vector diff) {
 
 void ViewOpenGL::draw(SimpleCone const& top) {
 	QMatrix4x4 modelMatrix;
-	std::cout << top.getP()
-	  << " " << top.getDP()
-  		<< " " << top.getDDP(top.getP(), top.getDP())  << std::endl;
+	Vector A(top.getOrigin());
+	modelMatrix.translate(A[0], A[1], A[2]);
+
 	modelMatrix.rotate(toDegrees(top.psi()), 0.0, 1.0, 0.0);
 	modelMatrix.rotate(toDegrees(top.theta()), 1.0, 0.0, 0.0);
 	modelMatrix.rotate(toDegrees(top.phi()), 0.0, 1.0, 0.0);

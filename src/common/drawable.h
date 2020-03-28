@@ -1,17 +1,20 @@
 #pragma once
 
+#include <memory>
+#include <utility>
+
 class View;
 
 class Drawable {
 	public:
-		Drawable(View* v)
-			: view_(v)
+		Drawable(std::shared_ptr<View> v)
+			: view_(std::move(v))
 		{}
 
 		virtual ~Drawable() {}
 
-		virtual void draw() = 0;
+		virtual void draw() const = 0;
 
 	protected:
-		View* view_;
+		std::shared_ptr<View> view_;
 };

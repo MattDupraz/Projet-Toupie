@@ -16,8 +16,9 @@ class ViewOpenGL : public View {
 			{}
 
 		virtual void draw(SimpleCone const& top) override;
+		virtual void draw(System const& system) override;
+
 		void init();
-		void setupScene();
 		void setProjection(QMatrix4x4 const& projection) {
 			prog.setUniformValue("projection", projection);
 		}
