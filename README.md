@@ -13,5 +13,6 @@ Contrôle:
   - Mouvement vertical: `Shift`, `Space`
   - Caméra: souris ou `←`, `↓`, `↑`, `→`
   - Afficher/cacher le sol: `F`
+  - Afficher/cacher les trajectoires: `T`
   - Libérer la souris: `Esc`
 

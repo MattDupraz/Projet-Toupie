@@ -23,13 +23,16 @@ void NewmarkIntegrator::evolve(
 
 	Vector s(top.getDDP(P, DP));
 	Vector q(P);
+	
+	int count(0);
 	do{
 		q = P;
 		Vector r(top.getDDP(P, DP));
 		
 		DP = oldDP + dt/2.0 * (r + s);
 		P = oldP + dt*oldDP + pow(dt, 2)/3.0 * (1.0/2.0 * r + s);
-	} while ((P - q).norm() >= epsilon);
+		++count;
+	} while ((P - q).norm() >= epsilon && count < 1000);
 	top.setP(P);
 	top.setDP(DP);
 }

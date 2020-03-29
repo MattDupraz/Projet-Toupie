@@ -9,7 +9,10 @@ public:
 		: verbose(verbose)
 	{}
 
-	virtual void draw(SimpleCone const& top) override;
+	void drawTop(Top const& top);
+
+	virtual void draw(SimpleCone const& top) override { drawTop(top); }
+	virtual void draw(Gyroscope const& top) override { drawTop(top); }
 	virtual void draw(System const& system) override;
 
 	void setVerbose(bool val) {verbose = val;}

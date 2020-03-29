@@ -10,14 +10,14 @@
 
 int main(int argc, char* argv[]) {
 	std::shared_ptr<ViewOpenGL> view = std::make_shared<ViewOpenGL>();
-	std::shared_ptr<Integrator> integrator = std::make_shared<NewmarkIntegrator>();
+	std::shared_ptr<Integrator> integrator = std::make_shared<RungeKuttaIntegrator>();
 
 	std::unique_ptr<System> system = std::make_unique<System>(view, integrator);
-	system->add(std::make_unique<SimpleCone>(view,
-		Vector {0, 0, 0},
+	system->add(std::make_unique<Gyroscope>(view,
+		Vector {-1, 0, -2},
 		Vector {0, 0.5, 0},
-		Vector {0, 0, 60},
-		0.1, 1.5, 0.5));
+		Vector {0, 0, 160},
+		1.0, 0.1, 0.2, 1.0));
 	system->add(std::make_unique<SimpleCone>(view,
 		Vector {2, 0, 1},
 		Vector {0,0.5,0},

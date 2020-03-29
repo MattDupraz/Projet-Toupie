@@ -9,9 +9,14 @@
 
 class Top : public Drawable {
 	public:
+		unsigned int objectID;
+
 		Top(std::shared_ptr<View> view, Vector const& P, Vector const& DP)
 			: Drawable(std::move(view)), P_(P), DP_(DP)
-		{}
+		{
+			static unsigned int counter;
+			objectID = ++counter;
+		}
 
 		virtual ~Top() {}
 
@@ -29,14 +34,15 @@ class Top : public Drawable {
 	protected :	
 		Vector P_; // Degrees of freedom
 		Vector DP_; // First derivative of P
+	private :
 };
 
 std::ostream &operator<<(std::ostream& os, Top const& a);
 
-class Gyroscope : public Top {
+class NonRollingTop : public Top {
 	// P = [psi, theta, phi]
 	public:	
-		Gyroscope(std::shared_ptr<View> v, Vector const& A, 
+		NonRollingTop(std::shared_ptr<View> v, Vector const& A, 
 				Vector const& P,	Vector const& DP,
 				double m, double d, double I_A1, double I_A3)
 			: Top(std::move(v), P, DP), A(A), m(m), d(d), I_A1(I_A1), I_A3(I_A3)
@@ -52,11 +58,12 @@ class Gyroscope : public Top {
 		double d_theta() const { return DP_[1]; }
 		double d_phi() const { return DP_[2]; }
 
+		double getHeightCM() const { return d; }
 		double getMass() const { return m; }
 
 		Vector getOrigin() const { return A; }
 	protected:	
-		Gyroscope(std::shared_ptr<View> v, Vector const& A,
+		NonRollingTop(std::shared_ptr<View> v, Vector const& A,
 				Vector const& P, Vector const& DP)
 			: Top(std::move(v), P, DP), A(A)
 		{}
@@ -70,7 +77,7 @@ class Gyroscope : public Top {
 		double I_A3; // Moment of inertia - vertical axis
 };
 
-class SimpleCone : public Gyroscope {
+class SimpleCone : public NonRollingTop {
 	public:
 		// rho = masse volumique
 		// L = hauteur 
@@ -86,6 +93,28 @@ class SimpleCone : public Gyroscope {
 		double getDensity() const { return rho; };
 		double getHeight() const { return L; };
 		double getRadius() const { return R; };
+
+		virtual std::ostream& print(std::ostream& os) const override;
+	private:
+		double rho;
+		double L;
+		double R;
+};
+
+class Gyroscope : public NonRollingTop {
+	public:
+		Gyroscope(std::shared_ptr<View> v, Vector const& A,
+				Vector const& P, Vector const& DP,
+				double d, double rho, double L, double R);
+
+		virtual void draw() const override {
+			view_->draw(*this);
+		}
+
+		double getDensity() const { return rho; }
+		double getThickness() const { return L; }
+		double getRadius() const { return R; }
+		double getHeight() const { return d; }
 
 		virtual std::ostream& print(std::ostream& os) const override;
 	private:

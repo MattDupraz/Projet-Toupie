@@ -31,8 +31,6 @@ class System : public Drawable {
 		}
 
 		const Top& getTop(std::size_t n) const { return *tops[n]; }
-		Top& getTop(std::size_t n) { return *tops[n]; }
-
 		std::size_t size() const { return tops.size(); }
 
 		double getElapsedTime() const { return t; };

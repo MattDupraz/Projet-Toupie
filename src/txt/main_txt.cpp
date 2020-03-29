@@ -16,11 +16,11 @@ int main(){
 	shared_ptr<Integrator> integrator = make_shared<NewmarkIntegrator>();
 
 	System system(view, integrator);
-	system.add(make_unique<SimpleCone>(view, 
+	system.add(make_unique<Gyroscope>(view, 
 			Vector {0, 0, 0}, 
 			Vector {0, 0.5, 0}, 
 			Vector {0, 0, 60},
-			0.1, 1.5, 0.5));
+			1.0, 0.1, 0.2, 1.0));
 	system.add(make_unique<SimpleCone>(view,
 			Vector {0, 0, 1}, 
 			Vector {0,0.5,0}, 

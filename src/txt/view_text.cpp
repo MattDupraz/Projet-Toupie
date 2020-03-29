@@ -2,7 +2,7 @@
 #include "view_text.h"
 #include "top.h"
 
-void ViewText::draw(SimpleCone const& top) {
+void ViewText::drawTop(Top const& top) {
 	if (verbose) {
 		std::cout << "\tparamètre: " << top.getP() << std::endl
 			<< "\tdérivée : " << top.getDP() << std::endl;

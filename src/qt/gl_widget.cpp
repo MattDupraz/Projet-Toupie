@@ -159,6 +159,9 @@ void GLWidget::keyPressEvent(QKeyEvent* event) {
 			case Qt::Key_F:
 				view_->triggerFloor();
 				break;
+			case Qt::Key_T:
+				view_->triggerTrajectories();
+				break;
 			case Qt::Key_Escape:
 				cameraSpeed_ = Vector {0, 0, 0};
 				cameraPitchSpeed_ = 0;
