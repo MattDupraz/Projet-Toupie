@@ -3,9 +3,10 @@
 #include "constants.h"
 
 // Initialisation d'un cone simple
-SimpleCone::SimpleCone(View* v, Vector const& P, Vector const& DP,
+SimpleCone::SimpleCone(std::shared_ptr<View> v, Vector const& A,
+		Vector const& P, Vector const& DP,
 		double rho, double L, double R)
-	: Gyroscope( v, P, DP ), rho(rho), L(L), R(R)
+	: NonRollingTop(std::move(v), A, P, DP), rho(rho), L(L), R(R)
 {
 	m = 1.0/3.0 * M_PI * rho * pow(R, 2) * L;
 	d = 0.75 * L;
@@ -14,8 +15,46 @@ SimpleCone::SimpleCone(View* v, Vector const& P, Vector const& DP,
 	I_A3 = (3 * m) / 10.0 * pow(R, 2);
 }
 
+Gyroscope::Gyroscope(std::shared_ptr<View> v, Vector const& A,
+		Vector const& P, Vector const& DP,
+		double d, double rho, double L, double R)
+	: NonRollingTop(std::move(v), A, P, DP), rho(rho), L(L), R(R)
+{
+	this->d = d;
+	m = M_PI * pow(R, 2) * L * rho;
+	I_A1 = 0.25 * m * pow(R, 2);
+	I_A1 += m * pow(d, 2);
+	I_A3 =  0.5 * m * pow(R, 2);
+}
+
+std::ostream& SimpleCone::print(std::ostream& os) const {
+	return os << "Conique simple" << std::endl
+		<< "paramètre : " << getP() << std::endl
+		<< "dérivée   : " << getDP() << std::endl
+		<< "masse volumique (kg m-3) : " << getDensity() << std::endl
+		<< "hauteur (m) : " << getHeight() << std::endl
+		<< "rayon   (m) : " << getRadius() << std::endl
+		<< "origine (A) : " << getOrigin() << std::endl;
+}
+
+std::ostream& Gyroscope::print(std::ostream& os) const {
+	return os << "Gyroscope" << std::endl
+		<< "paramètre : " << getP() << std::endl
+		<< "dérivée   : " << getDP() << std::endl
+		<< "masse volumique (kg m-3) : " << getDensity() << std::endl
+		<< "largeur (m) : " << getThickness() << std::endl
+		<< "rayon   (m) : " << getRadius() << std::endl
+		<< "origine (A) : " << getOrigin() << std::endl
+		<< "distance du sol (m) : " << getHeight() << std::endl;
+}
+
+
+std::ostream &operator<<(std::ostream& os, Top const& a) {
+	return a.print(os);
+}
+
 // Voir complement mathematique page 12 eq. 13-15
-Vector Gyroscope::getDDP(Vector P, Vector DP) const {
+Vector NonRollingTop::getDDP(Vector P, Vector DP) const {
 	using namespace constants;
 
 	double cos_theta(cos(P[1]));

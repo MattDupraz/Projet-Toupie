@@ -1,14 +1,21 @@
 #pragma once
+
 #include "top.h"
+#include "system.h"
 
+class ViewText : public View {
+public:
+	ViewText(bool verbose = false)
+		: verbose(verbose)
+	{}
 
+	void drawTop(Top const& top);
 
-class ViewText  : public View {
+	virtual void draw(SimpleCone const& top) override { drawTop(top); }
+	virtual void draw(Gyroscope const& top) override { drawTop(top); }
+	virtual void draw(System const& system) override;
 
-public :
-
-	virtual void draw(SimpleCone const& top) override;
-
-	void print(Top const& top)const;
-
+	void setVerbose(bool val) {verbose = val;}
+private:
+	bool verbose;
 };

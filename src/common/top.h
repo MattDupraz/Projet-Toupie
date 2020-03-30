@@ -1,17 +1,22 @@
 #pragma once
 
+#include <ostream>
+
 #include "vect.h"
 #include "drawable.h"
 #include "view.h"
 #include "matrix_3x3.h"
-#include <iostream>
 
 class Top : public Drawable {
 	public:
-		Top(View* v, Vector const& P, 
-			Vector const& DP)
-			: Drawable(v), P_(P), DP_(DP)
-		{}
+		unsigned int objectID;
+
+		Top(std::shared_ptr<View> view, Vector const& P, Vector const& DP)
+			: Drawable(std::move(view)), P_(P), DP_(DP)
+		{
+			static unsigned int counter;
+			objectID = ++counter;
+		}
 
 		virtual ~Top() {}
 
@@ -24,21 +29,23 @@ class Top : public Drawable {
 		// Returns the second derivative
 		virtual Vector getDDP(Vector P, Vector DP) const = 0;
 
-		// Print the parametres
-		void print(){
-			std::cout << (*this).getP() << "   " << (*this).getDP() << std::endl; 			}
+		virtual std::ostream& print(std::ostream& os) const = 0;
 
 	protected :	
 		Vector P_; // Degrees of freedom
 		Vector DP_; // First derivative of P
+	private :
 };
 
-class Gyroscope : public Top {
+std::ostream &operator<<(std::ostream& os, Top const& a);
+
+class NonRollingTop : public Top {
 	// P = [psi, theta, phi]
 	public:	
-		Gyroscope(View* v, Vector const& P,	Vector const& DP,
+		NonRollingTop(std::shared_ptr<View> v, Vector const& A, 
+				Vector const& P,	Vector const& DP,
 				double m, double d, double I_A1, double I_A3)
-			: Top(v, P, DP), m(m), d(d), I_A1(I_A1), I_A3(I_A3)
+			: Top(std::move(v), P, DP), A(A), m(m), d(d), I_A1(I_A1), I_A3(I_A3)
 		{}
 
 		virtual Vector getDDP(Vector P, Vector DP) const override;	
@@ -51,11 +58,17 @@ class Gyroscope : public Top {
 		double d_theta() const { return DP_[1]; }
 		double d_phi() const { return DP_[2]; }
 
+		double getHeightCM() const { return d; }
 		double getMass() const { return m; }
+
+		Vector getOrigin() const { return A; }
 	protected:	
-		Gyroscope(View* v, Vector const& P,	Vector const& DP)
-			: Top(v, P, DP)
+		NonRollingTop(std::shared_ptr<View> v, Vector const& A,
+				Vector const& P, Vector const& DP)
+			: Top(std::move(v), P, DP), A(A)
 		{}
+
+		Vector A; // Contact point
 
 		double m; // Mass
 		double d; // Distance from contact point to center of mass
@@ -64,21 +77,46 @@ class Gyroscope : public Top {
 		double I_A3; // Moment of inertia - vertical axis
 };
 
-class SimpleCone : public Gyroscope {
+class SimpleCone : public NonRollingTop {
 	public:
 		// rho = masse volumique
 		// L = hauteur 
 		// R = rayon a la base
-		SimpleCone(View* v, Vector const& P, Vector const& DP,
+		SimpleCone(std::shared_ptr<View> v, Vector const& A,
+				Vector const& P, Vector const& DP,
 				double rho, double L, double R);
 
-		virtual void draw() override {
+		virtual void draw() const override {
 			view_->draw(*this);
 		}
 
 		double getDensity() const { return rho; };
 		double getHeight() const { return L; };
 		double getRadius() const { return R; };
+
+		virtual std::ostream& print(std::ostream& os) const override;
+	private:
+		double rho;
+		double L;
+		double R;
+};
+
+class Gyroscope : public NonRollingTop {
+	public:
+		Gyroscope(std::shared_ptr<View> v, Vector const& A,
+				Vector const& P, Vector const& DP,
+				double d, double rho, double L, double R);
+
+		virtual void draw() const override {
+			view_->draw(*this);
+		}
+
+		double getDensity() const { return rho; }
+		double getThickness() const { return L; }
+		double getRadius() const { return R; }
+		double getHeight() const { return d; }
+
+		virtual std::ostream& print(std::ostream& os) const override;
 	private:
 		double rho;
 		double L;

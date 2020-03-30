@@ -129,14 +129,13 @@ bool operator!=(Vector const& u, Vector const& v) {
 
 // Gere les streams -> cout << vect; affiche le vecteur
 std::ostream &operator<<(std::ostream& os, Vector const& v) {
-	os << "(";
 	for (std::size_t i(0); i < v.size(); ++i) {
 		if (i != 0) {
-			os << ", ";
+			os << " ";
 		}
 		os << v[i];
 	}
-	return os << ")";
+	return os;
 }
 
 
