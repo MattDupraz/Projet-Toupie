@@ -20,7 +20,7 @@ int main(){
 	syst.add(&top2);
 	// Affiche le système
 	syst.draw();
-	// L'évolution du système
+	// L'évolution du systèmegit 
 	for (int i(0); i<100 ; ++i){
 		std::cout << i*0.2 << std::endl;
 		syst.evolve(0.2);
