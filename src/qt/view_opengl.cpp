@@ -74,11 +74,13 @@ void ViewOpenGL::translateCamera(Vector diff) {
 
 void ViewOpenGL::addToTrajectory(unsigned int ID, QVector3D vec) {
 	std::vector<QVector3D>& v = trajectories[ID];
-	v.push_back(vec);
+	if (v.empty() || (v.back() - vec).lengthSquared() > 0.00001) {
+		v.push_back(vec);
 
-	int diff(v.size() - maxTrajectoryLength);
-	if (diff > 0) {
-		v.erase(v.begin(), v.begin() + diff);
+		int diff(v.size() - maxTrajectoryLength);
+		if (diff > 0) {
+			v.erase(v.begin(), v.begin() + diff);
+		}
 	}
 }
 
