@@ -21,12 +21,12 @@ int main(int argc, char* argv[]) {
 	system->add(std::make_unique<SimpleCone>(view,
 		Vector {2, 0, 1},
 		Vector {0,0.5,0},
-		Vector {0,0,70},
+		Vector {0,0,170},
 		0.1, 1.5, 0.75));
 
 
 	QApplication a(argc, argv);
-	GLWidget w(std::move(system), view);
+	GLWidget w(std::move(system), view, 20);
 	w.show();
 	return a.exec();
 }

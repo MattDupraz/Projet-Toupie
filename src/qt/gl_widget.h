@@ -19,7 +19,8 @@
 class GLWidget : public QOpenGLWidget {
 	public:
 		GLWidget(std::unique_ptr<System> system,
-				std::shared_ptr<ViewOpenGL> view);
+				std::shared_ptr<ViewOpenGL> view,
+				int tickInterval);
 		virtual ~GLWidget() {}
 	private:
 		virtual void initializeGL() override;
@@ -39,12 +40,15 @@ class GLWidget : public QOpenGLWidget {
 
 		std::unique_ptr<System> system_;
 		std::shared_ptr<ViewOpenGL> view_;
+		
+		int tickInterval_;
 
 		bool focus_;
 
 		double cameraYawSpeed_;
 		double cameraPitchSpeed_;
 		Vector cameraSpeed_;
-
+		
+		bool enableMouse_ = false;
 		bool ignoreNextMouseMoveEvent_ = true;
 };

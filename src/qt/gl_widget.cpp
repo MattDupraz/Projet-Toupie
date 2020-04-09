@@ -8,10 +8,12 @@
 
 
 GLWidget::GLWidget(std::unique_ptr<System> system,
-		std::shared_ptr<ViewOpenGL> view)
+		std::shared_ptr<ViewOpenGL> view,
+		int tickInterval)
 	:QOpenGLWidget(nullptr),
 	system_(std::move(system)),
 	view_(std::move(view)),
+	tickInterval_(tickInterval),
 	focus_(true),
 	cameraYawSpeed_(0.0),
 	cameraPitchSpeed_(0.0),
@@ -23,14 +25,17 @@ GLWidget::GLWidget(std::unique_ptr<System> system,
 void GLWidget::initializeGL() {
 	view_->init();
 	
-	startTimer(10);
+	startTimer(tickInterval_);
 	timer_.restart();
 }
 
 void GLWidget::timerEvent(QTimerEvent* event) {
 	Q_UNUSED(event);
+	
+	constexpr double throttleFactor(1.2);
 
 	double dt = timer_.restart() / 1000.0;
+	dt = std::min(dt, throttleFactor * (tickInterval_ / 1000.0));
 
 	system_->evolve(dt);
 	view_->rotateCamera(cameraYawSpeed_ * dt,
@@ -78,6 +83,8 @@ QPoint GLWidget::getWindowCenterPos() {
 }
 
 void GLWidget::setFocus(bool val) {
+	if (!enableMouse_) return;
+	
 	focus_ = val;
 	if (focus_) {
 		ignoreNextMouseMoveEvent_ = true;
@@ -91,6 +98,8 @@ void GLWidget::setFocus(bool val) {
 }	
 
 void GLWidget::enterEvent(QEvent* event) {
+	if (!enableMouse_) return;
+
 	Q_UNUSED(event);
 	// This prevents unintended behaviour when focus is lost
 	// without the focus_ being triggered - e.g. when alt tabbing
@@ -101,7 +110,7 @@ void GLWidget::enterEvent(QEvent* event) {
 }
 
 void GLWidget::mouseMoveEvent(QMouseEvent* event) {
-	if (focus_ && !ignoreNextMouseMoveEvent_) {	
+	if (enableMouse_ && focus_ && !ignoreNextMouseMoveEvent_) {	
 		QPoint windowCenter(getWindowCenterPos());
 		QPoint diff(event->globalPos() - windowCenter);
 
@@ -116,13 +125,13 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event) {
 
 void GLWidget::mousePressEvent(QMouseEvent* event) {
 	Q_UNUSED(event);
-	if(!focus_) {
+	if(enableMouse_ && !focus_) {
 		setFocus(true);
 	}
 }
 
 void GLWidget::keyPressEvent(QKeyEvent* event) {
-	if (focus_) {
+	if (focus_ || !enableMouse_) {
 		constexpr double dAngle(80.0);
 		constexpr double dPos(5.0);
 		switch(event->key()) {
@@ -173,7 +182,7 @@ void GLWidget::keyPressEvent(QKeyEvent* event) {
 }
 
 void GLWidget::keyReleaseEvent(QKeyEvent* event) {
-	if (focus_) {
+	if (focus_ || !enableMouse_) {
 		constexpr double dAngle(80.0);
 		constexpr double dPos(5.0);
 		switch(event->key()) {
