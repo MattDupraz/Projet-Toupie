@@ -1,5 +1,6 @@
 #include "system.h"
 
+// Affiche les details du systeme dans ostream
 std::ostream &operator<<(std::ostream& os, System const& system) {
 	os << "Le système est constitué de " << system.size()
 		<< " toupies:\n" << std::endl;

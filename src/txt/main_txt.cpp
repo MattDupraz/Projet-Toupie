@@ -11,11 +11,15 @@ using namespace std;
 int main(){
 	constexpr double dt = 0.01;
 	constexpr bool verbose = true;
+	constexpr int nIterations = 1000;
 
+	// Initialise le support de dessin
 	shared_ptr<View> view = make_shared<ViewText>(verbose);
+	// Initialise l'integrateur choisi
 	shared_ptr<Integrator> integrator = make_shared<NewmarkIntegrator>();
-
+	// Initialise le systeme
 	System system(view, integrator);
+	// Ajoute des toupies au systeme
 	system.add(make_unique<Gyroscope>(view, 
 			Vector {0, 0, 0}, 
 			Vector {0, 0.5, 0}, 
@@ -27,14 +31,18 @@ int main(){
 			Vector {0,0,70},
 			0.1, 1.5, 0.75));	
 
+	// Affiche les conditions initialles du systeme
 	cout << system;
+	
 	if (verbose) {
 		cout << "Le système évolue et se dessine à chaque pas (dt = " << dt << "): "
 			<< endl;
 	} else {
 		cout << "format: toupie\ttemps\tparamètre\tdérivée" << endl;
 	}
-	for (int i(0); i < 1000; ++i) {
+	
+	// Evolue le systeme nIterations fois
+	for (int i(0); i < nIterations; ++i) {
 		system.evolve(dt);
 		system.draw();
 	}	

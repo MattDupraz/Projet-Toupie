@@ -123,6 +123,7 @@ Vector operator-(Vector u, Vector const& v) {
 	return u;
 }
 
+// Operateur d'egalite
 bool operator!=(Vector const& u, Vector const& v) {
 	return !(u == v);
 }

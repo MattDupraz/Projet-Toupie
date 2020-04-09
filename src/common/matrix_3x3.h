@@ -53,4 +53,6 @@ Matrix3x3 operator*(double d, Matrix3x3 A);
 Vector operator*(Matrix3x3 const& A, Vector const& v);
 bool operator==(Matrix3x3 const& A, Matrix3x3 const& B);
 bool operator!=(Matrix3x3 const& A, Matrix3x3 const& B);
+
+// Operateur d'affichage de la matrice
 std::ostream& operator<<(std::ostream& os, Matrix3x3 const& A);

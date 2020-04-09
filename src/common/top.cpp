@@ -2,31 +2,33 @@
 #include "top.h"
 #include "constants.h"
 
-// Initialisation d'un cone simple
+// Constructeur d'un cone simple
 SimpleCone::SimpleCone(std::shared_ptr<View> v, Vector const& A,
 		Vector const& P, Vector const& DP,
 		double rho, double L, double R)
 	: NonRollingTop(std::move(v), A, P, DP), rho(rho), L(L), R(R)
 {
-	m = 1.0/3.0 * M_PI * rho * pow(R, 2) * L;
-	d = 0.75 * L;
-	I_A1 = (3 * m) / 20.0 * (pow(R, 2) + 0.25 * pow(L, 2));
-	I_A1 += m * pow(d, 2);
-	I_A3 = (3 * m) / 10.0 * pow(R, 2);
+	m = 1.0/3.0 * M_PI * rho * pow(R, 2) * L; // masse
+	d = 0.75 * L; // distance du CM du point de contact
+	I_A1 = (3 * m) / 20.0 * (pow(R, 2) + 0.25 * pow(L, 2)); // axe horizontal
+	I_A1 += m * pow(d, 2); // loi du transfert
+	I_A3 = (3 * m) / 10.0 * pow(R, 2); // axe vertical
 }
 
+// Constructeur du Gyroscope
 Gyroscope::Gyroscope(std::shared_ptr<View> v, Vector const& A,
 		Vector const& P, Vector const& DP,
 		double d, double rho, double L, double R)
 	: NonRollingTop(std::move(v), A, P, DP), rho(rho), L(L), R(R)
 {
-	this->d = d;
-	m = M_PI * pow(R, 2) * L * rho;
-	I_A1 = 0.25 * m * pow(R, 2);
-	I_A1 += m * pow(d, 2);
-	I_A3 =  0.5 * m * pow(R, 2);
+	this->d = d; // distance du CM du point de contact
+	m = M_PI * pow(R, 2) * L * rho; // masse
+	I_A1 = 0.25 * m * pow(R, 2); // axe horizontal
+	I_A1 += m * pow(d, 2); // loi du transfert
+	I_A3 =  0.5 * m * pow(R, 2); // axe vertical
 }
 
+// Methode d'affichage du cone
 std::ostream& SimpleCone::print(std::ostream& os) const {
 	return os << "Conique simple" << std::endl
 		<< "paramètre : " << getP() << std::endl
@@ -37,6 +39,7 @@ std::ostream& SimpleCone::print(std::ostream& os) const {
 		<< "origine (A) : " << getOrigin() << std::endl;
 }
 
+// Methode d'affichage du gyroscope
 std::ostream& Gyroscope::print(std::ostream& os) const {
 	return os << "Gyroscope" << std::endl
 		<< "paramètre : " << getP() << std::endl
@@ -48,12 +51,13 @@ std::ostream& Gyroscope::print(std::ostream& os) const {
 		<< "distance du sol (m) : " << getHeight() << std::endl;
 }
 
-
+// Operateur d'affichage de la toupie
 std::ostream &operator<<(std::ostream& os, Top const& a) {
 	return a.print(os);
 }
 
-// Voir complement mathematique page 12 eq. 13-15
+// Equation du mouvement d'une toupie sans roulement
+// c.f. complement mathematique page 12 eq. 13-15
 Vector NonRollingTop::getDDP(Vector P, Vector DP) const {
 	using namespace constants;
 
@@ -81,11 +85,3 @@ Vector NonRollingTop::getDDP(Vector P, Vector DP) const {
 
 	return Vector {d2_psi, d2_theta, d2_phi};
 }
-
-/*
-void ConeSimple::init_tendor(double length, double radius){
-	double r(radius*radius);
-	double l(length*length);
-	
-	tensorInert_= {{mass_*(3/20*r+3/5*l),0,0},{0,0,0},{0,0,3*mass_*(r/10 +3*l/16)}};
-}*/

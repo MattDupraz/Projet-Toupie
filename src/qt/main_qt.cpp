@@ -7,12 +7,16 @@
 
 #include <memory>
 #include <utility>
+#include <iostream>
 
 int main(int argc, char* argv[]) {
+	// Initialise le support de dessin
 	std::shared_ptr<ViewOpenGL> view = std::make_shared<ViewOpenGL>();
+	// Initialise l'integrateur choisi
 	std::shared_ptr<Integrator> integrator = std::make_shared<RungeKuttaIntegrator>();
-
+	// Initialise le systeme
 	std::unique_ptr<System> system = std::make_unique<System>(view, integrator);
+	// Ajoute des toupies au systeme
 	system->add(std::make_unique<Gyroscope>(view,
 		Vector {-1, 0, -2},
 		Vector {0, 0.5, 0},
@@ -23,10 +27,15 @@ int main(int argc, char* argv[]) {
 		Vector {0,0.5,0},
 		Vector {0,0,170},
 		0.1, 1.5, 0.75));
-
-
+	
+	// Affiche les conditions initialles du systeme
+	std::cout << *system;
+	
+	// Initialise l'application Qt
 	QApplication a(argc, argv);
 	GLWidget w(std::move(system), view, 20);
+	// Affiche la fenetre
 	w.show();
+	// Enclenche la boucle principale du programme
 	return a.exec();
 }

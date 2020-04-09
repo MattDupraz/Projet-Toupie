@@ -13,8 +13,11 @@ class Drawable {
 
 		virtual ~Drawable() {}
 
+		// Methode pour dessiner un objet dessinable
+		// permet le single dispatch
 		virtual void draw() const = 0;
 
 	protected:
+		// Supprt de dessin utilise
 		std::shared_ptr<View> view_;
 };

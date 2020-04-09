@@ -2,6 +2,7 @@
 #include "integrator.h"
 #include "math.h"
 
+// Implementation de la methode d'Euler
 void EulerCromerIntegrator::evolve(
 		Top& top, double dt){
 	Vector P(top.getP());
@@ -14,6 +15,7 @@ void EulerCromerIntegrator::evolve(
 	top.setDP(DP);
 }
 
+// Implementation de la methode de Newmark
 void NewmarkIntegrator::evolve(
 		Top& top, double dt){
 	Vector oldP(top.getP());
@@ -24,6 +26,7 @@ void NewmarkIntegrator::evolve(
 	Vector s(top.getDDP(P, DP));
 	Vector q(P);
 	
+	// Variable count introduite pour empecher une boucle infinie
 	int count(0);
 	do{
 		q = P;
@@ -37,6 +40,7 @@ void NewmarkIntegrator::evolve(
 	top.setDP(DP);
 }
 
+// Implementation de la methode Runge-Kutta
 void RungeKuttaIntegrator::evolve(
 		Top& top, double dt){
 	Vector P(top.getP());
