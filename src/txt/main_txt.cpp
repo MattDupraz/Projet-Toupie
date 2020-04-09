@@ -19,7 +19,7 @@ int main(){
 	system.add(make_unique<Gyroscope>(view, 
 			Vector {0, 0, 0}, 
 			Vector {0, 0.5, 0}, 
-			Vector {0, 0, 60},
+			Vector {0, 0, 160},
 			1.0, 0.1, 0.2, 1.0));
 	system.add(make_unique<SimpleCone>(view,
 			Vector {0, 0, 1}, 
@@ -34,7 +34,7 @@ int main(){
 	} else {
 		cout << "format: toupie\ttemps\tparamètre\tdérivée" << endl;
 	}
-	for (int i(0); i < 100; ++i) {
+	for (int i(0); i < 1000; ++i) {
 		system.evolve(dt);
 		system.draw();
 	}	
