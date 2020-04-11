@@ -117,6 +117,33 @@ void Tests::testMatrix3x3() {
 
 }
 
+void Tests::testTop(){
+	
+	cout << "-= BEGIN TEST TOP =-" << endl;
+	
+	shared_ptr<View> view(new ViewTest);
+	
+		shared_ptr<Integrator> integrator = make_shared<NewmarkIntegrator>();
+		// Initialise le systeme
+		System system(view, integrator);
+		// Ajoute des toupies au systeme
+		system.add(make_unique<Gyroscope>(view, 
+			Vector {0, 0, 0}, 
+			Vector {0, 0.5, 0}, 
+			Vector {0, 0, 160},
+			1.0, 0.1, 0.2, 1.0, "./tests/test_gyroscope.txt"));
+		system.add(make_unique<SimpleCone>(view,
+			Vector {0, 0, 1}, 
+			Vector {0,0.5,0}, 
+			Vector {0,0,70},
+			0.1, 1.5, 0.75, "./tests/test_cone_simple.txt"));
+	
+	std::cout << system;
+	
+	cout << "-= END TEST TOP =-" << endl;
+	
+	}
+
 void Tests::testIntegration() {
 		EulerCromerIntegrator integ1;
 		NewmarkIntegrator integ2;
