@@ -7,11 +7,13 @@ class Integrator{
 	public:
 		// Methode evolue une toupie en fonction du pas de temps
 		virtual void evolve(Top& top, double dt) = 0;
+		
 };
 
 // Methode d'Euler
 class EulerCromerIntegrator : public Integrator{
 	public : 
+
 		virtual void evolve(Top& top, double dt) override;
 };
 
@@ -35,5 +37,6 @@ class NewmarkIntegrator : public Integrator{
 // Methode Runge-Kutta
 class RungeKuttaIntegrator : public Integrator{
 	public:
+
 		virtual void evolve(Top& top, double dt) override;
 };

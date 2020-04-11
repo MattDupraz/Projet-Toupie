@@ -3,6 +3,7 @@
 class SimpleCone;
 class Gyroscope;
 class System;
+class TopTest;
 
 class View {
 	public:

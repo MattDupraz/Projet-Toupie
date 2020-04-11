@@ -10,7 +10,7 @@ using namespace std;
 
 int main(){
 	constexpr double dt = 0.01;
-	constexpr bool verbose = true;
+	constexpr bool verbose = false;
 	constexpr int nIterations = 1000;
 
 	// Initialise le support de dessin

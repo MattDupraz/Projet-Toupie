@@ -66,12 +66,13 @@ affichage du sol.
 --------------------------------------------------
 ## Semaine 7 :
 
-
+On a implémenté la classe système et finalisé la simulation mode textuelle.
 
 --------------------------------------------------
 ## Semaine 8 :
 
-
+On implémente les tests pour la classe `integrator`, les résultats seront stockés 
+dans un fichier.
 
 --------------------------------------------------
 ## Semaine 9 :

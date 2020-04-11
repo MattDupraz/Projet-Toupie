@@ -5,8 +5,8 @@
 // Constructeur d'un cone simple
 SimpleCone::SimpleCone(std::shared_ptr<View> v, Vector const& A,
 		Vector const& P, Vector const& DP,
-		double rho, double L, double R)
-	: NonRollingTop(std::move(v), A, P, DP), rho(rho), L(L), R(R)
+		double rho, double L, double R, const char* add)
+	: NonRollingTop(std::move(v), A, P, DP, add), rho(rho), L(L), R(R)
 {
 	m = 1.0/3.0 * M_PI * rho * pow(R, 2) * L; // masse
 	d = 0.75 * L; // distance du CM du point de contact
@@ -18,8 +18,8 @@ SimpleCone::SimpleCone(std::shared_ptr<View> v, Vector const& A,
 // Constructeur du Gyroscope
 Gyroscope::Gyroscope(std::shared_ptr<View> v, Vector const& A,
 		Vector const& P, Vector const& DP,
-		double d, double rho, double L, double R)
-	: NonRollingTop(std::move(v), A, P, DP), rho(rho), L(L), R(R)
+		double d, double rho, double L, double R, const char* add)
+	: NonRollingTop(std::move(v), A, P, DP, add), rho(rho), L(L), R(R)
 {
 	this->d = d; // distance du CM du point de contact
 	m = M_PI * pow(R, 2) * L * rho; // masse

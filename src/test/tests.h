@@ -1,3 +1,6 @@
+#pragma once
+#include "view_test.h"
+
 class Tests {
 	public:
 		void testVector();

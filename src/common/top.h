@@ -12,13 +12,15 @@ class Top : public Drawable {
 		// Identifiant unique de la toupie
 		unsigned int objectID;
 
-		Top(std::shared_ptr<View> view, Vector const& P, Vector const& DP)
-			: Drawable(std::move(view)), P_(P), DP_(DP)
+		Top(std::shared_ptr<View> view, Vector const& P, Vector const& DP, const char* add="")
+			: Drawable(std::move(view)), P_(P), DP_(DP), address(add)
 		{
 			// Fait en sorte que chaque vecteur a un ID unique
 			// Ceci est utilise pour identifier les toupies lors du dessin
 			static unsigned int counter;
 			objectID = ++counter;
+
+			time=0;
 		}
 
 		virtual ~Top() {}
@@ -45,7 +47,18 @@ class Top : public Drawable {
 		// Affiche les parametres de la toupie dans le ostream
 		virtual std::ostream& print(std::ostream& os) const = 0;
 
+		// Return the address of the file
+		const char* getAddress()const{return address;}
+
+		// Return the time
+		double getTime()const{return time;}
+
+		// Set the time 
+		void setTime(double t){time =t;}
+
 	protected :	
+		const char* address;
+		double time;
 		Vector P_; // Degrees of freedom
 		Vector DP_; // First derivative of P
 	private :
@@ -59,8 +72,8 @@ class NonRollingTop : public Top {
 	public:	
 		NonRollingTop(std::shared_ptr<View> v, Vector const& A, 
 				Vector const& P,	Vector const& DP,
-				double m, double d, double I_A1, double I_A3)
-			: Top(std::move(v), P, DP), A(A), m(m), d(d), I_A1(I_A1), I_A3(I_A3)
+				double m, double d, double I_A1, double I_A3, const char* add="")
+			: Top(std::move(v), P, DP,add), A(A), m(m), d(d), I_A1(I_A1), I_A3(I_A3)
 		{}
 
 		// Retourne la seconde derivee
@@ -90,8 +103,8 @@ class NonRollingTop : public Top {
 		Vector getOrigin() const { return A; }
 	protected:	
 		NonRollingTop(std::shared_ptr<View> v, Vector const& A,
-				Vector const& P, Vector const& DP)
-			: Top(std::move(v), P, DP), A(A)
+				Vector const& P, Vector const& DP, const char* add)
+			: Top(std::move(v), P, DP, add), A(A)
 		{}
 
 		Vector A; // Contact point
@@ -110,7 +123,7 @@ class SimpleCone : public NonRollingTop {
 		// R = rayon a la base
 		SimpleCone(std::shared_ptr<View> v, Vector const& A,
 				Vector const& P, Vector const& DP,
-				double rho, double L, double R);
+				double rho, double L, double R, const char* add="");
 
 		// Methode necessaire pour le dessin (single dispatch)
 		virtual void draw() const override {
@@ -134,7 +147,7 @@ class Gyroscope : public NonRollingTop {
 	public:
 		Gyroscope(std::shared_ptr<View> v, Vector const& A,
 				Vector const& P, Vector const& DP,
-				double d, double rho, double L, double R);
+				double d, double rho, double L, double R, const char* add="");
 
 		// Methode necessaire pour le dessin (single dispatch)
 		virtual void draw() const override {

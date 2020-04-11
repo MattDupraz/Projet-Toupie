@@ -1,9 +1,14 @@
 #include <iostream>
+#include <fstream>
 
 #include "tests.h"
 #include "vect.h"
 #include "matrix_3x3.h"
-#include "top.h"
+#include "view_test.h"
+#include "system.h"
+#include "integrator.h"
+#include <memory>
+#include <utility>
 
 using namespace std;
 
@@ -112,6 +117,39 @@ void Tests::testMatrix3x3() {
 
 }
 
-void Tests::testTop() {
+void Tests::testIntegration() {
+		EulerCromerIntegrator integ1;
+		NewmarkIntegrator integ2;
+		RungeKuttaIntegrator integ3;
+		
+		ofstream out;
+		
+		
+		size_t nbrepet(1000);
+		constexpr double dt(0.01);
+	
+		shared_ptr<View> view(new ViewTest);
+	
+		shared_ptr<Integrator> integrator = make_shared<NewmarkIntegrator>();
+		// Initialise le systeme
+		System system(view, integrator);
+		// Ajoute des toupies au systeme
+		system.add(make_unique<Gyroscope>(view, 
+			Vector {0, 0, 0}, 
+			Vector {0, 0.5, 0}, 
+			Vector {0, 0, 160},
+			1.0, 0.1, 0.2, 1.0, "./tests/test_gyroscope.txt"));
+		system.add(make_unique<SimpleCone>(view,
+			Vector {0, 0, 1}, 
+			Vector {0,0.5,0}, 
+			Vector {0,0,70},
+			0.1, 1.5, 0.75, "./tests/test_cone_simple.txt"));
+
+		for (size_t i(0); i < nbrepet ; ++i){
+			system.evolve(dt);
+			(*view).draw(system);
+		}
+	
+		out.close();
 
 }

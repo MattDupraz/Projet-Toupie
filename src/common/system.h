@@ -49,7 +49,10 @@ class System : public Drawable {
 		std::shared_ptr<Integrator> integrator;
 
 		double t;
+
 };
+
+
 
 // Affiche les details du systeme dans le ostream fourni
 std::ostream &operator<<(std::ostream& os, System const& system);

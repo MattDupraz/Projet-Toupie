@@ -5,6 +5,7 @@
 // Implementation de la methode d'Euler
 void EulerCromerIntegrator::evolve(
 		Top& top, double dt){
+	top.setTime(top.getTime()+dt);
 	Vector P(top.getP());
 	Vector DP(top.getDP());
 
@@ -18,6 +19,7 @@ void EulerCromerIntegrator::evolve(
 // Implementation de la methode de Newmark
 void NewmarkIntegrator::evolve(
 		Top& top, double dt){
+	top.setTime(top.getTime()+dt);
 	Vector oldP(top.getP());
 	Vector oldDP(top.getDP());
 	Vector P(oldP);
@@ -43,6 +45,7 @@ void NewmarkIntegrator::evolve(
 // Implementation de la methode Runge-Kutta
 void RungeKuttaIntegrator::evolve(
 		Top& top, double dt){
+	top.setTime(top.getTime()+dt);
 	Vector P(top.getP());
 	Vector DP(top.getDP());
 

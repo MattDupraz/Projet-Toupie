@@ -8,8 +8,10 @@ TARGET = project_test
 
 SOURCES += src/test/main_test.cpp \
            src/test/tests.cpp \
-           src/txt/view_text.cpp
+           src/test/view_test.cpp
 
 HEADERS += src/test/tests.h \
-           src/txt/view_text.h
+           src/test/view_test.h\
+	   src/test/top_test.h
+
 
