@@ -131,12 +131,12 @@ void Tests::testTop(){
 			Vector {0, 0, 0}, 
 			Vector {0, 0.5, 0}, 
 			Vector {0, 0, 160},
-			1.0, 0.1, 0.2, 1.0, "./tests/test_gyroscope.txt"));
+			1.0, 0.1, 0.2, 1.0));
 		system.add(make_unique<SimpleCone>(view,
 			Vector {0, 0, 1}, 
 			Vector {0,0.5,0}, 
 			Vector {0,0,70},
-			0.1, 1.5, 0.75, "./tests/test_cone_simple.txt"));
+			0.1, 1.5, 0.75));
 	
 	std::cout << system;
 	
@@ -145,13 +145,6 @@ void Tests::testTop(){
 	}
 
 void Tests::testIntegration() {
-		EulerCromerIntegrator integ1;
-		NewmarkIntegrator integ2;
-		RungeKuttaIntegrator integ3;
-		
-		ofstream out;
-		
-		
 		size_t nbrepet(1000);
 		constexpr double dt(0.01);
 	
@@ -165,18 +158,24 @@ void Tests::testIntegration() {
 			Vector {0, 0, 0}, 
 			Vector {0, 0.5, 0}, 
 			Vector {0, 0, 160},
-			1.0, 0.1, 0.2, 1.0, "./tests/test_gyroscope.txt"));
+			1.0, 0.1, 0.2, 1.0));
 		system.add(make_unique<SimpleCone>(view,
 			Vector {0, 0, 1}, 
 			Vector {0,0.5,0}, 
 			Vector {0,0,70},
-			0.1, 1.5, 0.75, "./tests/test_cone_simple.txt"));
+			0.1, 1.5, 0.75));
+			
+		ofstream out1("./tests/test_cone_simple.txt");
+		ofstream out2("./tests/test_gyroscope.txt");
 
 		for (size_t i(0); i < nbrepet ; ++i){
 			system.evolve(dt);
-			(*view).draw(system);
-		}
-	
-		out.close();
 
+			out1 << system.getElapsedTime() << " " << system.getTop(0).getP() << endl;
+			
+			out2 << system.getElapsedTime() << " " << system.getTop(1).getP() << endl;
+		}
+		out1.close();
+		out2.close();
+		
 }
