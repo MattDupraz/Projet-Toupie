@@ -148,53 +148,76 @@ void Tests::testIntegration() {
 
 	cout << "-= BEGIN TEST INTEGRATOR =-" << endl;
 
-	size_t nbrepet(1000);
+	size_t nbrepet(100000);
 	constexpr double dt(0.01);
 
 	shared_ptr<View> view(new ViewText);
 
-	shared_ptr<Integrator> integrator = make_shared<NewmarkIntegrator>();
+	shared_ptr<Integrator> integrator1 = make_shared<EulerCromerIntegrator>();
+	shared_ptr<Integrator> integrator2 = make_shared<NewmarkIntegrator>();
+	shared_ptr<Integrator> integrator3 = make_shared<RungeKuttaIntegrator>();
 	// Initialise le systeme
-	System system(view, integrator);
-	// Ajoute des toupies au systeme
-	system.add(make_unique<TopTestFall>(view, 
-		Vector {0}, 
-		Vector {0}, 
-		Vector {-9.81}));
-	system.add(make_unique<TopTestSine>(view,
-		Vector {1}, 
-		Vector {0}, 
-		Vector {0}));
+	vector<System*> liste_system;
 	
-	Vector a{0,0,0};
-	cout << system.getTop(1).getDDP(system.getTop(1).getP(),system.getTop(1).getDP()) << endl;
+	liste_system.push_back(new System(view, integrator1));
+	liste_system.push_back(new System(view, integrator2));
+	liste_system.push_back(new System(view, integrator3));
+	// Ajoute des toupies au systemes
+	for (auto& syst : liste_system){
+		syst->add(make_unique<TopTestFall>(view, 
+			Vector {0}, 
+			Vector {0}, 
+			Vector {-9.81}));
+		syst->add(make_unique<TopTestSine>(view,
+			Vector {1}, 
+			Vector {0}, 
+			Vector {0}));
+	}
 		
-	string file1("./tests/test_chute_libre.txt");
-	string file2("./tests/test_sinus.txt");
-
-	cout << "Opening file " << file1 << "..." << endl;
-	ofstream out1(file1);
-	cout << "- Done!" << endl;
-
-	cout << "Opening file " << file2 << "..." << endl;
-	ofstream out2(file2);
-	cout << "- Done!" << endl;
+	string file1("./tests/test_euler_chute_libre.txt");
+	string file2("./tests/test_euler_sinus.txt");
+	
+	string file3("./tests/test_newmark_chute_libre.txt");
+	string file4("./tests/test_newmark_sinus.txt");
+	
+	string file5("./tests/test_runge_chute_libre.txt");
+	string file6("./tests/test_runge_sinus.txt");
+	
+	vector<string> file_liste{file1, file2, file3, file4, file5, file6};
+	
+	vector<ofstream> out(6);
+	
+	for (size_t i(0); i<6 ; ++i){
+		cout << "Opening file " << file_liste[i] << "..." << endl;
+		out[i].open(file_liste[i]);
+		cout << "- Done!" << endl;
+		}
 
 	cout << "Running simulation..." << endl;
 	for (size_t i(0); i < nbrepet ; ++i){
-		system.evolve(dt);
+		for (auto& syst : liste_system){
+			syst->evolve(dt);
+		}
 
-		out1 << system.getElapsedTime() << " " << system.getTop(0).getP() << endl;
 		
-		out2 << system.getElapsedTime() << " " << system.getTop(1).getP() << endl;
-	}
+		out[0] << liste_system[0]->getElapsedTime() << "  " 
+			   <<  liste_system[0]->getTop(0).getP() << endl;
+		out[1] << liste_system[0]->getElapsedTime() << "  " 
+			   <<  liste_system[0]->getTop(1).getP() << endl;
+			   
+		out[2] << liste_system[1]->getElapsedTime() << "  " 
+			   <<  liste_system[1]->getTop(0).getP() << endl;
+		out[3] << liste_system[1]->getElapsedTime() << "  " 
+			   <<  liste_system[1]->getTop(1).getP() << endl;
+		
+		out[4] << liste_system[2]->getElapsedTime() << "  " 
+			   <<  liste_system[2]->getTop(0).getP() << endl;
+		out[5] << liste_system[2]->getElapsedTime() << "  " 
+			   <<  liste_system[2]->getTop(1).getP() << endl;
+		}
+	
+	
 	cout << "- Done!" << endl;
 
-	cout << "Closing file " << file1 << "..." << endl;
-	out1.close();
-	cout << "Closing file " << file2 << "..." << endl;
-	out2.close();
-	cout << "- Done!" << endl;
-		
 	cout << "-= TEST INTEGRATOR =-" << endl;
 }

@@ -20,7 +20,7 @@ public:
 
 	virtual void draw()const{;}
 
-	virtual Vector getDDP(Vector P, Vector DP)const override{return DDP_;}
+	virtual Vector getDDP(Vector P, Vector DP)override{return DDP_;}
 	virtual std::ostream& print(std::ostream& os)const override{
 		os << P_ << " " << DP_;
 		return os;}
@@ -35,7 +35,7 @@ public:
 	TopTestSine(std::shared_ptr<View> v, Vector const& P, Vector const& DP, Vector const& DDP)
 	:TopTestFall(v,P,DP,DDP){}
 
-	virtual Vector getDDP(Vector P, Vector DP)const override{return -P_;}
+	virtual Vector getDDP(Vector P, Vector DP)override{return -P_;}
 	
 
 
