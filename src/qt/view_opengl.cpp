@@ -146,7 +146,7 @@ QMatrix4x4 getModelMatrix(Top const& top) {
 	QMatrix4x4 modelMatrix;
 	
 	// Translate la toupie au bon endroit
-	modelMatrix.translate(top.x(), top.y(), top.z());
+	modelMatrix.translate(top.x(), top.y(), -top.z());
 
 	// Oriente la toupie par rapport aux angles d'euler
 	modelMatrix.rotate(toDegrees(top.psi()), 0.0, 1.0, 0.0);
@@ -269,4 +269,54 @@ void ViewOpenGL::draw(Gyroscope const& top) {
 	prog.setAttributeValue(aVertex, 0.0, 0.0, 0.0);
 	prog.setAttributeValue(aVertex, 0.0, 2 * d, 0.0);
 	glEnd();
+}
+
+void ViewOpenGL::draw(ChineseTop const& top) {
+	// Matrice de transformation (position, orientation) pour le cone
+	QMatrix4x4 modelMatrix(getModelMatrix(top));
+	prog.setUniformValue("model", modelMatrix);
+	
+	// Ajoute le centre de masse a la trajectoire
+	addToTrajectory(top.objectID, modelMatrix * QVector3D(0, top.getHeightCM(), 0));
+
+	// Valeurs specifiques au cone
+	double R(sqrt(pow(top.getRadius(), 2) - pow(top.getRadius() - top.getTruncatedHeight(), 2)));
+	double L(top.getRadius() - top.getTruncatedHeight());
+
+	uint sides(50); // Nombre de cotes du cone
+	double sideAngle(2 * M_PI / sides);
+	glBegin(GL_TRIANGLES);
+	for (uint i(0); i < sides; i++) {
+		// Vecteurs sur la base du cone
+		Vector v1 {R * cos(sideAngle * i), L, R * sin(sideAngle * i)};
+		Vector v2 {R * cos(sideAngle * (i + 1)), L, R * sin(sideAngle * (i + 1))};	
+		// Vecteur normal au triangle du cote du cone
+		Vector n = ~(v1 ^ v2);
+		
+		// Couleur qui varie avec l'angle
+		double red(1.0);
+		double green(0.4 + cos(sideAngle * i) * 0.4);
+		double blue(0.0);
+		prog.setAttributeValue(aColor, red, green, blue);
+		
+		// Assigne le vecteur normal pour l'eclairage
+		prog.setAttributeValue(aNormal, n[0], n[1], n[2]);
+
+		// Triangle du cote du cone
+		prog.setAttributeValue(aVertex, 0.0, 0.0, 0.0);
+		prog.setAttributeValue(aVertex, v1[0], v1[1], v1[2]);
+		prog.setAttributeValue(aVertex, v2[0], v2[1], v2[2]);
+
+		//prog.setAttributeValue(aColor, 0.9, 0.9, 0.9); // noir
+
+		// Vecteur normal de la base du cone
+		prog.setAttributeValue(aNormal, 0.0, 1.0, 0.0);
+
+		// Triangle correspondant a la base du cone
+		prog.setAttributeValue(aVertex, 0.0, L, 0.0);
+		prog.setAttributeValue(aVertex, v2[0], v2[1], v2[2]);
+		prog.setAttributeValue(aVertex, v1[0], v1[1], v1[2]);
+	}
+	glEnd();
+
 }
