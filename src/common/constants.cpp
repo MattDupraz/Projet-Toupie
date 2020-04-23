@@ -1,2 +1,5 @@
 #include "constants.h"
-const double g(9.81);
+
+namespace constants {
+	const double g(9.81);
+}

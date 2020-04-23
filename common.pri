@@ -5,7 +5,8 @@ SOURCES += src/common/vect.cpp \
            src/common/top.cpp \
            src/common/math_utils.cpp \
            src/common/integrator.cpp \
-           src/common/system.cpp
+           src/common/system.cpp \
+           src/common/constants.cpp
 HEADERS += src/common/vect.h \
            src/common/matrix_3x3.h \
            src/common/view.h \
