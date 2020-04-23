@@ -17,8 +17,6 @@ Contrôle:
   - Libérer la souris: `Esc`
 
 Affichage des tests:
-  - Les fichiers sont au format :    1           2               3               4
-                                   temps - 1e composante - 2e composante - 3e composante
+  - Les fichiers sont au format : temps    vecteur degré liberté
   1.ouvrir gnuplot
-  2.taper : `plot "nom_fichier.txt" u 1:n linesp
-  3.n est un entier entre 2 et 4
+  2.taper : `plot "nom_fichier.txt" w linesp`

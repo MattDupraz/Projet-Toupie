@@ -157,19 +157,20 @@ void Tests::testIntegration() {
 	// Initialise le systeme
 	System system(view, integrator);
 	// Ajoute des toupies au systeme
-	system.add(make_unique<Gyroscope>(view, 
-		Vector {0, 0, 0}, 
-		Vector {0, 0.5, 0}, 
-		Vector {0, 0, 160},
-		1.0, 0.1, 0.2, 1.0));
-	system.add(make_unique<SimpleCone>(view,
-		Vector {0, 0, 1}, 
-		Vector {0,0.5,0}, 
-		Vector {0,0,70},
-		0.1, 1.5, 0.75));
+	system.add(make_unique<TopTestFall>(view, 
+		Vector {0}, 
+		Vector {0}, 
+		Vector {-9.81}));
+	system.add(make_unique<TopTestSine>(view,
+		Vector {1}, 
+		Vector {0}, 
+		Vector {0}));
+	
+	Vector a{0,0,0};
+	cout << system.getTop(1).getDDP(system.getTop(1).getP(),system.getTop(1).getDP()) << endl;
 		
-	string file1("./tests/test_cone_simple.txt");
-	string file2("./tests/test_gyroscope.txt");
+	string file1("./tests/test_chute_libre.txt");
+	string file2("./tests/test_sinus.txt");
 
 	cout << "Opening file " << file1 << "..." << endl;
 	ofstream out1(file1);

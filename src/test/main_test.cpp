@@ -1,5 +1,4 @@
 #include "tests.h"
-#include "view_test.h"
 #include "system.h"
 #include "top.h"
 #include "integrator.h"

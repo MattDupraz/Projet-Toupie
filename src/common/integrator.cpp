@@ -18,6 +18,7 @@ void EulerCromerIntegrator::evolve(
 // Implementation de la methode de Newmark
 void NewmarkIntegrator::evolve(
 		Top& top, double dt){
+	
 	Vector oldP(top.getP());
 	Vector oldDP(top.getDP());
 	Vector P(oldP);
@@ -28,6 +29,7 @@ void NewmarkIntegrator::evolve(
 	
 	// Variable count introduite pour empecher une boucle infinie
 	int count(0);
+	
 	do{
 		q = P;
 		Vector r(top.getDDP(P, DP));
@@ -35,6 +37,7 @@ void NewmarkIntegrator::evolve(
 		DP = oldDP + dt/2.0 * (r + s);
 		P = oldP + dt*oldDP + pow(dt, 2)/3.0 * (1.0/2.0 * r + s);
 		++count;
+		
 	} while ((P - q).norm() >= epsilon && count < 1000);
 	top.setP(P);
 	top.setDP(DP);
