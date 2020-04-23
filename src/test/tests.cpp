@@ -13,7 +13,7 @@
 using namespace std;
 
 void Tests::testVector() {	
-	cout << endl << "-= BEGIN TEST VECTOR =-" << endl << endl;
+	cout << "\n-= BEGIN TEST VECTOR =-\n" << endl;
 
 	Vector v1{1.0, 2.0, 3.0};
 	Vector v2{-1.0, -1.5, 2.0};
@@ -70,7 +70,7 @@ void Tests::testVector() {
 
 void Tests::testMatrix3x3() {
 
-	cout << endl << "-= BEGIN TEST MATRIX 3X3 =-" << endl << endl;
+	cout << "\n-= BEGIN TEST MATRIX 3X3 =-\n" << endl;
 
 	Matrix3x3 A;
 	cout << "A = " << endl << A;
@@ -113,13 +113,13 @@ void Tests::testMatrix3x3() {
 	cout << "A.transp() -> " << endl << A.transp();
 	cout << "A.det() -> " << A.det() << endl;
 
-	cout << endl << "-= END TEST MATRIX 3X3 =-" << endl << endl;
+	cout << "\n-= END TEST MATRIX 3X3 =-\n" << endl;
 
 }
 
 void Tests::testTop(){
 	
-	cout << "-= BEGIN TEST TOP =-" << endl;
+	cout << "\n-= BEGIN TEST TOP =-\n" << endl;
 	
 	shared_ptr<View> view(new ViewText);
 	
@@ -140,84 +140,64 @@ void Tests::testTop(){
 	
 	std::cout << system;
 	
-	cout << "-= END TEST TOP =-" << endl;
+	cout << "\n-= END TEST TOP =-\n" << endl;
 	
 	}
 
 void Tests::testIntegration() {
 
-	cout << "-= BEGIN TEST INTEGRATOR =-" << endl;
+	cout << "\n-= BEGIN TEST INTEGRATOR =-\n" << endl;
 
-	size_t nbrepet(100000);
+	size_t n_iter(100000);
 	constexpr double dt(0.01);
 
-	shared_ptr<View> view(new ViewText);
+	EulerCromerIntegrator euler_cromer;
+	NewmarkIntegrator newmark;
+	RungeKuttaIntegrator runge_kutta;
 
-	shared_ptr<Integrator> integrator1 = make_shared<EulerCromerIntegrator>();
-	shared_ptr<Integrator> integrator2 = make_shared<NewmarkIntegrator>();
-	shared_ptr<Integrator> integrator3 = make_shared<RungeKuttaIntegrator>();
-	// Initialise le systeme
-	vector<System*> liste_system;
-	
-	liste_system.push_back(new System(view, integrator1));
-	liste_system.push_back(new System(view, integrator2));
-	liste_system.push_back(new System(view, integrator3));
-	// Ajoute des toupies au systemes
-	for (auto& syst : liste_system){
-		syst->add(make_unique<TopTestFall>(view, 
+	TopTestFall free_fall(nullptr, 
 			Vector {0}, 
 			Vector {0}, 
-			Vector {-9.81}));
-		syst->add(make_unique<TopTestSine>(view,
+			Vector {-9.81});
+	TopTestSine sine_wave(nullptr,
 			Vector {1}, 
 			Vector {0}, 
-			Vector {0}));
+			Vector {0});
+
+	struct TestData {
+		string file;
+		Top& top;
+		Integrator& integrator;
+	};
+		
+	TestData tests[] = {
+		{ "./tests/test_euler_chute_libre.txt", free_fall, euler_cromer },
+		{ "./tests/test_euler_sinus.txt", sine_wave, euler_cromer },
+		{ "./tests/test_newmark_chute_libre.txt", free_fall, newmark },
+		{ "./tests/test_newmark_sinus.txt", sine_wave, newmark },
+		{ "./tests/test_runge_chute_libre.txt", free_fall, runge_kutta },
+		{ "./tests/test_runge_sinus.txt", sine_wave, runge_kutta }
+	};
+	
+	for (TestData& test : tests){
+		cout << "Opening file " << test.file << "... ";
+		ofstream ofs(test.file);
+		cout << "DONE" << endl;
+
+		cout << "Running simulation... ";
+		double elapsed(0.0);
+		for (size_t i(0); i < n_iter; ++i) {
+			test.integrator.evolve(test.top, dt);
+			elapsed += dt;
+
+			ofs << elapsed << " " << test.top.getP() << endl;
+		}
+		cout << "DONE" << endl;
+
+		cout << "Closing file " << test.file << "... ";
+		ofs.close();
+		cout << "DONE \n" << endl;
 	}
-		
-	string file1("./tests/test_euler_chute_libre.txt");
-	string file2("./tests/test_euler_sinus.txt");
-	
-	string file3("./tests/test_newmark_chute_libre.txt");
-	string file4("./tests/test_newmark_sinus.txt");
-	
-	string file5("./tests/test_runge_chute_libre.txt");
-	string file6("./tests/test_runge_sinus.txt");
-	
-	vector<string> file_liste{file1, file2, file3, file4, file5, file6};
-	
-	vector<ofstream> out(6);
-	
-	for (size_t i(0); i<6 ; ++i){
-		cout << "Opening file " << file_liste[i] << "..." << endl;
-		out[i].open(file_liste[i]);
-		cout << "- Done!" << endl;
-		}
 
-	cout << "Running simulation..." << endl;
-	for (size_t i(0); i < nbrepet ; ++i){
-		for (auto& syst : liste_system){
-			syst->evolve(dt);
-		}
-
-		
-		out[0] << liste_system[0]->getElapsedTime() << "  " 
-			   <<  liste_system[0]->getTop(0).getP() << endl;
-		out[1] << liste_system[0]->getElapsedTime() << "  " 
-			   <<  liste_system[0]->getTop(1).getP() << endl;
-			   
-		out[2] << liste_system[1]->getElapsedTime() << "  " 
-			   <<  liste_system[1]->getTop(0).getP() << endl;
-		out[3] << liste_system[1]->getElapsedTime() << "  " 
-			   <<  liste_system[1]->getTop(1).getP() << endl;
-		
-		out[4] << liste_system[2]->getElapsedTime() << "  " 
-			   <<  liste_system[2]->getTop(0).getP() << endl;
-		out[5] << liste_system[2]->getElapsedTime() << "  " 
-			   <<  liste_system[2]->getTop(1).getP() << endl;
-		}
-	
-	
-	cout << "- Done!" << endl;
-
-	cout << "-= TEST INTEGRATOR =-" << endl;
+	cout << "\n-= END TEST INTEGRATOR =-\n" << endl;
 }
