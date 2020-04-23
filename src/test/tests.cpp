@@ -148,7 +148,7 @@ void Tests::testIntegration() {
 
 	cout << "\n-= BEGIN TEST INTEGRATOR =-\n" << endl;
 
-	size_t n_iter(100000);
+	size_t n_iter(6000); // 1 minute
 	constexpr double dt(0.01);
 
 	EulerCromerIntegrator euler_cromer;
@@ -179,24 +179,38 @@ void Tests::testIntegration() {
 		{ "./tests/test_runge_sinus.txt", sine_wave, runge_kutta }
 	};
 	
+	bool error_flag(false);
+
 	for (TestData& test : tests){
-		cout << "Opening file " << test.file << "... ";
+		cout << "Opening file " << test.file << "... " << flush;
 		ofstream ofs(test.file);
-		cout << "DONE" << endl;
+		if (ofs.good()) {
+			cout << "DONE" << endl;
 
-		cout << "Running simulation... ";
-		double elapsed(0.0);
-		for (size_t i(0); i < n_iter; ++i) {
-			test.integrator.evolve(test.top, dt);
-			elapsed += dt;
+			cout << "Running simulation... " << flush;
+			double elapsed(0.0);
+			for (size_t i(0); i < n_iter; ++i) {
+				test.integrator.evolve(test.top, dt);
+				elapsed += dt;
 
-			ofs << elapsed << " " << test.top.getP() << endl;
+				ofs << elapsed << " " << test.top.getP() << endl;
+			}
+			cout << "DONE" << endl;
+
+			cout << "Closing file " << test.file << "... " << flush;
+			ofs.close();
+			cout << "DONE \n" << endl;
+		} else {
+			cout << "ERROR" << endl;
+			error_flag = true;
 		}
-		cout << "DONE" << endl;
+	}
 
-		cout << "Closing file " << test.file << "... ";
-		ofs.close();
-		cout << "DONE \n" << endl;
+	if (error_flag) {
+		cout << "Failed to open one or more files, "
+		  << "does the directory `tests` exist?" << endl;
+	} else {
+		cout << "All tests completed successfuly" << endl;
 	}
 
 	cout << "\n-= END TEST INTEGRATOR =-\n" << endl;
