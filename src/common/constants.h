@@ -3,5 +3,5 @@
 
 namespace constants {
 	// Accelleration gravitationelle;
-	extern const double g(9.81);
+	extern const double g;
 }

@@ -7,6 +7,7 @@
 #include "view_text.h"
 #include "system.h"
 #include "integrator.h"
+#include "constants.h"
 #include <memory>
 #include <utility>
 
@@ -151,32 +152,35 @@ void Tests::testIntegration() {
 	size_t n_iter(6000); // 1 minute
 	constexpr double dt(0.01);
 
+	// Integrateurs a tester
 	EulerCromerIntegrator euler_cromer;
 	NewmarkIntegrator newmark;
 	RungeKuttaIntegrator runge_kutta;
 
-	TopTestFall free_fall(nullptr, 
-			Vector {0}, 
-			Vector {0}, 
-			Vector {-9.81});
-	TopTestSine sine_wave(nullptr,
-			Vector {1}, 
-			Vector {0}, 
-			Vector {0});
+	// Cree une nouvelle instance de ces toupies
+	auto top_fall = [](){
+		return new TopTestFall(nullptr,
+				Vector {0}, Vector {0}, Vector {constants::g});
+	};
+	auto top_sine = [](){
+		return new TopTestSine(nullptr,
+				Vector {1}, Vector {0}, Vector {0});
+	};
 
+	// Structure qui definit un test
 	struct TestData {
 		string file;
-		Top& top;
+		Top* top;
 		Integrator& integrator;
 	};
 		
 	TestData tests[] = {
-		{ "./tests/test_euler_chute_libre.txt", free_fall, euler_cromer },
-		{ "./tests/test_euler_sinus.txt", sine_wave, euler_cromer },
-		{ "./tests/test_newmark_chute_libre.txt", free_fall, newmark },
-		{ "./tests/test_newmark_sinus.txt", sine_wave, newmark },
-		{ "./tests/test_runge_chute_libre.txt", free_fall, runge_kutta },
-		{ "./tests/test_runge_sinus.txt", sine_wave, runge_kutta }
+		{ "./tests/test_euler_chute_libre.txt", top_fall(), euler_cromer },
+		{ "./tests/test_euler_sinus.txt", top_sine(), euler_cromer },
+		{ "./tests/test_newmark_chute_libre.txt", top_fall(), newmark },
+		{ "./tests/test_newmark_sinus.txt", top_sine(), newmark },
+		{ "./tests/test_runge_chute_libre.txt", top_fall(), runge_kutta },
+		{ "./tests/test_runge_sinus.txt", top_sine(), runge_kutta }
 	};
 	
 	bool error_flag(false);
@@ -190,10 +194,10 @@ void Tests::testIntegration() {
 			cout << "Running simulation... " << flush;
 			double elapsed(0.0);
 			for (size_t i(0); i < n_iter; ++i) {
-				test.integrator.evolve(test.top, dt);
+				test.integrator.evolve(*test.top, dt);
 				elapsed += dt;
 
-				ofs << elapsed << " " << test.top.getP() << endl;
+				ofs << elapsed << " " << test.top->getP() << endl;
 			}
 			cout << "DONE" << endl;
 
