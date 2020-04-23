@@ -2,16 +2,15 @@
 	error("Couldn't find the common.pri file!")
 }
 
-INCLUDEPATH += src/text
+INCLUDEPATH += src/txt
 
 TARGET = project_test
 
 SOURCES += src/test/main_test.cpp \
            src/test/tests.cpp \
-           src/test/view_test.cpp
+			  src/txt/view_text.cpp
 
-HEADERS += src/test/tests.h \
-           src/test/view_test.h\
-	   src/test/top_test.h
+HEADERS += src/test/tests.h
+           src/txt/view_text.h
 
 

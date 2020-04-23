@@ -4,7 +4,7 @@
 #include "tests.h"
 #include "vect.h"
 #include "matrix_3x3.h"
-#include "view_test.h"
+#include "view_text.h"
 #include "system.h"
 #include "integrator.h"
 #include <memory>
@@ -121,22 +121,22 @@ void Tests::testTop(){
 	
 	cout << "-= BEGIN TEST TOP =-" << endl;
 	
-	shared_ptr<View> view(new ViewTest);
+	shared_ptr<View> view(new ViewText);
 	
-		shared_ptr<Integrator> integrator = make_shared<NewmarkIntegrator>();
-		// Initialise le systeme
-		System system(view, integrator);
-		// Ajoute des toupies au systeme
-		system.add(make_unique<Gyroscope>(view, 
-			Vector {0, 0, 0}, 
-			Vector {0, 0.5, 0}, 
-			Vector {0, 0, 160},
-			1.0, 0.1, 0.2, 1.0));
-		system.add(make_unique<SimpleCone>(view,
-			Vector {0, 0, 1}, 
-			Vector {0,0.5,0}, 
-			Vector {0,0,70},
-			0.1, 1.5, 0.75));
+	shared_ptr<Integrator> integrator = make_shared<NewmarkIntegrator>();
+	// Initialise le systeme
+	System system(view, integrator);
+	// Ajoute des toupies au systeme
+	system.add(make_unique<Gyroscope>(view, 
+		Vector {0, 0, 0}, 
+		Vector {0, 0.5, 0}, 
+		Vector {0, 0, 160},
+		1.0, 0.1, 0.2, 1.0));
+	system.add(make_unique<SimpleCone>(view,
+		Vector {0, 0, 1}, 
+		Vector {0,0.5,0}, 
+		Vector {0,0,70},
+		0.1, 1.5, 0.75));
 	
 	std::cout << system;
 	
@@ -145,37 +145,55 @@ void Tests::testTop(){
 	}
 
 void Tests::testIntegration() {
-		size_t nbrepet(1000);
-		constexpr double dt(0.01);
-	
-		shared_ptr<View> view(new ViewTest);
-	
-		shared_ptr<Integrator> integrator = make_shared<NewmarkIntegrator>();
-		// Initialise le systeme
-		System system(view, integrator);
-		// Ajoute des toupies au systeme
-		system.add(make_unique<Gyroscope>(view, 
-			Vector {0, 0, 0}, 
-			Vector {0, 0.5, 0}, 
-			Vector {0, 0, 160},
-			1.0, 0.1, 0.2, 1.0));
-		system.add(make_unique<SimpleCone>(view,
-			Vector {0, 0, 1}, 
-			Vector {0,0.5,0}, 
-			Vector {0,0,70},
-			0.1, 1.5, 0.75));
-			
-		ofstream out1("./tests/test_cone_simple.txt");
-		ofstream out2("./tests/test_gyroscope.txt");
 
-		for (size_t i(0); i < nbrepet ; ++i){
-			system.evolve(dt);
+	cout << "-= BEGIN TEST INTEGRATOR =-" << endl;
 
-			out1 << system.getElapsedTime() << " " << system.getTop(0).getP() << endl;
-			
-			out2 << system.getElapsedTime() << " " << system.getTop(1).getP() << endl;
-		}
-		out1.close();
-		out2.close();
+	size_t nbrepet(1000);
+	constexpr double dt(0.01);
+
+	shared_ptr<View> view(new ViewText);
+
+	shared_ptr<Integrator> integrator = make_shared<NewmarkIntegrator>();
+	// Initialise le systeme
+	System system(view, integrator);
+	// Ajoute des toupies au systeme
+	system.add(make_unique<Gyroscope>(view, 
+		Vector {0, 0, 0}, 
+		Vector {0, 0.5, 0}, 
+		Vector {0, 0, 160},
+		1.0, 0.1, 0.2, 1.0));
+	system.add(make_unique<SimpleCone>(view,
+		Vector {0, 0, 1}, 
+		Vector {0,0.5,0}, 
+		Vector {0,0,70},
+		0.1, 1.5, 0.75));
 		
+	string file1("./tests/test_cone_simple.txt");
+	string file2("./tests/test_gyroscope.txt");
+
+	cout << "Opening file " << file1 << "..." << endl;
+	ofstream out1(file1);
+	cout << "- Done!" << endl;
+
+	cout << "Opening file " << file2 << "..." << endl;
+	ofstream out2(file2);
+	cout << "- Done!" << endl;
+
+	cout << "Running simulation..." << endl;
+	for (size_t i(0); i < nbrepet ; ++i){
+		system.evolve(dt);
+
+		out1 << system.getElapsedTime() << " " << system.getTop(0).getP() << endl;
+		
+		out2 << system.getElapsedTime() << " " << system.getTop(1).getP() << endl;
+	}
+	cout << "- Done!" << endl;
+
+	cout << "Closing file " << file1 << "..." << endl;
+	out1.close();
+	cout << "Closing file " << file2 << "..." << endl;
+	out2.close();
+	cout << "- Done!" << endl;
+		
+	cout << "-= TEST INTEGRATOR =-" << endl;
 }
