@@ -23,6 +23,7 @@ class ViewOpenGL : public View {
 		// Methodes pour dessiner des objets dessinables
 		virtual void draw(SimpleCone const& top) override;
 		virtual void draw(Gyroscope const& top) override;
+		virtual void draw(ChineseTop const& top) override;
 		virtual void draw(System const& system) override;
 
 		// Ajoute une position a une trajectoire

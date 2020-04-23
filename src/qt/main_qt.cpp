@@ -4,6 +4,7 @@
 #include "system.h"
 #include "view_opengl.h"
 #include "vect.h"
+#include "math.h"
 
 #include <memory>
 #include <utility>
@@ -27,6 +28,10 @@ int main(int argc, char* argv[]) {
 		Vector {0,0.5,0},
 		Vector {0,0,170},
 		0.1, 1.5, 0.75));
+	system->add(std::make_unique<ChineseTop>(view,
+		Vector {0,0.5,0, 0, 0},
+		Vector {0,0,20, 0, 0},
+		0.1, 0.75, 0.6));
 	
 	// Affiche les conditions initialles du systeme
 	std::cout << *system;
