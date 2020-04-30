@@ -9,6 +9,7 @@
 
 #include "view.h"
 #include "top.h"
+#include "gl_mesh.h"
 
 class ViewOpenGL : public View {
 	public:
@@ -28,7 +29,7 @@ class ViewOpenGL : public View {
 
 		// Ajoute une position a une trajectoire
 		// La trajectoire est identifiee par un int unique
-		void addToTrajectory(unsigned int, QVector3D);
+		void addToTrajectory(std::vector<QVector3D>&, QVector3D);
 		// Dessine les trajectoires
 		void drawTrajectories();
 		// Dessine le sol
@@ -62,8 +63,11 @@ class ViewOpenGL : public View {
 		Vector cameraPos;
 
 		// Dictionaire de trajectoires
-		std::map<unsigned int, std::vector<QVector3D>> trajectories;
+		std::map<unsigned int, std::vector<QVector3D>> trajectoriesA;
+		std::map<unsigned int, std::vector<QVector3D>> trajectoriesCM;
 
 		// Nombre maximum de vecteurs dans une trajectoire
 		int maxTrajectoryLength = 1000;
+
+		GLMesh cone;
 };

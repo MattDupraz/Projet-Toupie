@@ -19,7 +19,7 @@ void ViewOpenGL::init() {
 
 	// Attribue une ID unique aux attributs qu'on veux transmettre
 	// aux shaders, voir vertex_shader.h et res/vertex_shader.glsl
-	prog.bindAttributeLocation("aVertex", aVertex);
+	prog.bindAttributeLocation("aPos", aPos);
 	prog.bindAttributeLocation("aColor", aColor);
 	prog.bindAttributeLocation("aNormal", aNormal);
 
@@ -39,6 +39,8 @@ void ViewOpenGL::init() {
 	// Definie la position et couleur de la source de lumiere
 	prog.setUniformValue("lightPos", 0.0, 30.0, 5.0);
 	prog.setUniformValue("lightColor", 1.0, 1.0, 1.0);
+
+	cone.init_cone(prog, 25);
 }
 
 void ViewOpenGL::draw(System const& system) {
@@ -82,8 +84,7 @@ void ViewOpenGL::translateCamera(Vector diff) {
 }
 
 // Ajoute un vecteur a la trajectoire d'une toupie
-void ViewOpenGL::addToTrajectory(unsigned int ID, QVector3D vec) {
-	std::vector<QVector3D>& v = trajectories[ID];
+void ViewOpenGL::addToTrajectory(std::vector<QVector3D>& v, QVector3D vec) {
 	// Ajoute le vecteur ssi la difference avec le dernier vecteur
 	// ajoute est assez large
 	if (v.empty() || (v.back() - vec).lengthSquared() > 0.00001) {
@@ -102,12 +103,21 @@ void ViewOpenGL::drawTrajectories() {
 	// Reinitialise la matrice de transformation du modele a l'identite
 	// (pas de transformation)
 	prog.setUniformValue("model", QMatrix4x4());
-	for (const auto& entry : trajectories) {
+	for (const auto& entry : trajectoriesCM) {
+		const std::vector<QVector3D>& trajectory = entry.second;
+		prog.setAttributeValue(aColor, 0.0, 0.0, 1.0); // couleur de la trajectoire
+		glBegin(GL_LINE_STRIP); // "Chaine" de lignes
+		for (const QVector3D& vec : trajectory) {
+			prog.setAttributeValue(aPos, vec);
+		}
+		glEnd();
+	}
+	for (const auto& entry : trajectoriesA) {
 		const std::vector<QVector3D>& trajectory = entry.second;
 		prog.setAttributeValue(aColor, 1.0, 0.0, 0.0); // couleur de la trajectoire
 		glBegin(GL_LINE_STRIP); // "Chaine" de lignes
 		for (const QVector3D& vec : trajectory) {
-			prog.setAttributeValue(aVertex, vec);
+			prog.setAttributeValue(aPos, vec);
 		}
 		glEnd();
 	}
@@ -129,10 +139,10 @@ void ViewOpenGL::drawFloor() {
 			double brightness(((x + y) % 2) ? 0.5 : 0.25);
 			prog.setAttributeValue(aColor, brightness, brightness, brightness);
 
-			prog.setAttributeValue(aVertex, double(x), 0.0, double(y));
-			prog.setAttributeValue(aVertex, double(x), 0.0, double(y + 1));
-			prog.setAttributeValue(aVertex, double(x + 1), 0.0, double(y + 1));
-			prog.setAttributeValue(aVertex, double(x + 1), 0.0, double(y));
+			prog.setAttributeValue(aPos, double(x), 0.0, double(y));
+			prog.setAttributeValue(aPos, double(x), 0.0, double(y + 1));
+			prog.setAttributeValue(aPos, double(x + 1), 0.0, double(y + 1));
+			prog.setAttributeValue(aPos, double(x + 1), 0.0, double(y));
 		}
 	}
 	glEnd();
@@ -160,50 +170,20 @@ QMatrix4x4 getModelMatrix(Top const& top) {
 void ViewOpenGL::draw(SimpleCone const& top) {
 	// Matrice de transformation (position, orientation) pour le cone
 	QMatrix4x4 modelMatrix(getModelMatrix(top));
-	prog.setUniformValue("model", modelMatrix);
 	
 	// Ajoute le centre de masse a la trajectoire
-	addToTrajectory(top.objectID, modelMatrix * QVector3D(0, top.getHeightCM(), 0));
+	addToTrajectory(trajectoriesCM[top.objectID], modelMatrix * QVector3D(0, top.getHeightCM(), 0));
+	addToTrajectory(trajectoriesA[top.objectID], QVector3D(top.x(), 0.05, -top.z()));
 
 	// Valeurs specifiques au cone
 	double R(top.getRadius());
 	double L(top.getHeight());
 
-	uint sides(50); // Nombre de cotes du cone
-	double sideAngle(2 * M_PI / sides);
-	glBegin(GL_TRIANGLES);
-	for (uint i(0); i < sides; i++) {
-		// Vecteurs sur la base du cone
-		Vector v1 {R * cos(sideAngle * i), L, R * sin(sideAngle * i)};
-		Vector v2 {R * cos(sideAngle * (i + 1)), L, R * sin(sideAngle * (i + 1))};	
-		// Vecteur normal au triangle du cote du cone
-		Vector n = ~(v1 ^ v2);
-		
-		// Couleur qui varie avec l'angle
-		double red(1.0);
-		double green(0.4 + cos(sideAngle * i) * 0.4);
-		double blue(0.0);
-		prog.setAttributeValue(aColor, red, green, blue);
-		
-		// Assigne le vecteur normal pour l'eclairage
-		prog.setAttributeValue(aNormal, n[0], n[1], n[2]);
+	modelMatrix.scale(R, L, R);
+	prog.setUniformValue("model", modelMatrix);
 
-		// Triangle du cote du cone
-		prog.setAttributeValue(aVertex, 0.0, 0.0, 0.0);
-		prog.setAttributeValue(aVertex, v1[0], v1[1], v1[2]);
-		prog.setAttributeValue(aVertex, v2[0], v2[1], v2[2]);
+	cone.draw();
 
-		//prog.setAttributeValue(aColor, 0.9, 0.9, 0.9); // noir
-
-		// Vecteur normal de la base du cone
-		prog.setAttributeValue(aNormal, 0.0, 1.0, 0.0);
-
-		// Triangle correspondant a la base du cone
-		prog.setAttributeValue(aVertex, 0.0, L, 0.0);
-		prog.setAttributeValue(aVertex, v2[0], v2[1], v2[2]);
-		prog.setAttributeValue(aVertex, v1[0], v1[1], v1[2]);
-	}
-	glEnd();
 }
 
 
@@ -213,7 +193,8 @@ void ViewOpenGL::draw(Gyroscope const& top) {
 	prog.setUniformValue("model", modelMatrix);
 	
 	// Ajoute le centre de masse a la trajectoire
-	addToTrajectory(top.objectID, modelMatrix * QVector3D(0, top.getHeightCM(), 0));
+	addToTrajectory(trajectoriesCM[top.objectID], modelMatrix * QVector3D(0, top.getHeightCM(), 0));
+	addToTrajectory(trajectoriesA[top.objectID], QVector3D(top.x(), 0.05, -top.z()));
 
 	double R(top.getRadius());
 	double L(top.getThickness());
@@ -228,7 +209,7 @@ void ViewOpenGL::draw(Gyroscope const& top) {
 		Vector v1 {R * cos(sideAngle * i), d + L/2.0, R * sin(sideAngle * i)};
 		Vector u2 {R * cos(sideAngle * (i + 1)), d - L/2.0, R * sin(sideAngle * (i + 1))};	
 		Vector v2 {R * cos(sideAngle * (i + 1)), d + L/2.0, R * sin(sideAngle * (i + 1))};	
-		Vector n = ~(Vector{0, -1, 0} ^ (v2 - v1)); // Vecteur normal au cote
+		Vector n = ~(Vector{0, 1, 0} ^ (v2 - v1)); // Vecteur normal au cote
 		
 		// Couleur qui varie avec l'angle
 		double red(0.0);
@@ -239,35 +220,37 @@ void ViewOpenGL::draw(Gyroscope const& top) {
 		// Normale de la face du cote
 		prog.setAttributeValue(aNormal, n[0], n[1], n[2]);
 		// Face du cote du disque
-		prog.setAttributeValue(aVertex, u1[0], u1[1], u1[2]);
-		prog.setAttributeValue(aVertex, v1[0], v1[1], v1[2]);
-		prog.setAttributeValue(aVertex, v2[0], v2[1], v2[2]);
+		prog.setAttributeValue(aPos, u1[0], u1[1], u1[2]);
+		prog.setAttributeValue(aPos, v1[0], v1[1], v1[2]);
+		prog.setAttributeValue(aPos, v2[0], v2[1], v2[2]);
 
-		prog.setAttributeValue(aVertex, v2[0], v2[1], v2[2]);
-		prog.setAttributeValue(aVertex, u2[0], u2[1], u2[2]);
-		prog.setAttributeValue(aVertex, u1[0], u1[1], u1[2]);
+		prog.setAttributeValue(aPos, v2[0], v2[1], v2[2]);
+		prog.setAttributeValue(aPos, u2[0], u2[1], u2[2]);
+		prog.setAttributeValue(aPos, u1[0], u1[1], u1[2]);
 
 		// Normale a la face du haut du disque
 		prog.setAttributeValue(aNormal, 0.0, 1.0, 0.0);
 		// Face du haut du disque
-		prog.setAttributeValue(aVertex, 0.0, d + L/2.0, 0.0);
-		prog.setAttributeValue(aVertex, v2[0], v2[1], v2[2]);
-		prog.setAttributeValue(aVertex, v1[0], v1[1], v1[2]);
+		prog.setAttributeValue(aPos, 0.0, d + L/2.0, 0.0);
+		prog.setAttributeValue(aPos, v2[0], v2[1], v2[2]);
+		prog.setAttributeValue(aPos, v1[0], v1[1], v1[2]);
 
 		// Normale a la face du bas du disque
 		prog.setAttributeValue(aNormal, 0.0, -1.0, 0.0);
 		// Face du bas du disque
-		prog.setAttributeValue(aVertex, 0.0, d - L/2.0, 0.0);
-		prog.setAttributeValue(aVertex, u1[0], u1[1], u1[2]);
-		prog.setAttributeValue(aVertex, u2[0], u2[1], u2[2]);
+		prog.setAttributeValue(aPos, 0.0, d - L/2.0, 0.0);
+		prog.setAttributeValue(aPos, u1[0], u1[1], u1[2]);
+		prog.setAttributeValue(aPos, u2[0], u2[1], u2[2]);
 	}
 	glEnd();
 
 	// Tige qui "supporte" le disque en rotation
 	glLineWidth(3.0);
 	glBegin(GL_LINES);
-	prog.setAttributeValue(aVertex, 0.0, 0.0, 0.0);
-	prog.setAttributeValue(aVertex, 0.0, 2 * d, 0.0);
+	prog.setAttributeValue(aColor, 0.0, 0.0, 1.0);
+	prog.setAttributeValue(aNormal, 0.0, 1.0, 0.0);
+	prog.setAttributeValue(aPos, 0.0, 0.0, 0.0);
+	prog.setAttributeValue(aPos, 0.0, 2 * d, 0.0);
 	glEnd();
 }
 
@@ -277,7 +260,8 @@ void ViewOpenGL::draw(ChineseTop const& top) {
 	prog.setUniformValue("model", modelMatrix);
 	
 	// Ajoute le centre de masse a la trajectoire
-	addToTrajectory(top.objectID, modelMatrix * QVector3D(0, top.getHeightCM(), 0));
+	addToTrajectory(trajectoriesCM[top.objectID], modelMatrix * QVector3D(0, top.getHeightCM(), 0));
+	addToTrajectory(trajectoriesA[top.objectID], QVector3D(top.x(), 0.05, -top.z()));
 
 	// Valeurs specifiques au cone
 	double R(sqrt(pow(top.getRadius(), 2) - pow(top.getRadius() - top.getTruncatedHeight(), 2)));
@@ -303,9 +287,9 @@ void ViewOpenGL::draw(ChineseTop const& top) {
 		prog.setAttributeValue(aNormal, n[0], n[1], n[2]);
 
 		// Triangle du cote du cone
-		prog.setAttributeValue(aVertex, 0.0, 0.0, 0.0);
-		prog.setAttributeValue(aVertex, v1[0], v1[1], v1[2]);
-		prog.setAttributeValue(aVertex, v2[0], v2[1], v2[2]);
+		prog.setAttributeValue(aPos, 0.0, 0.0, 0.0);
+		prog.setAttributeValue(aPos, v1[0], v1[1], v1[2]);
+		prog.setAttributeValue(aPos, v2[0], v2[1], v2[2]);
 
 		//prog.setAttributeValue(aColor, 0.9, 0.9, 0.9); // noir
 
@@ -313,9 +297,9 @@ void ViewOpenGL::draw(ChineseTop const& top) {
 		prog.setAttributeValue(aNormal, 0.0, 1.0, 0.0);
 
 		// Triangle correspondant a la base du cone
-		prog.setAttributeValue(aVertex, 0.0, L, 0.0);
-		prog.setAttributeValue(aVertex, v2[0], v2[1], v2[2]);
-		prog.setAttributeValue(aVertex, v1[0], v1[1], v1[2]);
+		prog.setAttributeValue(aPos, 0.0, L, 0.0);
+		prog.setAttributeValue(aPos, v2[0], v2[1], v2[2]);
+		prog.setAttributeValue(aPos, v1[0], v1[1], v1[2]);
 	}
 	glEnd();
 
