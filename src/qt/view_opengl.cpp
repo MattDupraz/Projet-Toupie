@@ -78,6 +78,9 @@ void ViewOpenGL::draw(System const& system) {
 		Top const& top(system.getTop(i)); 
 		updateTranslation(top);
 		updateOrientation(top);
+		// Ajoute le centre de masse a la trajectoire
+		addToTrajectory(trajectoriesCM[top.objectID], uTranslation.value() * uOrientation.value() * QVector3D(0, top.getHeightCM(), 0));
+		addToTrajectory(trajectoriesA[top.objectID], QVector3D(top.x(), 0.05, -top.z()));
 		top.draw();
 	}
 }
@@ -176,11 +179,6 @@ void ViewOpenGL::updateTranslation(Top const& top) {
 
 // Dessine le cone
 void ViewOpenGL::draw(SimpleCone const& top) {
-	
-	// Ajoute le centre de masse a la trajectoire
-	addToTrajectory(trajectoriesCM[top.objectID], uTranslation.value() * uOrientation.value() * QVector3D(0, top.getHeightCM(), 0));
-	addToTrajectory(trajectoriesA[top.objectID], QVector3D(top.x(), 0.05, -top.z()));
-
 	// Valeurs specifiques au cone
 	double R(top.getRadius());
 	double L(top.getHeight());
@@ -196,11 +194,6 @@ void ViewOpenGL::draw(SimpleCone const& top) {
 
 
 void ViewOpenGL::draw(Gyroscope const& top) {
-	
-	// Ajoute le centre de masse a la trajectoire
-	addToTrajectory(trajectoriesCM[top.objectID], uTranslation.value() * uOrientation.value() * QVector3D(0, top.getHeightCM(), 0));
-	addToTrajectory(trajectoriesA[top.objectID], QVector3D(top.x(), 0.05, -top.z()));
-
 	double R(top.getRadius());
 	double L(top.getThickness());
 	double d(top.getHeight());
@@ -227,10 +220,6 @@ void ViewOpenGL::draw(Gyroscope const& top) {
 }
 
 void ViewOpenGL::draw(ChineseTop const& top) {
-	// Ajoute le centre de masse a la trajectoire
-	addToTrajectory(trajectoriesCM[top.objectID], uTranslation.value() * uOrientation.value() * QVector3D(0, top.getHeightCM(), 0));
-	addToTrajectory(trajectoriesA[top.objectID], QVector3D(top.x(), 0.05, -top.z()));
-
 	// Valeurs specifiques au cone
 	double R(sqrt(pow(top.getRadius(), 2) - pow(top.getRadius() - top.getTruncatedHeight(), 2)));
 	double L(top.getRadius() - top.getTruncatedHeight());

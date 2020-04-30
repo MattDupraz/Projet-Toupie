@@ -38,6 +38,8 @@ class Top : public Drawable {
 		virtual double x() const { return 0; }
 		virtual double y() const { return 0; }
 		virtual double z() const { return 0; }
+
+		virtual double getHeightCM() const { return 0; }
 		
 		// Returns the second derivative
 		virtual Vector getDDP(Vector P, Vector DP) = 0;
