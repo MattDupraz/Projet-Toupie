@@ -5,6 +5,8 @@
 #include "math_utils.h"
 #include "math.h"
 
+#include "gl_uniform.h"
+
 void ViewOpenGL::init() {
 	// Charge les shaders qui s'occupent de l'affichage
 	// Les fichiers sont accessibles avec l'addresse virtuelle
@@ -31,26 +33,38 @@ void ViewOpenGL::init() {
 	// les objets dessines en arriere plan
 	glEnable(GL_DEPTH_TEST);
 
+
 	// GL_CULL_FACE permet de ne pas dessiner les triangles
 	// qui sont pas "de face" (regle de la main gauche pour
 	// l'ordre des coins du triangle = "vertex")
 	glEnable(GL_CULL_FACE);
 
+	uProjection.bind(&prog, "projection");
+	uView.bind(&prog, "view");
+	uTranslation.bind(&prog, "translation");
+	uOrientation.bind(&prog, "orientation");
+	uScale.bind(&prog, "scale");
+
 	// Definie la position et couleur de la source de lumiere
-	prog.setUniformValue("lightPos", 0.0, 30.0, 5.0);
+	prog.setUniformValue("lightPos", -1.0, 10.0, 2.0);
 	prog.setUniformValue("lightColor", 1.0, 1.0, 1.0);
 
 	cone.init_cone(prog, 25);
+	disk.init_disk(prog, 25);
 }
 
 void ViewOpenGL::draw(System const& system) {
 	// viewMatrix est la transformation du monde par rapport
 	// a la position et orientation de la camera
-	QMatrix4x4 viewMatrix;
-	viewMatrix.rotate(-cameraPitch, 1.0, 0.0, 0.0);
-	viewMatrix.rotate(-cameraYaw, 0.0, 1.0, 0.0);
-	viewMatrix.translate(-cameraPos[0], -cameraPos[1], -cameraPos[2]);
-	prog.setUniformValue("view", viewMatrix);
+	uView.value().setToIdentity();
+	uView.value().rotate(-cameraPitch, 1.0, 0.0, 0.0);
+	uView.value().rotate(-cameraYaw, 0.0, 1.0, 0.0);
+	uView.value().translate(-cameraPos[0], -cameraPos[1], -cameraPos[2]);
+	uView.update();
+
+	uTranslation.reset();
+	uOrientation.reset();
+	uScale.reset();
 
 	// Dessine le sol
 	if (shouldDrawFloor)
@@ -61,7 +75,10 @@ void ViewOpenGL::draw(System const& system) {
 
 	// Dessine les toupies du systeme
 	for (std::size_t i(0); i < system.size(); ++i) {
-		system.getTop(i).draw();
+		Top const& top(system.getTop(i)); 
+		updateTranslation(top);
+		updateOrientation(top);
+		top.draw();
 	}
 }
 
@@ -102,7 +119,6 @@ void ViewOpenGL::addToTrajectory(std::vector<QVector3D>& v, QVector3D vec) {
 void ViewOpenGL::drawTrajectories() {
 	// Reinitialise la matrice de transformation du modele a l'identite
 	// (pas de transformation)
-	prog.setUniformValue("model", QMatrix4x4());
 	for (const auto& entry : trajectoriesCM) {
 		const std::vector<QVector3D>& trajectory = entry.second;
 		prog.setAttributeValue(aColor, 0.0, 0.0, 1.0); // couleur de la trajectoire
@@ -125,11 +141,6 @@ void ViewOpenGL::drawTrajectories() {
 
 // Dessine le sol
 void ViewOpenGL::drawFloor() {
-	// Reinitialise la matrice de transformation du modele a l'identite
-	// (pas de transformation)
-	QMatrix4x4 modelMatrix;
-	prog.setUniformValue("model", modelMatrix);
-
 	glBegin(GL_QUADS);
 	prog.setAttributeValue(aNormal, 0.0, 1.0, 0.0); // Le vecteur normal du sol pour l'eclairage
 	for (int x(-20); x < 20; x++) {
@@ -148,101 +159,52 @@ void ViewOpenGL::drawFloor() {
 	glEnd();
 }
 
-QMatrix4x4 getModelMatrix(Top const& top) {
-	// Matrice qui transforme le modele
-	// Elle nous permet de dessiner la toupie sans se soucier de la
-	// position et orientation de la toupie, ceci est gere dans le vertex shader
-	// en appliquant cette matrice de transformation
-	QMatrix4x4 modelMatrix;
-	
-	// Translate la toupie au bon endroit
-	modelMatrix.translate(top.x(), top.y(), -top.z());
-
+void ViewOpenGL::updateOrientation(Top const& top) {
+	uOrientation.value().setToIdentity();
 	// Oriente la toupie par rapport aux angles d'euler
-	modelMatrix.rotate(toDegrees(top.psi()), 0.0, 1.0, 0.0);
-	modelMatrix.rotate(toDegrees(top.theta()), 1.0, 0.0, 0.0);
-	modelMatrix.rotate(toDegrees(top.phi()), 0.0, 1.0, 0.0);
-	
-	return modelMatrix;
+	uOrientation.value().rotate(toDegrees(top.psi()), 0.0, 1.0, 0.0);
+	uOrientation.value().rotate(toDegrees(top.theta()), 1.0, 0.0, 0.0);
+	uOrientation.value().rotate(toDegrees(top.phi()), 0.0, 1.0, 0.0);
+	uOrientation.update();
+}
+
+void ViewOpenGL::updateTranslation(Top const& top) {
+	uTranslation.value().setToIdentity();
+	uTranslation.value().translate(top.x(), top.y(), -top.z());
+	uTranslation.update();
 }
 
 // Dessine le cone
 void ViewOpenGL::draw(SimpleCone const& top) {
-	// Matrice de transformation (position, orientation) pour le cone
-	QMatrix4x4 modelMatrix(getModelMatrix(top));
 	
 	// Ajoute le centre de masse a la trajectoire
-	addToTrajectory(trajectoriesCM[top.objectID], modelMatrix * QVector3D(0, top.getHeightCM(), 0));
+	addToTrajectory(trajectoriesCM[top.objectID], uTranslation.value() * uOrientation.value() * QVector3D(0, top.getHeightCM(), 0));
 	addToTrajectory(trajectoriesA[top.objectID], QVector3D(top.x(), 0.05, -top.z()));
 
 	// Valeurs specifiques au cone
 	double R(top.getRadius());
 	double L(top.getHeight());
 
-	modelMatrix.scale(R, L, R);
-	prog.setUniformValue("model", modelMatrix);
+	uScale.value().scale(R, L, R);
+	uScale.update();
 
 	cone.draw();
+
+	uScale.reset();
 
 }
 
 
 void ViewOpenGL::draw(Gyroscope const& top) {
-	// Matrice de transformation (position, orientation) pour le gyroscope
-	QMatrix4x4 modelMatrix(getModelMatrix(top));
-	prog.setUniformValue("model", modelMatrix);
 	
 	// Ajoute le centre de masse a la trajectoire
-	addToTrajectory(trajectoriesCM[top.objectID], modelMatrix * QVector3D(0, top.getHeightCM(), 0));
+	addToTrajectory(trajectoriesCM[top.objectID], uTranslation.value() * uOrientation.value() * QVector3D(0, top.getHeightCM(), 0));
 	addToTrajectory(trajectoriesA[top.objectID], QVector3D(top.x(), 0.05, -top.z()));
 
 	double R(top.getRadius());
 	double L(top.getThickness());
 	double d(top.getHeight());
 
-	uint sides(50); // Nombre de cotes du disque
-	double sideAngle(2 * M_PI / sides);
-	glBegin(GL_TRIANGLES);
-	for (uint i(0); i < sides; i++) {
-		// Vecteurs de la partie dessine
-		Vector u1 {R * cos(sideAngle * i), d - L/2.0, R * sin(sideAngle * i)};
-		Vector v1 {R * cos(sideAngle * i), d + L/2.0, R * sin(sideAngle * i)};
-		Vector u2 {R * cos(sideAngle * (i + 1)), d - L/2.0, R * sin(sideAngle * (i + 1))};	
-		Vector v2 {R * cos(sideAngle * (i + 1)), d + L/2.0, R * sin(sideAngle * (i + 1))};	
-		Vector n = ~(Vector{0, 1, 0} ^ (v2 - v1)); // Vecteur normal au cote
-		
-		// Couleur qui varie avec l'angle
-		double red(0.0);
-		double green(0.4 + cos(sideAngle * i) * 0.4);
-		double blue(1.0);
-		prog.setAttributeValue(aColor, red, green, blue);
-		
-		// Normale de la face du cote
-		prog.setAttributeValue(aNormal, n[0], n[1], n[2]);
-		// Face du cote du disque
-		prog.setAttributeValue(aPos, u1[0], u1[1], u1[2]);
-		prog.setAttributeValue(aPos, v1[0], v1[1], v1[2]);
-		prog.setAttributeValue(aPos, v2[0], v2[1], v2[2]);
-
-		prog.setAttributeValue(aPos, v2[0], v2[1], v2[2]);
-		prog.setAttributeValue(aPos, u2[0], u2[1], u2[2]);
-		prog.setAttributeValue(aPos, u1[0], u1[1], u1[2]);
-
-		// Normale a la face du haut du disque
-		prog.setAttributeValue(aNormal, 0.0, 1.0, 0.0);
-		// Face du haut du disque
-		prog.setAttributeValue(aPos, 0.0, d + L/2.0, 0.0);
-		prog.setAttributeValue(aPos, v2[0], v2[1], v2[2]);
-		prog.setAttributeValue(aPos, v1[0], v1[1], v1[2]);
-
-		// Normale a la face du bas du disque
-		prog.setAttributeValue(aNormal, 0.0, -1.0, 0.0);
-		// Face du bas du disque
-		prog.setAttributeValue(aPos, 0.0, d - L/2.0, 0.0);
-		prog.setAttributeValue(aPos, u1[0], u1[1], u1[2]);
-		prog.setAttributeValue(aPos, u2[0], u2[1], u2[2]);
-	}
-	glEnd();
 
 	// Tige qui "supporte" le disque en rotation
 	glLineWidth(3.0);
@@ -252,15 +214,21 @@ void ViewOpenGL::draw(Gyroscope const& top) {
 	prog.setAttributeValue(aPos, 0.0, 0.0, 0.0);
 	prog.setAttributeValue(aPos, 0.0, 2 * d, 0.0);
 	glEnd();
+
+	// On dessine le modèle
+	uTranslation.value().translate(uOrientation.value() * QVector3D(0, d, 0));
+	uTranslation.update();
+	uScale.value().scale(R, 0.5f * L, R);
+	uScale.update();
+
+	disk.draw();
+
+	uScale.reset();
 }
 
 void ViewOpenGL::draw(ChineseTop const& top) {
-	// Matrice de transformation (position, orientation) pour le cone
-	QMatrix4x4 modelMatrix(getModelMatrix(top));
-	prog.setUniformValue("model", modelMatrix);
-	
 	// Ajoute le centre de masse a la trajectoire
-	addToTrajectory(trajectoriesCM[top.objectID], modelMatrix * QVector3D(0, top.getHeightCM(), 0));
+	addToTrajectory(trajectoriesCM[top.objectID], uTranslation.value() * uOrientation.value() * QVector3D(0, top.getHeightCM(), 0));
 	addToTrajectory(trajectoriesA[top.objectID], QVector3D(top.x(), 0.05, -top.z()));
 
 	// Valeurs specifiques au cone

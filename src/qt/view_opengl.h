@@ -10,6 +10,7 @@
 #include "view.h"
 #include "top.h"
 #include "gl_mesh.h"
+#include "gl_uniform.h"
 
 class ViewOpenGL : public View {
 	public:
@@ -38,14 +39,17 @@ class ViewOpenGL : public View {
 		// Initialise le support de dessin au moment de la creation de la fenetre
 		void init();
 		// Emploi une matrice de projection
-		void setProjection(QMatrix4x4 const& projection) {
-			prog.setUniformValue("projection", projection);
+		void setProjection(QMatrix4x4 const& matrix) {
+			uProjection.setValue(matrix);
 		}
 		
 		// Declenge/arrete le dessin du sol
 		void triggerFloor() {shouldDrawFloor = !shouldDrawFloor;}
 		// Declenge/arrete le dessin des trajectoires
 		void triggerTrajectories() {shouldDrawTrajectories = !shouldDrawTrajectories;}
+
+		void updateOrientation(Top const& top);
+		void updateTranslation(Top const& top);
 
 		// Tourne la camera (angle relatif)
 		void rotateCamera(double yaw, double pitch);
@@ -62,6 +66,13 @@ class ViewOpenGL : public View {
 		double cameraPitch;
 		Vector cameraPos;
 
+		// Valeurs uniformes
+		UniformMatrix4x4 uProjection;
+		UniformMatrix4x4 uView;
+		UniformMatrix4x4 uTranslation;
+		UniformMatrix4x4 uOrientation;
+		UniformMatrix4x4 uScale;
+
 		// Dictionaire de trajectoires
 		std::map<unsigned int, std::vector<QVector3D>> trajectoriesA;
 		std::map<unsigned int, std::vector<QVector3D>> trajectoriesCM;
@@ -70,4 +81,5 @@ class ViewOpenGL : public View {
 		int maxTrajectoryLength = 1000;
 
 		GLMesh cone;
+		GLMesh disk;
 };

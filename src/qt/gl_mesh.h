@@ -16,6 +16,8 @@ class GLMesh
 				QVector<Vertex>& vertices);
 		void init_cone(QOpenGLShaderProgram& prog,
 				unsigned int slices);
+		void init_disk(QOpenGLShaderProgram& prog,
+				unsigned int slices);
 		void draw();
 	protected:
 		QOpenGLBuffer vbo;
