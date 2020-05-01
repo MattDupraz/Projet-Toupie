@@ -38,6 +38,7 @@ int main(int argc, char* argv[]) {
 	
 	// Initialise l'application Qt
 	QApplication a(argc, argv);
+
 	GLWidget w(std::move(system), view, 20);
 	// Affiche la fenetre
 	w.show();

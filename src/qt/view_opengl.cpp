@@ -39,6 +39,8 @@ void ViewOpenGL::init() {
 	// l'ordre des coins du triangle = "vertex")
 	glEnable(GL_CULL_FACE);
 
+	glEnable(GL_CLIP_DISTANCE0);
+
 	u_projection.bind(&prog, "projection");
 	u_view.bind(&prog, "view");
 	u_translation.bind(&prog, "translation");
@@ -48,8 +50,12 @@ void ViewOpenGL::init() {
 	prog.setUniformValue("lightPos", 0.0, 20.0, 0.0);
 	prog.setUniformValue("lightColor", 1.0, 1.0, 1.0);
 
+	prog.setUniformValue("clipMaxY",  1.0e6f);
+	prog.setUniformValue("clipMinY", -1.0e6f);
+
 	cone.init_cone(prog, 25);
 	disk.init_disk(prog, 25);
+	sphere.init_sphere(prog, 10, 25);
 }
 
 void ViewOpenGL::draw(System const& system) {
@@ -225,40 +231,15 @@ void ViewOpenGL::draw(ChineseTop const& top) {
 	double R(sqrt(pow(top.getRadius(), 2) - pow(top.getRadius() - top.getTruncatedHeight(), 2)));
 	double L(top.getRadius() - top.getTruncatedHeight());
 
-	uint sides(50); // Nombre de cotes du cone
-	double sideAngle(2 * M_PI / sides);
-	glBegin(GL_TRIANGLES);
-	for (uint i(0); i < sides; i++) {
-		// Vecteurs sur la base du cone
-		Vector v1 {R * cos(sideAngle * i), L, R * sin(sideAngle * i)};
-		Vector v2 {R * cos(sideAngle * (i + 1)), L, R * sin(sideAngle * (i + 1))};	
-		// Vecteur normal au triangle du cote du cone
-		Vector n = ~(v1 ^ v2);
-		
-		// Couleur qui varie avec l'angle
-		double red(1.0);
-		double green(0.4 + cos(sideAngle * i) * 0.4);
-		double blue(0.0);
-		prog.setAttributeValue(aColor, red, green, blue);
-		
-		// Assigne le vecteur normal pour l'eclairage
-		prog.setAttributeValue(aNormal, n[0], n[1], n[2]);
+	u_model.value().scale(R);
+	u_model.update();
 
-		// Triangle du cote du cone
-		prog.setAttributeValue(aPos, 0.0, 0.0, 0.0);
-		prog.setAttributeValue(aPos, v1[0], v1[1], v1[2]);
-		prog.setAttributeValue(aPos, v2[0], v2[1], v2[2]);
+	glDisable(GL_CULL_FACE);
+	prog.setUniformValue("clipMaxY", float(L));
 
-		//prog.setAttributeValue(aColor, 0.9, 0.9, 0.9); // noir
+	sphere.draw();
 
-		// Vecteur normal de la base du cone
-		prog.setAttributeValue(aNormal, 0.0, 1.0, 0.0);
-
-		// Triangle correspondant a la base du cone
-		prog.setAttributeValue(aPos, 0.0, L, 0.0);
-		prog.setAttributeValue(aPos, v2[0], v2[1], v2[2]);
-		prog.setAttributeValue(aPos, v1[0], v1[1], v1[2]);
-	}
-	glEnd();
+	glEnable(GL_CULL_FACE);
+	prog.setUniformValue("clipMaxY", 10e6f);
 
 }

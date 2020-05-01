@@ -80,4 +80,5 @@ class ViewOpenGL : public View {
 
 		GLMesh cone;
 		GLMesh disk;
+		GLMesh sphere;
 };
