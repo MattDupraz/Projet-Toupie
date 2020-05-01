@@ -6,22 +6,22 @@
 template <class T>
 class UniformValue {
 	public:
-		UniformValue();
+		UniformValue(T val);
 
+		// Le type de retour est une référence modifiable,
+		// ceci nous permet de modifier la valeur à travers ses methodes
 		T& value() { return val; }
-		void setValue(T const& v) {
-			val = v;
-			update();
-		}
-
+		// Affecte la valeur (CPU)
+		void setValue(T const& v) { val = v; }
+		
+		// La methode `bind` DOIT être appellée avant que `update` ne soit utilisée
 		void bind(QOpenGLShaderProgram* prog, const char* name);
+		// Met à jour la valeur uniforme dans le GPU
 		void update();
-		void reset();
+		// Réinitialise la valeur (CPU)
+		virtual void reset() = 0;
 
 	protected:
-		virtual T defaultValue() = 0;
-
-	private:
 		QOpenGLShaderProgram* prog;
 		int location;
 		T val;
@@ -29,7 +29,6 @@ class UniformValue {
 
 class UniformMatrix4x4 : public UniformValue<QMatrix4x4> {
 	public:
-		UniformMatrix4x4() : UniformValue<QMatrix4x4>() {}
-	protected:
-		virtual QMatrix4x4 defaultValue() override { return QMatrix4x4(); }
-};
+		UniformMatrix4x4() : UniformValue<QMatrix4x4>(QMatrix4x4()) {}
+		virtual void reset() override { val.setToIdentity(); }
+}; 

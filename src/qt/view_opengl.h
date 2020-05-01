@@ -39,17 +39,16 @@ class ViewOpenGL : public View {
 		// Initialise le support de dessin au moment de la creation de la fenetre
 		void init();
 		// Emploi une matrice de projection
-		void setProjection(QMatrix4x4 const& matrix) {
-			uProjection.setValue(matrix);
-		}
+		void setProjection(QMatrix4x4 const& matrix);
 		
 		// Declenge/arrete le dessin du sol
 		void triggerFloor() {shouldDrawFloor = !shouldDrawFloor;}
 		// Declenge/arrete le dessin des trajectoires
 		void triggerTrajectories() {shouldDrawTrajectories = !shouldDrawTrajectories;}
 
-		void updateOrientation(Top const& top);
-		void updateTranslation(Top const& top);
+		void resetUniforms();
+		void updateView();
+		void updateUniforms(Top const& top);
 
 		// Tourne la camera (angle relatif)
 		void rotateCamera(double yaw, double pitch);
@@ -67,11 +66,10 @@ class ViewOpenGL : public View {
 		Vector cameraPos;
 
 		// Valeurs uniformes
-		UniformMatrix4x4 uProjection;
-		UniformMatrix4x4 uView;
-		UniformMatrix4x4 uTranslation;
-		UniformMatrix4x4 uOrientation;
-		UniformMatrix4x4 uScale;
+		UniformMatrix4x4 u_projection;
+		UniformMatrix4x4 u_view;
+		UniformMatrix4x4 u_translation;
+		UniformMatrix4x4 u_model;
 
 		// Dictionaire de trajectoires
 		std::map<unsigned int, std::vector<QVector3D>> trajectoriesA;

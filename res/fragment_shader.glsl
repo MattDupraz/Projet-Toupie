@@ -11,8 +11,13 @@ void main() {
 	float ambientStrength = 0.2;
 	vec3 ambient = ambientStrength * lightColor;
 	vec3 lightVec = normalize(lightPos - pos);
-	float diffusionStrength = max(dot(normal, lightVec), 0.0);
+	float diffusionStrength = (1.0 - ambientStrength) * max(dot(normal, lightVec), 0.0);
 	vec3 diffusion = diffusionStrength * lightColor;
+	// diffusion2 would be the light that reflected from the floor
+	float floorDiffusionStrength = 0.4;
+	float diffusion2Strength = (1.0 - ambientStrength - diffusionStrength) *
+		floorDiffusionStrength * max(dot(normal, vec3(lightVec.x, -lightVec.y, lightVec.z)), 0.0);
+	vec3 diffusion2 = diffusion2Strength * lightColor;
 	
-	gl_FragColor = vec4((ambient + diffusion) * color, 1.0);
+	gl_FragColor = vec4((ambient + diffusion + diffusion2) * color, 1.0);
 }

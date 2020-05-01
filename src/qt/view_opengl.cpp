@@ -39,14 +39,13 @@ void ViewOpenGL::init() {
 	// l'ordre des coins du triangle = "vertex")
 	glEnable(GL_CULL_FACE);
 
-	uProjection.bind(&prog, "projection");
-	uView.bind(&prog, "view");
-	uTranslation.bind(&prog, "translation");
-	uOrientation.bind(&prog, "orientation");
-	uScale.bind(&prog, "scale");
+	u_projection.bind(&prog, "projection");
+	u_view.bind(&prog, "view");
+	u_translation.bind(&prog, "translation");
+	u_model.bind(&prog, "model");
 
 	// Definie la position et couleur de la source de lumiere
-	prog.setUniformValue("lightPos", -1.0, 10.0, 2.0);
+	prog.setUniformValue("lightPos", 0.0, 20.0, 0.0);
 	prog.setUniformValue("lightColor", 1.0, 1.0, 1.0);
 
 	cone.init_cone(prog, 25);
@@ -54,17 +53,8 @@ void ViewOpenGL::init() {
 }
 
 void ViewOpenGL::draw(System const& system) {
-	// viewMatrix est la transformation du monde par rapport
-	// a la position et orientation de la camera
-	uView.value().setToIdentity();
-	uView.value().rotate(-cameraPitch, 1.0, 0.0, 0.0);
-	uView.value().rotate(-cameraYaw, 0.0, 1.0, 0.0);
-	uView.value().translate(-cameraPos[0], -cameraPos[1], -cameraPos[2]);
-	uView.update();
-
-	uTranslation.reset();
-	uOrientation.reset();
-	uScale.reset();
+	updateView();
+	resetUniforms();
 
 	// Dessine le sol
 	if (shouldDrawFloor)
@@ -76,10 +66,9 @@ void ViewOpenGL::draw(System const& system) {
 	// Dessine les toupies du systeme
 	for (std::size_t i(0); i < system.size(); ++i) {
 		Top const& top(system.getTop(i)); 
-		updateTranslation(top);
-		updateOrientation(top);
+		updateUniforms(top);
 		// Ajoute le centre de masse a la trajectoire
-		addToTrajectory(trajectoriesCM[top.objectID], uTranslation.value() * uOrientation.value() * QVector3D(0, top.getHeightCM(), 0));
+		addToTrajectory(trajectoriesCM[top.objectID], u_translation.value() * u_model.value() * QVector3D(0, top.getHeightCM(), 0));
 		addToTrajectory(trajectoriesA[top.objectID], QVector3D(top.x(), 0.05, -top.z()));
 		top.draw();
 	}
@@ -124,7 +113,7 @@ void ViewOpenGL::drawTrajectories() {
 	// (pas de transformation)
 	for (const auto& entry : trajectoriesCM) {
 		const std::vector<QVector3D>& trajectory = entry.second;
-		prog.setAttributeValue(aColor, 0.0, 0.0, 1.0); // couleur de la trajectoire
+		prog.setAttributeValue(aColor, 1.0, 0.0, 0.0); // couleur de la trajectoire
 		glBegin(GL_LINE_STRIP); // "Chaine" de lignes
 		for (const QVector3D& vec : trajectory) {
 			prog.setAttributeValue(aPos, vec);
@@ -133,7 +122,7 @@ void ViewOpenGL::drawTrajectories() {
 	}
 	for (const auto& entry : trajectoriesA) {
 		const std::vector<QVector3D>& trajectory = entry.second;
-		prog.setAttributeValue(aColor, 1.0, 0.0, 0.0); // couleur de la trajectoire
+		prog.setAttributeValue(aColor, 0.0, 0.0, 1.0); // couleur de la trajectoire
 		glBegin(GL_LINE_STRIP); // "Chaine" de lignes
 		for (const QVector3D& vec : trajectory) {
 			prog.setAttributeValue(aPos, vec);
@@ -162,19 +151,36 @@ void ViewOpenGL::drawFloor() {
 	glEnd();
 }
 
-void ViewOpenGL::updateOrientation(Top const& top) {
-	uOrientation.value().setToIdentity();
-	// Oriente la toupie par rapport aux angles d'euler
-	uOrientation.value().rotate(toDegrees(top.psi()), 0.0, 1.0, 0.0);
-	uOrientation.value().rotate(toDegrees(top.theta()), 1.0, 0.0, 0.0);
-	uOrientation.value().rotate(toDegrees(top.phi()), 0.0, 1.0, 0.0);
-	uOrientation.update();
+void ViewOpenGL::setProjection(QMatrix4x4 const& matrix) {
+	u_projection.setValue(matrix);
+	u_projection.update();
 }
 
-void ViewOpenGL::updateTranslation(Top const& top) {
-	uTranslation.value().setToIdentity();
-	uTranslation.value().translate(top.x(), top.y(), -top.z());
-	uTranslation.update();
+void ViewOpenGL::resetUniforms() {
+	u_translation.reset();
+	u_translation.update();
+	u_model.reset();
+	u_model.update();
+}
+
+void ViewOpenGL::updateView() {
+	u_view.reset();
+	u_view.value().rotate(-cameraPitch, 1.0, 0.0, 0.0);
+	u_view.value().rotate(-cameraYaw, 0.0, 1.0, 0.0);
+	u_view.value().translate(-cameraPos[0], -cameraPos[1], -cameraPos[2]);
+	u_view.update();
+}
+
+void ViewOpenGL::updateUniforms(Top const& top) {
+	u_translation.reset();
+	u_translation.value().translate(top.x(), top.y(), -top.z());
+	u_translation.update();
+
+	u_model.reset();
+	u_model.value().rotate(toDegrees(top.psi()), 0.0, 1.0, 0.0);
+	u_model.value().rotate(toDegrees(top.theta()), 1.0, 0.0, 0.0);
+	u_model.value().rotate(toDegrees(top.phi()), 0.0, 1.0, 0.0);
+	u_model.update();
 }
 
 // Dessine le cone
@@ -183,13 +189,10 @@ void ViewOpenGL::draw(SimpleCone const& top) {
 	double R(top.getRadius());
 	double L(top.getHeight());
 
-	uScale.value().scale(R, L, R);
-	uScale.update();
+	u_model.value().scale(R, L, R);
+	u_model.update();
 
 	cone.draw();
-
-	uScale.reset();
-
 }
 
 
@@ -209,14 +212,12 @@ void ViewOpenGL::draw(Gyroscope const& top) {
 	glEnd();
 
 	// On dessine le modèle
-	uTranslation.value().translate(uOrientation.value() * QVector3D(0, d, 0));
-	uTranslation.update();
-	uScale.value().scale(R, 0.5f * L, R);
-	uScale.update();
+	u_translation.value().translate(u_model.value() * QVector3D(0, d, 0));
+	u_translation.update();
+	u_model.value().scale(R, 0.5f * L, R);
+	u_model.update();
 
 	disk.draw();
-
-	uScale.reset();
 }
 
 void ViewOpenGL::draw(ChineseTop const& top) {
