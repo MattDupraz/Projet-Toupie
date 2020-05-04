@@ -101,3 +101,7 @@ Il faut faire attention à la gestion des pointeurs et l'espace mémoire pointé
 Il faut donc penser à définir les constructeurs par copie, destructeurs et l'opérateur
 d'affectation, pour éviter des memory leaks ou que les objets pointés soient
 détruits à cause d'une coupie de surface (lors de la destruction de cette copie).
+
+### QUESTION 11.1
+
+Dans quel fichier on programme les indicateurs ?

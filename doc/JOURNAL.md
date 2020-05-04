@@ -77,12 +77,13 @@ dans un fichier.
 --------------------------------------------------
 ## Semaine 9 :
 
-
+Les toupies chinoises ont été implémentées et quelques améliorations ont été apportées
+aux graphismes. Nous avons élargi les tests aux différents intégrateurs.
 
 --------------------------------------------------
 ## Semaine 10 :
 
-
+Nous commençons l'implétentation des toupies générales.
 
 --------------------------------------------------
 ## Semaine 11 :

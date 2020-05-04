@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ostream>
+#include <cmath>
 
 #include "vect.h"
 #include "drawable.h"
@@ -131,6 +132,56 @@ class SimpleCone : public NonRollingTop {
 		double L; // Hauteur du cone
 		double R; // Rayon de la base
 };
+
+
+class ToupiesGen : public NonRollingTop{
+	public:
+		ToupiesGen(std::shared_ptr<View> v, Vector const& A,
+				Vector const& P, Vector const& DP,
+				double rh, Vector rays, double th)
+		:NonRollingTop(std::move(v), A, P, DP), rho(rh), rayons(rays), thick(th)
+		{
+		L = thick*rayons.size();
+		this->masse_calcul();
+		this->center_mass();
+		this->CalculInertie();
+		}
+
+		void masse_calcul(){
+			for (size_t i(0); i < rayons.size() ; ++i){
+				m+= M_PI*rho*thick*rayons[i]*rayons[i];
+			}
+		}
+
+		void center_mass(){
+			double a(0);
+			for (size_t j(0); j < rayons.size() ; ++j){
+				a += rayons[j]*rayons[j];			
+			}
+			double b(0);
+			for (size_t k(1); k <= rayons.size(); ++k){
+				b += (2*k-1)*0.5*thick*rayons[k-1]*rayons[k-1];
+			}
+			d = b/a;
+		}		
+		
+		void CalculInertie(){
+			for (size_t i(0); i < rayons.size(); ++i){
+				I_A3+=M_PI*0.5*rho*thick*std::pow(rayons[i], 4);
+			}
+			for (size_t i(0); i < rayons.size(); ++i){
+				I_A1+=M_PI*rho*thick*std::pow((0.5*(2*i-1)*thick),2)*std::pow(rayons[i],2);
+			}
+		I_A1+=0.5*I_A3-m*d*d;
+		}
+
+private:
+	double rho;
+	Vector rayons;
+	double thick;
+	double L;
+};
+
 
 class Gyroscope : public NonRollingTop {
 	public:

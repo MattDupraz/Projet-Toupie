@@ -160,7 +160,7 @@ void Tests::testIntegration() {
 	// Cree une nouvelle instance de ces toupies
 	auto top_fall = [](){
 		return new TopTestFall(nullptr,
-				Vector {0}, Vector {0}, Vector {constants::g});
+				Vector {0}, Vector {0}, Vector {-9.81});
 	};
 	auto top_sine = [](){
 		return new TopTestSine(nullptr,
