@@ -146,40 +146,30 @@ class ToupiesGen : public NonRollingTop{
 		this->center_mass();
 		this->CalculInertie();
 		}
-
-		void masse_calcul(){
-			for (size_t i(0); i < rayons.size() ; ++i){
-				m+= M_PI*rho*thick*rayons[i]*rayons[i];
-			}
-		}
-
-		void center_mass(){
-			double a(0);
-			for (size_t j(0); j < rayons.size() ; ++j){
-				a += rayons[j]*rayons[j];			
-			}
-			double b(0);
-			for (size_t k(1); k <= rayons.size(); ++k){
-				b += (2*k-1)*0.5*thick*rayons[k-1]*rayons[k-1];
-			}
-			d = b/a;
-		}		
 		
-		void CalculInertie(){
-			for (size_t i(0); i < rayons.size(); ++i){
-				I_A3+=M_PI*0.5*rho*thick*std::pow(rayons[i], 4);
-			}
-			for (size_t i(0); i < rayons.size(); ++i){
-				I_A1+=M_PI*rho*thick*std::pow((0.5*(2*i-1)*thick),2)*std::pow(rayons[i],2);
-			}
-		I_A1+=0.5*I_A3-m*d*d;
+		// Les différents calculs nécessaires pour les toupies générales
+		void masse_calcul();
+		void center_mass();		
+		void CalculInertie();
+
+		// Methode necessaire pour le dessin (single dispatch)
+		virtual void draw() const override {
+			//view_->draw(*this);
 		}
+
+		// Methode d'affichage
+		virtual std::ostream& print(std::ostream& os) const override;
+		
+		// Différents accesseurs
+		Vector getRayons()const{return rayons;}
+		double getThick()const{return thick;}
+		double getDensity()const{return rho;}
 
 private:
-	double rho;
-	Vector rayons;
-	double thick;
-	double L;
+	double rho;	// La masse volumique des cylindres
+	Vector rayons;	// Les rayons de chaque cylindre
+	double thick;	// L'épaisseur des cylindres
+	double L;	// Longueur de la toupie
 };
 
 

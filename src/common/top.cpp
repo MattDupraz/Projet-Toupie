@@ -158,3 +158,44 @@ Vector ChineseTop::getDDP(Vector P, Vector DP) {
 	DDP_cache = Vector{d2_psi, d2_theta, d2_phi, d_x, d_z};
 	return DDP_cache;
 }
+//================== Méthodes des toupies générales ==================//
+
+// Methode d'affichage
+std::ostream& ToupiesGen::print(std::ostream& os) const{
+		return os << "Toupie générales" << std::endl
+       << "paratmètre : " << getP() << std::endl
+       << "dérivée    : " << getDP() << std::endl
+       << "masse volumique (kg m-3) : " << getDensity() << std::endl
+       << "rayons     : " << getRayons() << std::endl
+       << "épaisseur : " << getThick() << std::endl;
+}
+
+void ToupiesGen::masse_calcul(){
+	for (size_t i(0); i < rayons.size() ; ++i){
+		m+= M_PI*rho*thick*rayons[i]*rayons[i];
+	}
+}
+
+void ToupiesGen::center_mass(){
+	double a(0);
+	for (size_t j(0); j < rayons.size() ; ++j){
+		a += rayons[j]*rayons[j];			
+	}
+	double b(0);
+	for (size_t k(1); k <= rayons.size(); ++k){
+		b += (2*k-1)*0.5*thick*rayons[k-1]*rayons[k-1];
+	}
+	d = b/a;
+}		
+		
+void ToupiesGen::CalculInertie(){
+	for (size_t i(0); i < rayons.size(); ++i){
+		I_A3+=M_PI*0.5*rho*thick*std::pow(rayons[i], 4);
+	}
+	for (size_t i(0); i < rayons.size(); ++i){
+		I_A1+=M_PI*rho*thick*std::pow((0.5*(2*i-1)*thick),2)*std::pow(rayons[i],2);
+	}
+I_A1+=0.5*I_A3-m*d*d;
+}
+		
+		

@@ -138,6 +138,11 @@ void Tests::testTop(){
 		Vector {0,0.5,0}, 
 		Vector {0,0,70},
 		0.1, 1.5, 0.75));
+	system.add(make_unique<ToupiesGen>(view,
+		Vector {0, 0, 2}, 
+		Vector {0, 0.5, 0}, 
+		Vector {0,0,70},
+		0.1, Vector{0,0,2}, 1));
 	
 	std::cout << system;
 	
