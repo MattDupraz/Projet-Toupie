@@ -164,21 +164,27 @@ void GLWidget::keyPressEvent(QKeyEvent* event) {
 				cameraPitchSpeed_ -= dAngle;
 				break;
 			case Qt::Key_W:
+				view_->stopFollow();
 				cameraSpeed_ += Vector{0.0, 0.0, -dPos};
 				break;
 			case Qt::Key_S:
+				view_->stopFollow();
 				cameraSpeed_ += Vector{0.0, 0.0, dPos};
 				break;
 			case Qt::Key_A:
+				view_->stopFollow();
 				cameraSpeed_ += Vector{-dPos, 0.0, 0.0};
 				break;
 			case Qt::Key_D:
+				view_->stopFollow();
 				cameraSpeed_ += Vector{dPos, 0.0, 0.0};
 				break;
 			case Qt::Key_Shift:
+				view_->stopFollow();
 				cameraSpeed_ += Vector{0.0, -dPos, 0.0};
 				break;
 			case Qt::Key_Space:
+				view_->stopFollow();
 				cameraSpeed_ += Vector{0.0, dPos, 0.0};
 				break;
 			case Qt::Key_F:
@@ -186,6 +192,9 @@ void GLWidget::keyPressEvent(QKeyEvent* event) {
 				break;
 			case Qt::Key_T:
 				view_->triggerTrajectories();
+				break;
+			case Qt::Key_C:
+				view_->followNext();
 				break;
 			case Qt::Key_Escape:
 				cameraSpeed_ = Vector {0, 0, 0};

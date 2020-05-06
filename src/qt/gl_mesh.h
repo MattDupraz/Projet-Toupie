@@ -16,7 +16,9 @@ class GLMesh
 				QVector<Vertex>& vertices);
 		void init_cone(QOpenGLShaderProgram& prog,
 				unsigned int sides);
-		void init_disk(QOpenGLShaderProgram& prog,
+		void init_cylinder(QOpenGLShaderProgram& prog,
+				unsigned int sides);
+		void init_circle(QOpenGLShaderProgram& prog,
 				unsigned int sides);
 		void init_sphere(QOpenGLShaderProgram& prog,
 				unsigned int slices, unsigned int sides);

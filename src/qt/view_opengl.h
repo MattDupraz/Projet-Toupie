@@ -19,7 +19,9 @@ class ViewOpenGL : public View {
 			shouldDrawTrajectories(true),
 			cameraYaw(0.0),
 			cameraPitch(-20.0),
-			cameraPos({ 0.0, 0.4, 5.0 })
+			cameraPos(0.0, 0.4, 5.0),
+			cameraFollow(false),
+			followedTop(0)
 			{}
 
 		// Methodes pour dessiner des objets dessinables
@@ -45,9 +47,11 @@ class ViewOpenGL : public View {
 		void triggerFloor() {shouldDrawFloor = !shouldDrawFloor;}
 		// Declenge/arrete le dessin des trajectoires
 		void triggerTrajectories() {shouldDrawTrajectories = !shouldDrawTrajectories;}
+		void followNext();
+		void stopFollow();
 
 		void resetUniforms();
-		void updateView();
+		void updateView(System const& system);
 		void updateUniforms(Top const& top);
 
 		// Tourne la camera (angle relatif)
@@ -63,7 +67,10 @@ class ViewOpenGL : public View {
 		bool shouldDrawTrajectories;
 		double cameraYaw;
 		double cameraPitch;
-		Vector cameraPos;
+		QVector3D cameraPos;
+
+		bool cameraFollow;
+		int followedTop;
 
 		// Valeurs uniformes
 		UniformMatrix4x4 u_projection;
@@ -79,6 +86,7 @@ class ViewOpenGL : public View {
 		int maxTrajectoryLength = 1000;
 
 		GLMesh cone;
-		GLMesh disk;
+		GLMesh cylinder;
+		GLMesh circle;
 		GLMesh sphere;
 };

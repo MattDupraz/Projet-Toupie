@@ -61,7 +61,7 @@ void GLMesh::init_cone(QOpenGLShaderProgram& prog, unsigned int sides) {
 	init(prog, vertices);
 }
 
-void GLMesh::init_disk(QOpenGLShaderProgram& prog, unsigned int sides) {
+void GLMesh::init_cylinder(QOpenGLShaderProgram& prog, unsigned int sides) {
 	QVector<Vertex> vertices;
 	vertices.reserve(6 * sides + 2 * 3 * sides);
 
@@ -91,6 +91,31 @@ void GLMesh::init_disk(QOpenGLShaderProgram& prog, unsigned int sides) {
 		vertices << Vertex { y1 + v1, color, normal }
 			<< Vertex { y2 + v2, color, normal }
 			<< Vertex { y1 + v2, color, normal };
+	}
+
+	init(prog, vertices);	
+}
+
+void GLMesh::init_circle(QOpenGLShaderProgram& prog, unsigned int sides) {
+	QVector<Vertex> vertices;
+	vertices.reserve(3 * sides);
+
+	QVector3D e_y(0.0f,  1.0f, 0.0f);
+	QVector3D O(0.0f, 0.0f, 0.0f);
+
+	double d_theta(2 * M_PI / sides);
+	for (unsigned int i(0); i < sides; ++i) {
+		QVector3D v1(cos(d_theta * i), 0.0f, sin(d_theta * i));
+		QVector3D v2(cos(d_theta * (i + 1)), 0.0f, sin(d_theta * (i + 1)));
+
+		float red(0.5f - cos(d_theta * i) * 0.4f);
+		float green(0.0f);
+		float blue(0.5f + cos(d_theta * i) * 0.4f);
+		QVector3D color(red, green, blue);
+		
+		vertices << Vertex {O , color, e_y }
+			<< Vertex { v2, color, e_y }
+			<< Vertex { v1, color, e_y };
 	}
 
 	init(prog, vertices);	

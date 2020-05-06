@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
 		0.1, 1.5, 0.75));
 	system->add(std::make_unique<ChineseTop>(view,
 		Vector {0,0.5,0, 0, 0},
-		Vector {0,0,20, 0, 0},
+		Vector {0,0,15, 0, 0},
 		0.1, 0.75, 0.6));
 	
 	// Affiche les conditions initialles du systeme

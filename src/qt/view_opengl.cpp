@@ -54,12 +54,13 @@ void ViewOpenGL::init() {
 	prog.setUniformValue("clipMinY", -1.0e6f);
 
 	cone.init_cone(prog, 25);
-	disk.init_disk(prog, 25);
+	cylinder.init_cylinder(prog, 25);
+	circle.init_circle(prog, 25);
 	sphere.init_sphere(prog, 10, 25);
 }
 
 void ViewOpenGL::draw(System const& system) {
-	updateView();
+	updateView(system);
 	resetUniforms();
 
 	// Dessine le sol
@@ -91,11 +92,11 @@ void ViewOpenGL::rotateCamera(double yaw, double pitch) {
 // Methode pour modifier la position de la camera
 void ViewOpenGL::translateCamera(Vector diff) {
 	// La translation horizontalle depend de l'orientation de la camera
-	cameraPos += Vector {
+	cameraPos += QVector3D(
 		cos(toRadians(cameraYaw)) * diff[0] + sin(toRadians(cameraYaw)) * diff[2],
 		diff[1],	
-		cos(toRadians(cameraYaw)) * diff[2] - sin(toRadians(cameraYaw)) * diff[0],
-	};
+		cos(toRadians(cameraYaw)) * diff[2] - sin(toRadians(cameraYaw)) * diff[0]
+		);
 }
 
 // Ajoute un vecteur a la trajectoire d'une toupie
@@ -141,8 +142,11 @@ void ViewOpenGL::drawTrajectories() {
 void ViewOpenGL::drawFloor() {
 	glBegin(GL_QUADS);
 	prog.setAttributeValue(aNormal, 0.0, 1.0, 0.0); // Le vecteur normal du sol pour l'eclairage
-	for (int x(-20); x < 20; x++) {
-		for (int y(-20); y < 20; y++) {
+	int cameraX = int(cameraPos.x());
+	int cameraY = int(cameraPos.z());
+	int size(30);
+	for (int x(-size + cameraX); x < (size + cameraX); x++) {
+		for (int y(-size + cameraY); y < (size + cameraY); y++) {
 			// Alterne un gris fonce et clair pour faire un pattern
 			// d'echiquier
 			double brightness(((x + y) % 2) ? 0.5 : 0.25);
@@ -157,6 +161,15 @@ void ViewOpenGL::drawFloor() {
 	glEnd();
 }
 
+void ViewOpenGL::followNext() {
+	cameraFollow = true;
+	++followedTop;
+}
+
+void ViewOpenGL::stopFollow() {
+	cameraFollow = false;
+}
+
 void ViewOpenGL::setProjection(QMatrix4x4 const& matrix) {
 	u_projection.setValue(matrix);
 	u_projection.update();
@@ -169,11 +182,21 @@ void ViewOpenGL::resetUniforms() {
 	u_model.update();
 }
 
-void ViewOpenGL::updateView() {
+void ViewOpenGL::updateView(System const& system) {
 	u_view.reset();
 	u_view.value().rotate(-cameraPitch, 1.0, 0.0, 0.0);
 	u_view.value().rotate(-cameraYaw, 0.0, 1.0, 0.0);
-	u_view.value().translate(-cameraPos[0], -cameraPos[1], -cameraPos[2]);
+	if (cameraFollow) {
+		Top const& top(system.getTop(followedTop % system.size())); 
+		QVector3D absolute(top.x(), top.y(), -top.z());
+		QVector3D relative(0.0, 0.0, 4.0);
+		QMatrix4x4 rotation;
+		rotation.rotate(cameraYaw, 0.0, 1.0, 0.0);
+		rotation.rotate(cameraPitch, 1.0, 0.0, 0.0);
+		relative = rotation * relative;
+		cameraPos = absolute + relative;
+	}
+	u_view.value().translate(-cameraPos);
 	u_view.update();
 }
 
@@ -223,23 +246,26 @@ void ViewOpenGL::draw(Gyroscope const& top) {
 	u_model.value().scale(R, 0.5f * L, R);
 	u_model.update();
 
-	disk.draw();
+	cylinder.draw();
 }
 
 void ViewOpenGL::draw(ChineseTop const& top) {
 	// Valeurs specifiques au cone
-	double R(sqrt(pow(top.getRadius(), 2) - pow(top.getRadius() - top.getTruncatedHeight(), 2)));
+	double r(sqrt(pow(top.getRadius(), 2) - pow(top.getRadius() - top.getTruncatedHeight(), 2)));
+	double R(top.getRadius());
 	double L(top.getRadius() - top.getTruncatedHeight());
 
 	u_model.value().scale(R);
 	u_model.update();
 
-	glDisable(GL_CULL_FACE);
 	prog.setUniformValue("clipMaxY", float(L));
-
 	sphere.draw();
-
-	glEnable(GL_CULL_FACE);
 	prog.setUniformValue("clipMaxY", 10e6f);
+
+	u_model.value().translate(0.0, L, 0.0);
+	u_model.value().scale(r/R);
+	u_model.update();
+
+	circle.draw();
 
 }
