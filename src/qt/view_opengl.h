@@ -34,6 +34,7 @@ class ViewOpenGL : public View {
 		// La trajectoire est identifiee par un int unique
 		void addToTrajectory(std::vector<QVector3D>&, QVector3D);
 		// Dessine les trajectoires
+		void drawTrajectory(std::vector<QVector3D> const&, QVector3D const& color);
 		void drawTrajectories();
 		// Dessine le sol
 		void drawFloor();
@@ -47,11 +48,16 @@ class ViewOpenGL : public View {
 		void triggerFloor() {shouldDrawFloor = !shouldDrawFloor;}
 		// Declenge/arrete le dessin des trajectoires
 		void triggerTrajectories() {shouldDrawTrajectories = !shouldDrawTrajectories;}
+		// Enable following and follow next top
 		void followNext();
+		// Disable following
 		void stopFollow();
 
+		// Set object-dependent uniforms to their default value
 		void resetUniforms();
+		// Update the view uniform
 		void updateView(System const& system);
+		// Update the object-dependent uniforms
 		void updateUniforms(Top const& top);
 
 		// Tourne la camera (angle relatif)
@@ -69,8 +75,8 @@ class ViewOpenGL : public View {
 		double cameraPitch;
 		QVector3D cameraPos;
 
-		bool cameraFollow;
-		int followedTop;
+		bool cameraFollow; // true locks camera to followedTop
+		int followedTop; // Index of followed top modulo number of tops
 
 		// Valeurs uniformes
 		UniformMatrix4x4 u_projection;
@@ -85,6 +91,7 @@ class ViewOpenGL : public View {
 		// Nombre maximum de vecteurs dans une trajectoire
 		int maxTrajectoryLength = 1000;
 
+		// Meshes used for rendering
 		GLMesh cone;
 		GLMesh cylinder;
 		GLMesh circle;

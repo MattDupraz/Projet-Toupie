@@ -67,23 +67,38 @@ affichage du sol.
 ## Semaine 7 :
 
 On a implémenté la classe système et finalisé la simulation mode textuelle.
+Nous avons ajouté le contrôle de la simulation graphique par souris, on a 
+implémenté la classe `Gyroscope` à la place de celle d'avant, qu'on à
+renomé à `NonRollingTop`. Cette fois-ci le `Gyroscope` représente vraiment
+un gyroscope - disque en rotation. On a ajouté les trajectoires de toupes au
+graphisme.
 
 --------------------------------------------------
 ## Semaine 8 :
 
-On implémente les tests pour la classe `integrator`, les résultats seront stockés 
-dans un fichier.
+On implémente les tests pour les intégrateurs, les résultats seront
+stockés dans un fichier. On avait un problème avec la simulation en temps réel -
+sur la machine de l'EPFL une toupie n'apparaissait pas du tout, on a trouvé
+qu'il s'agissait d'un problème d'intervalle de temps irrégulier, on a alors
+implémenté un limite à la periode de temps simulée pour éviter des problèmes si
+le programme il ralenti. On a limité la longueur des trajectoires et la
+fréquence à la quelle on ajoute des points à la trajectoire (ceci dépend de la
+vitesse de la toupie)
 
 --------------------------------------------------
 ## Semaine 9 :
 
-Les toupies chinoises ont été implémentées et quelques améliorations ont été apportées
-aux graphismes. Nous avons élargi les tests aux différents intégrateurs.
+Nous avons élargi les tests aux différents intégrateurs. Nous avons implémenté
+la toupie roulante et on a implémenté des VAOs et VBOs ainsi que des classes
+utilitaires pour l'affichage 3D. On s'est assuré que notre code est bien
+commenté.
 
 --------------------------------------------------
 ## Semaine 10 :
 
-Nous commençons l'implétentation des toupies générales.
+Nous commençons l'implétentation des toupies générales. On a amelioré certains
+aspets graphiques, à présent la caméra peut suivre les toupies. On a netoyé un
+peu notre code ainsi que éliminé de noumbreux beugs.
 
 --------------------------------------------------
 ## Semaine 11 :

@@ -14,6 +14,7 @@ Contrôle:
   - Caméra: souris ou `←`, `↓`, `↑`, `→`
   - Afficher/cacher le sol: `F`
   - Afficher/cacher les trajectoires: `T`
+  - Suivre une toupie: `C` (mouvement directionnel pour se libérer)
   - Libérer la souris: `Esc`
 
 Affichage des tests:

@@ -5,14 +5,17 @@
 
 void GLMesh::init(QOpenGLShaderProgram& prog,
 		QVector<Vertex>& vertices) {
+	// Create the Vertex Buffer Object from the set of vertices
 	vbo.create();
 	vbo.bind();
 	vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
 	vbo.allocate(vertices.constData(), vertices.size() * sizeof(Vertex));
 
+	// Create the Vertex Array Object
 	vao.create();
 	vao.bind();
 
+	// Define how the VBO is used when the VAO is bound
 	prog.enableAttributeArray(aPos);	
 	prog.enableAttributeArray(aColor);
 	prog.enableAttributeArray(aNormal);
@@ -37,7 +40,7 @@ void GLMesh::init_cone(QOpenGLShaderProgram& prog, unsigned int sides) {
 	vertices.reserve(6 * sides);
 
 	QVector3D origin(0.0f, 0.0f, 0.0f);
-	QVector3D e_z(0.0f, 1.0f, 0.0f);
+	QVector3D e_y(0.0f, 1.0f, 0.0f);
 
 	double d_theta(2 * M_PI / sides);
 	for (unsigned int i(0); i < sides; ++i) {
@@ -53,9 +56,9 @@ void GLMesh::init_cone(QOpenGLShaderProgram& prog, unsigned int sides) {
 		vertices << Vertex { origin, color, normal }
 			<< Vertex { v1, color, normal }
 			<< Vertex { v2, color, normal };
-		vertices << Vertex { e_z, color, e_z }
-			<< Vertex { v2, color, e_z }
-			<< Vertex { v1, color, e_z };
+		vertices << Vertex { e_y, color, e_y }
+			<< Vertex { v2, color, e_y }
+			<< Vertex { v1, color, e_y };
 	}
 
 	init(prog, vertices);

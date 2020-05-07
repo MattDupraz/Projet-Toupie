@@ -39,8 +39,11 @@ void ViewOpenGL::init() {
 	// l'ordre des coins du triangle = "vertex")
 	glEnable(GL_CULL_FACE);
 
+	// GL_CLIP_DISTANCE0 ajoute la fonctionalité de découpage
+	// par rapport à la distance, voir vertex_shader.glsl
 	glEnable(GL_CLIP_DISTANCE0);
 
+	// Lie les valeurs uniformes au programme
 	u_projection.bind(&prog, "projection");
 	u_view.bind(&prog, "view");
 	u_translation.bind(&prog, "translation");
@@ -50,9 +53,11 @@ void ViewOpenGL::init() {
 	prog.setUniformValue("lightPos", 0.0, 20.0, 0.0);
 	prog.setUniformValue("lightColor", 1.0, 1.0, 1.0);
 
+	// Initialise les valeur de découpage (utile pour dessiner la sphère tronquée)
 	prog.setUniformValue("clipMaxY",  1.0e6f);
 	prog.setUniformValue("clipMinY", -1.0e6f);
 
+	// Initialise les modèles à dessiner
 	cone.init_cone(prog, 25);
 	cylinder.init_cylinder(prog, 25);
 	circle.init_circle(prog, 25);
@@ -114,27 +119,25 @@ void ViewOpenGL::addToTrajectory(std::vector<QVector3D>& v, QVector3D vec) {
 	}
 }
 
+// Dessine un GL_LINE_STRIP avec la couleur choisie
+void ViewOpenGL::drawTrajectory(std::vector<QVector3D> const& trajectory, QVector3D const& color) {
+		prog.setAttributeValue(aColor, color); // couleur de la trajectoire
+		glBegin(GL_LINE_STRIP); // "Chaine" de lignes
+		for (const QVector3D& vec : trajectory) {
+			prog.setAttributeValue(aPos, vec);
+		}
+		glEnd();
+}
+
 // Dessine les trajectoires de la toupie
 void ViewOpenGL::drawTrajectories() {
 	// Reinitialise la matrice de transformation du modele a l'identite
 	// (pas de transformation)
 	for (const auto& entry : trajectoriesCM) {
-		const std::vector<QVector3D>& trajectory = entry.second;
-		prog.setAttributeValue(aColor, 1.0, 0.0, 0.0); // couleur de la trajectoire
-		glBegin(GL_LINE_STRIP); // "Chaine" de lignes
-		for (const QVector3D& vec : trajectory) {
-			prog.setAttributeValue(aPos, vec);
-		}
-		glEnd();
+		drawTrajectory(entry.second, QVector3D(1.0, 0.0, 0.0));
 	}
 	for (const auto& entry : trajectoriesA) {
-		const std::vector<QVector3D>& trajectory = entry.second;
-		prog.setAttributeValue(aColor, 0.0, 0.0, 1.0); // couleur de la trajectoire
-		glBegin(GL_LINE_STRIP); // "Chaine" de lignes
-		for (const QVector3D& vec : trajectory) {
-			prog.setAttributeValue(aPos, vec);
-		}
-		glEnd();
+		drawTrajectory(entry.second, QVector3D(0.0, 0.0, 1.0));
 	}
 }
 
@@ -142,9 +145,12 @@ void ViewOpenGL::drawTrajectories() {
 void ViewOpenGL::drawFloor() {
 	glBegin(GL_QUADS);
 	prog.setAttributeValue(aNormal, 0.0, 1.0, 0.0); // Le vecteur normal du sol pour l'eclairage
+	// On décale le sol de la position de la caméra pour tricher un sol infini
 	int cameraX = int(cameraPos.x());
 	int cameraY = int(cameraPos.z());
 	int size(30);
+	// Ceci n'est pas une super methode - il faudrait mieux faire un shader et faire l'echiquier dans le fragment shader
+	// plutôt que ici ca permetterait de réduire pas mal le nombre d'objets déssinés
 	for (int x(-size + cameraX); x < (size + cameraX); x++) {
 		for (int y(-size + cameraY); y < (size + cameraY); y++) {
 			// Alterne un gris fonce et clair pour faire un pattern
@@ -187,8 +193,10 @@ void ViewOpenGL::updateView(System const& system) {
 	u_view.value().rotate(-cameraPitch, 1.0, 0.0, 0.0);
 	u_view.value().rotate(-cameraYaw, 0.0, 1.0, 0.0);
 	if (cameraFollow) {
+		// Positionne la caméra de manière qu'elle regarde directement la toupie
 		Top const& top(system.getTop(followedTop % system.size())); 
 		QVector3D absolute(top.x(), top.y(), -top.z());
+		// note: On purait ajouter une touche pour controler la distance de la caméra de la toupie
 		QVector3D relative(0.0, 0.0, 4.0);
 		QMatrix4x4 rotation;
 		rotation.rotate(cameraYaw, 0.0, 1.0, 0.0);
@@ -201,10 +209,13 @@ void ViewOpenGL::updateView(System const& system) {
 }
 
 void ViewOpenGL::updateUniforms(Top const& top) {
+	// Initialize la matrice de translation pour cette toupie
 	u_translation.reset();
+	// z est négatif pour suivre la règle de la main droite
 	u_translation.value().translate(top.x(), top.y(), -top.z());
 	u_translation.update();
 
+	// Matrice de rotation à partir des angles d'euler
 	u_model.reset();
 	u_model.value().rotate(toDegrees(top.psi()), 0.0, 1.0, 0.0);
 	u_model.value().rotate(toDegrees(top.theta()), 1.0, 0.0, 0.0);
