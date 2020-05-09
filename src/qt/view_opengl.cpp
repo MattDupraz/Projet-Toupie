@@ -43,6 +43,8 @@ void ViewOpenGL::init() {
 	// par rapport à la distance, voir vertex_shader.glsl
 	glEnable(GL_CLIP_DISTANCE0);
 
+	glEnable(GL_FRAMEBUFFER_SRGB);
+
 	// Lie les valeurs uniformes au programme
 	u_projection.bind(&prog, "projection");
 	u_view.bind(&prog, "view");
@@ -52,6 +54,9 @@ void ViewOpenGL::init() {
 	// Definie la position et couleur de la source de lumiere
 	prog.setUniformValue("lightPos", 0.0, 20.0, 0.0);
 	prog.setUniformValue("lightColor", 1.0, 1.0, 1.0);
+
+	// Definie la position de la caméra
+	prog.setUniformValue("viewPos", 0.0, 0.0, 0.0);
 
 	// Initialise les valeur de découpage (utile pour dessiner la sphère tronquée)
 	prog.setUniformValue("clipMaxY",  1.0e6f);
@@ -206,6 +211,8 @@ void ViewOpenGL::updateView(System const& system) {
 	}
 	u_view.value().translate(-cameraPos);
 	u_view.update();
+
+	prog.setUniformValue("viewPos", cameraPos);
 }
 
 void ViewOpenGL::updateUniforms(Top const& top) {
