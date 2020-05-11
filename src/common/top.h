@@ -50,6 +50,7 @@ class Top : public Drawable {
 
 		virtual double getEnergy()const = 0;
 		virtual double getL_Ak()const = 0;
+		virtual double getL_Aa()const = 0;
 
 	protected :	
 		Vector P_; // Degrees of freedom
@@ -98,7 +99,8 @@ class NonRollingTop : public Top {
 		// Retourne l'énergie
 		virtual double getEnergy()const override;
 		// Retourne le moment cinétique en A
-		virtual double getL_Ak()const override{return Vector{0,0,1}*getP();}
+		virtual double getL_Ak()const override;
+		virtual double getL_Aa()const override{return Vector{0,0,1}*getDP();}
 	protected:	
 		NonRollingTop(std::shared_ptr<View> v, Vector const& A,
 				Vector const& P, Vector const& DP)
@@ -254,8 +256,9 @@ class ChineseTop : public Top {
 		// Methode d'affichage
 		virtual std::ostream& print(std::ostream& os) const override;
 
-		virtual double getEnergy()const override{return 0;}
-		virtual double getL_Ak()const override{return 0;}
+		virtual double getEnergy()const override;
+		virtual double getL_Ak()const override{Vector a{psi(),thet(),phi()};return Vector{0,0,1}*a;}
+		virtual double getL_Aa()const override;
 	protected:	
 		double h; // truncated height
 		double R; // sphere radius

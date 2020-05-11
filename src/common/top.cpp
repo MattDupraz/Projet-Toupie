@@ -98,7 +98,7 @@ double NonRollingTop::getEnergy()const{
 	Vector acc{0,0,g};
 	
 	double Psi(psi());
-	double Theta(getP()[1]);
+	double Theta(theta());
 	
 	Matrix3x3 I_A({{I_A1,0,0},{0,I_A1,0},{0,0,I_A3}});		// Matrice d'inertie
 	
@@ -112,11 +112,57 @@ double NonRollingTop::getEnergy()const{
 	Vector AGo(S*AGg);
 	Vector OGo(A+AGo);
 	
-	double Ec = 0.5*(getP()*(I_A*getP()));
+	double Ec = 0.5*(getDP()*(I_A*getDP()));
 	double Eg = -m*(acc*OGo);
+	
+	return Ec+Eg;
+}
+
+double ChineseTop::getEnergy()const{
+	using namespace constants;
+	Vector acc{0,0,g};
+	
+	double Psi(psi());
+	double Theta(theta());
+	
+	Matrix3x3 I_A({{I_1,0,0},{0,I_1,0},{0,0,I_3}});	
+	
+	Matrix3x3 S1({{1,0,0},{0,cos(Theta),sin(Theta)},{0,-sin(Theta),cos(Theta)}});
+	Matrix3x3 S2({{cos(Psi),sin(Psi),0},{-sin(Psi),cos(Psi),0},{0,0,1}});
+	Matrix3x3 S(S1*S2);
+	
+	//On doit trouver le vecteur OG = OA + AG mais AG n'est pas connu dans
+	//le repere Ro donc il faut utiliser la matrice S (matrice de passage)
+	Vector AGg {0,0,d};
+	Vector AGo(S*AGg);
+	Vector OGo(A+AGo);
+	
+	Vector omega{psi(),theta(),phi()};
+	double Ec(omega*(I_A*omega));
+	Vector v{d_x(), d_z()};
+	Ec += v.norm();
+	Ec *= 0.5;
+	double Eg = -m*(acc*OGo);
+	
 	
 	return Ec;
 }
+
+double NonRollingTop::getL_Ak()const{
+	double Psi(psi());
+	double Theta(theta());
+	
+	Matrix3x3 I_A({{I_A1,0,0},{0,I_A1,0},{0,0,I_A3}});	
+	
+	Matrix3x3 S1({{1,0,0},{0,cos(Theta),sin(Theta)},{0,-sin(Theta),cos(Theta)}});
+	Matrix3x3 S2({{cos(Psi),sin(Psi),0},{-sin(Psi),cos(Psi),0},{0,0,1}});
+	Matrix3x3 S(S1*S2);
+	
+	Vector L_A(S*getDP());
+	L_A = S*L_A;
+	return Vector {0,0,1}*L_A;
+}
+
 
 
 // Equation du mouvement d'une toupie sans roulement
@@ -147,6 +193,22 @@ Vector NonRollingTop::getDDP(Vector P, Vector DP) {
 	d2_phi *= d_theta / (I_A1 * sin_theta);
 
 	return Vector {d2_psi, d2_theta, d2_phi};
+}
+
+
+double ChineseTop::getL_Ak()const{
+	double Psi(psi());
+	double Theta(theta());
+	
+	Matrix3x3 I_A({{I_A1,0,0},{0,I_A1,0},{0,0,I_A3}});	
+	
+	Matrix3x3 S1({{1,0,0},{0,cos(Theta),sin(Theta)},{0,-sin(Theta),cos(Theta)}});
+	Matrix3x3 S2({{cos(Psi),sin(Psi),0},{-sin(Psi),cos(Psi),0},{0,0,1}});
+	Matrix3x3 S(S1*S2);
+	
+	Vector L_A(S*(Vector {psi(),theta(),phi()}));
+	L_A = S*L_A;
+	return Vector {0,0,1} * L_A;
 }
 
 // Equation du mouvement d'une toupie chinoise

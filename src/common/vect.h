@@ -22,9 +22,9 @@ class Vector {
 	
 		// Ajoute une dimension au vecteur (avec la valeur fournie)
 		Vector& augment(double val);
-		// Retourne la taille du vecteur
+		// Retourne la norme du vecteur
 		double norm() const;
-		// Retourne la taille du vecteur caree
+		// Retourne la norme du vecteur caree
 		double norm2() const;
 
 		// Retourne la dimension du vecteur

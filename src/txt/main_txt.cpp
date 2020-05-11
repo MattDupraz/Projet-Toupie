@@ -39,7 +39,9 @@ int main(){
 	// Affiche les conditions initialles du systeme
 	cout << system;
 	
-	ofstream file("energie.txt");
+	ofstream file1("./invariants/energie.txt");
+	ofstream file2("./invariants/moment_cin_k.txt");
+	ofstream file3("./invariants/moment_cin_a.txt");
 	
 	if (verbose) {
 		cout << "Le système évolue et se dessine à chaque pas (dt = " << dt << "): "
@@ -52,7 +54,9 @@ int main(){
 	for (int i(0); i < nIterations; ++i) {
 		system.evolve(dt);
 		system.draw();
-		file << system.getTop(0).getL_A() << std::endl;
+		file1 << system.getTop(0).getEnergy() << std::endl;
+		file2 << system.getTop(0).getL_Ak() << std::endl;
+		file3 << system.getTop(0).getL_Aa() << std::endl;
 		
 	}	
 	
