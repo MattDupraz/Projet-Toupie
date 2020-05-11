@@ -3,6 +3,7 @@
 #include "integrator.h"
 
 #include <iostream>
+#include <fstream>
 #include <memory>
 #include <utility>
 
@@ -38,6 +39,8 @@ int main(){
 	// Affiche les conditions initialles du systeme
 	cout << system;
 	
+	ofstream file("energie.txt");
+	
 	if (verbose) {
 		cout << "Le système évolue et se dessine à chaque pas (dt = " << dt << "): "
 			<< endl;
@@ -49,6 +52,8 @@ int main(){
 	for (int i(0); i < nIterations; ++i) {
 		system.evolve(dt);
 		system.draw();
+		file << system.getTop(0).getL_A() << std::endl;
+		
 	}	
 	
 	return 0;

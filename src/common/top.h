@@ -48,6 +48,9 @@ class Top : public Drawable {
 		// Affiche les parametres de la toupie dans le ostream
 		virtual std::ostream& print(std::ostream& os) const = 0;
 
+		virtual double getEnergy()const = 0;
+		virtual double getL_Ak()const = 0;
+
 	protected :	
 		Vector P_; // Degrees of freedom
 		Vector DP_; // First derivative of P
@@ -91,6 +94,11 @@ class NonRollingTop : public Top {
 
 		// Retourne le vecteur position du point de contact
 		Vector getOrigin() const { return A; }
+
+		// Retourne l'énergie
+		virtual double getEnergy()const override;
+		// Retourne le moment cinétique en A
+		virtual double getL_Ak()const override{return Vector{0,0,1}*getP();}
 	protected:	
 		NonRollingTop(std::shared_ptr<View> v, Vector const& A,
 				Vector const& P, Vector const& DP)
@@ -245,6 +253,9 @@ class ChineseTop : public Top {
 
 		// Methode d'affichage
 		virtual std::ostream& print(std::ostream& os) const override;
+
+		virtual double getEnergy()const override{return 0;}
+		virtual double getL_Ak()const override{return 0;}
 	protected:	
 		double h; // truncated height
 		double R; // sphere radius

@@ -77,10 +77,47 @@ std::ostream& ChineseTop::print(std::ostream& os) const {
 		<< "hauteur tronquée (m) : " << getTruncatedHeight() << std::endl;
 }
 
+// Methode d'affichage
+std::ostream& ToupiesGen::print(std::ostream& os) const{
+		return os << "Toupie générales" << std::endl
+       << "paratmètre : " << getP() << std::endl
+       << "dérivée    : " << getDP() << std::endl
+       << "masse volumique (kg m-3) : " << getDensity() << std::endl
+       << "rayons     : " << getRayons() << std::endl
+       << "épaisseur : " << getThick() << std::endl;
+}
+
 // Operateur d'affichage de la toupie
 std::ostream &operator<<(std::ostream& os, Top const& a) {
 	return a.print(os);
+
 }
+
+double NonRollingTop::getEnergy()const{
+	using namespace constants;
+	Vector acc{0,0,g};
+	
+	double Psi(psi());
+	double Theta(getP()[1]);
+	
+	Matrix3x3 I_A({{I_A1,0,0},{0,I_A1,0},{0,0,I_A3}});		// Matrice d'inertie
+	
+	Matrix3x3 S1({{1,0,0},{0,cos(Theta),sin(Theta)},{0,-sin(Theta),cos(Theta)}});
+	Matrix3x3 S2({{cos(Psi),sin(Psi),0},{-sin(Psi),cos(Psi),0},{0,0,1}});
+	Matrix3x3 S(S1*S2);
+	
+	//On doit trouver le vecteur OG = OA + AG mais AG n'est pas connu dans
+	//le repere Ro donc il faut utiliser la matrice S (matrice de passage)
+	Vector AGg {0,0,d};
+	Vector AGo(S*AGg);
+	Vector OGo(A+AGo);
+	
+	double Ec = 0.5*(getP()*(I_A*getP()));
+	double Eg = -m*(acc*OGo);
+	
+	return Ec;
+}
+
 
 // Equation du mouvement d'une toupie sans roulement
 // c.f. complement mathematique page 12 eq. 13-15
@@ -160,15 +197,6 @@ Vector ChineseTop::getDDP(Vector P, Vector DP) {
 }
 //================== Méthodes des toupies générales ==================//
 
-// Methode d'affichage
-std::ostream& ToupiesGen::print(std::ostream& os) const{
-		return os << "Toupie générales" << std::endl
-       << "paratmètre : " << getP() << std::endl
-       << "dérivée    : " << getDP() << std::endl
-       << "masse volumique (kg m-3) : " << getDensity() << std::endl
-       << "rayons     : " << getRayons() << std::endl
-       << "épaisseur : " << getThick() << std::endl;
-}
 
 void ToupiesGen::masse_calcul(){
 	for (size_t i(0); i < rayons.size() ; ++i){

@@ -104,4 +104,7 @@ détruits à cause d'une coupie de surface (lors de la destruction de cette copi
 
 ### QUESTION 11.1
 
-Dans quel fichier on programme les indicateurs ?
+Nous programmons les différents indicateurs dans les classes toupies correspondante
+car que l'on décide de dessiner sur l'écran ou d'afficher des valeurs numériques
+l'information reste la même, seule sa représentation change de plus ces informations
+sont propres à la toupie en question.
