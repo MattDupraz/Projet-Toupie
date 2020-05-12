@@ -25,6 +25,10 @@ public:
 		os << P_ << " " << DP_;
 		return os;}
 
+	virtual double getEnergy()const override{return 0;}
+	virtual double getL_Ak()const override{return 0;}
+	virtual double getL_Aa()const override{return 0;}
+
 protected :
 	Vector DDP_;
 

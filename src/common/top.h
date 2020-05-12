@@ -164,7 +164,7 @@ class ToupiesGen : public NonRollingTop{
 
 		// Methode necessaire pour le dessin (single dispatch)
 		virtual void draw() const override {
-			//view_->draw(*this);
+			view_->draw(*this);
 		}
 
 		// Methode d'affichage
@@ -257,8 +257,8 @@ class ChineseTop : public Top {
 		virtual std::ostream& print(std::ostream& os) const override;
 
 		virtual double getEnergy()const override;
-		virtual double getL_Ak()const override{Vector a{psi(),thet(),phi()};return Vector{0,0,1}*a;}
-		virtual double getL_Aa()const override;
+		virtual double getL_Aa()const override{Vector a({psi(),theta(),phi()});return Vector{0,0,1}*a;}
+		virtual double getL_Ak()const override;
 	protected:	
 		double h; // truncated height
 		double R; // sphere radius

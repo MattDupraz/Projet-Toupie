@@ -3,6 +3,7 @@
 class SimpleCone;
 class ChineseTop;
 class Gyroscope;
+class ToupiesGen;
 class System;
 class TopTest;
 
@@ -12,6 +13,7 @@ class View {
 		// Methodes pour dessiner les objets dessinables concrets
 		virtual void draw(SimpleCone const& top) = 0;
 		virtual void draw(Gyroscope const& top) = 0;
+		virtual void draw(ToupiesGen const& top) = 0;		
 		virtual void draw(ChineseTop const& top) = 0;
 		virtual void draw(System const& system) = 0;
 };

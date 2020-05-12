@@ -15,6 +15,7 @@ public:
 	// Dessine les objets dessinables specifiques
 	virtual void draw(SimpleCone const& top) override { drawTop(top); }
 	virtual void draw(Gyroscope const& top) override { drawTop(top); }
+	virtual void draw(ToupiesGen const& top)override { drawTop(top); }
 	virtual void draw(ChineseTop const& top) override { drawTop(top); }
 	virtual void draw(System const& system) override;
 

@@ -133,9 +133,10 @@ double ChineseTop::getEnergy()const{
 	
 	//On doit trouver le vecteur OG = OA + AG mais AG n'est pas connu dans
 	//le repere Ro donc il faut utiliser la matrice S (matrice de passage)
-	Vector AGg {0,0,d};
+	Vector AGg({0,0,y()});
 	Vector AGo(S*AGg);
-	Vector OGo(A+AGo);
+	Vector OA({x(),0,z()});
+	Vector OGo(OA+AGo);
 	
 	Vector omega{psi(),theta(),phi()};
 	double Ec(omega*(I_A*omega));
@@ -200,7 +201,7 @@ double ChineseTop::getL_Ak()const{
 	double Psi(psi());
 	double Theta(theta());
 	
-	Matrix3x3 I_A({{I_A1,0,0},{0,I_A1,0},{0,0,I_A3}});	
+	Matrix3x3 I_A({{I_1,0,0},{0,I_1,0},{0,0,I_3}});	
 	
 	Matrix3x3 S1({{1,0,0},{0,cos(Theta),sin(Theta)},{0,-sin(Theta),cos(Theta)}});
 	Matrix3x3 S2({{cos(Psi),sin(Psi),0},{-sin(Psi),cos(Psi),0},{0,0,1}});
