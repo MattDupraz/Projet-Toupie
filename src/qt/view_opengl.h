@@ -8,7 +8,6 @@
 #include <vector>
 
 #include "view.h"
-#include "top.h"
 #include "gl_mesh.h"
 #include "gl_uniform.h"
 
