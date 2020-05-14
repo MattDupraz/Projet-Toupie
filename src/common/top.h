@@ -56,8 +56,6 @@ class Top : public Drawable {
 
 		virtual double getMass() const = 0;
 
-		// Height of the center of mass
-		virtual double getDistAG() const = 0;
 		virtual Vector getAG() const = 0;
 
 		double getMomentInertiaA_xy() const;

@@ -90,8 +90,10 @@ void ViewOpenGL::draw(System const& system) {
 		Top const& top(system.getTop(i)); 
 		updateUniforms(top);
 		// Ajoute le centre de masse a la trajectoire
-		addToTrajectory(trajectoriesCM[top.objectID], u_translation.value() * u_model.value() * QVector3D(0, top.getHeightCM(), 0));
-		addToTrajectory(trajectoriesA[top.objectID], QVector3D(top.x(), 0.05, -top.z()));
+		Vector A = top.getPosA();
+		Vector G = top.getPosG();
+		addToTrajectory(trajectoriesCM[top.objectID], QVector3D(G[0], G[2], G[1]));
+		addToTrajectory(trajectoriesA[top.objectID], QVector3D(A[0], A[2] + 0.05, A[1]));
 		top.draw();
 	}
 }
@@ -205,7 +207,7 @@ void ViewOpenGL::updateView(System const& system) {
 	if (cameraFollow) {
 		// Positionne la caméra de manière qu'elle regarde directement la toupie
 		Top const& top(system.getTop(followedTop % system.size())); 
-		QVector3D absolute(top.x(), top.y(), -top.z());
+		QVector3D absolute(top.x(), top.z(), top.y()); // Les coordonnees physiques et graphiques diffèrent
 		// note: On purait ajouter une touche pour controler la distance de la caméra de la toupie
 		QVector3D relative(0.0, 0.0, 4.0);
 		QMatrix4x4 rotation;
@@ -224,7 +226,7 @@ void ViewOpenGL::updateUniforms(Top const& top) {
 	// Initialize la matrice de translation pour cette toupie
 	u_translation.reset();
 	// z est négatif pour suivre la règle de la main droite
-	u_translation.value().translate(top.x(), top.y(), -top.z());
+	u_translation.value().translate(top.x(), top.z(), top.y()); // Les coordonees physiques et graphiques diffèrent
 	u_translation.update();
 
 	// Matrice de rotation à partir des angles d'euler
@@ -278,6 +280,7 @@ void ViewOpenGL::draw(ChineseTop const& top) {
 	double R(top.getRadius());
 	double L(top.getRadius() - top.getTruncatedHeight());
 
+	u_model.value().translate(0.0, R, 0.0);
 	u_model.value().scale(R);
 	u_model.update();
 
@@ -290,5 +293,4 @@ void ViewOpenGL::draw(ChineseTop const& top) {
 	u_model.update();
 
 	circle.draw();
-
 }

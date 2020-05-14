@@ -20,12 +20,6 @@ Vector Top::getPosG() const {
 	return getPosA() + getAG(); 
 }
 
-Vector Top::getAG() const {
-	Vector AG({0, getDistAG(), 0});
-	AG = getOrientationMatrix() * AG;
-	return AG;
-}
-
 Vector Top::getVelocityG() const {
 	Vector v_A(getVelocityA());
 	Vector omega(getOrientationMatrix() * getAngVelocity());

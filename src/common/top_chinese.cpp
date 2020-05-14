@@ -1,5 +1,6 @@
 #include "top_chinese.h"
 #include "math.h"
+#include "constants.h"
 
 // Constructeur de la toupie chinoise
 ChineseTop::ChineseTop(std::shared_ptr<View> v,
@@ -20,7 +21,7 @@ ChineseTop::ChineseTop(std::shared_ptr<View> v,
 	I_1 = 0.5 * I_3 + Z2 - m * pow(R * alpha, 2);
 }
 
-double ChineseTop::getAG() const {
+Vector ChineseTop::getAG() const {
 	Vector AC{0, R, 0};
 	Vector CG{0, -alpha * R, 0};
 	CG = getOrientationMatrix() * CG;
@@ -50,7 +51,7 @@ Vector ChineseTop::getDDP(Vector P, Vector DP) {
 	double f_3(I_1 * I_3);
 	f_3 += mR2 * pow(sin_theta, 2) * I_1;
 	f_3 += mR2 * pow(alpha - cos_theta, 2) * I_3;
-	double f_2(d_theta / sin_theta * f_1);
+	double f_2(d_theta() / sin_theta * f_1);
 	f_2 *= (I_3 * (I_3 + mR2 * (1.0 - alpha * cos_theta))) / f_3;
 	f_2 -= 2 * d_psi() * d_theta() * (cos_theta / sin_theta);
 
@@ -59,7 +60,7 @@ Vector ChineseTop::getDDP(Vector P, Vector DP) {
 	a_1 *= pow(d_psi(), 2);
 	double a_2(mR2 * (alpha * cos_theta - 1) - I_3);
 	a_2 *= f_1 * d_psi();
-	a_2 -= mR2 * pow(d_theta, 2) * alpha + m * R * alpha * constants::g;
+	a_2 -= mR2 * pow(d_theta(), 2) * alpha + m * R * alpha * constants::g;
 	double a_3(I_1 + mR2 * pow(alpha - cos_theta, 2) + pow(sin_theta, 2));
 
 	double d2_theta(sin_theta * (a_1 + a_2) / a_3);

@@ -9,9 +9,9 @@ SOURCES += src/common/vect.cpp \
            src/common/top_general.cpp \
            src/common/top_gyroscope.cpp \
            src/common/math_utils.cpp \
-	   src/common/integrator_euler_cromer.cpp \
-	   src/common/integrator_newmark.cpp \
-	   src/common/integrator_runge_kutta.cpp \
+           src/common/integrator_euler_cromer.cpp \
+           src/common/integrator_newmark.cpp \
+           src/common/integrator_runge_kutta.cpp \
            src/common/system.cpp \
            src/common/constants.cpp
 HEADERS += src/common/vect.h \
