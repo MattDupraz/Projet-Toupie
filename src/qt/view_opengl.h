@@ -30,6 +30,7 @@ class ViewOpenGL : public View {
 		virtual void draw(SimpleCone const& top) override;
 		virtual void draw(Gyroscope const& top) override;
 		virtual void draw(ChineseTop const& top) override;
+		virtual void draw(GeneralTop const& top) override;
 		virtual void draw(System const& system) override;
 
 		// Ajoute une position a une trajectoire

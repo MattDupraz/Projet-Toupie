@@ -27,9 +27,9 @@ class ChineseTop : public Top {
 		double d_phi() const override { return DP_[2]; }
 
 		// Retourne les dérivées des coordonnees des points de contacts
-		double d_x() const { return DDP_cache[3]; }
-		double d_y() const { return DDP_cache[4]; }
-		double d_z() const { return 0; }
+		double dx() const override { return DDP_cache[3]; }
+		double dy() const override { return DDP_cache[4]; }
+		double dz() const override { return 0; }
 
 		double getMomentInertia_xy() const override { return I_1; }
 		double getMomentInertia_z() const override { return I_3; }

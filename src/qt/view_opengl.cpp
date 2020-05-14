@@ -274,13 +274,38 @@ void ViewOpenGL::draw(Gyroscope const& top) {
 	cylinder.draw();
 }
 
+void ViewOpenGL::draw(GeneralTop const& top) {
+	double R(1);
+	double L(1);
+	double d(1);
+
+
+	// Tige qui "supporte" le disque en rotation
+	glLineWidth(3.0);
+	glBegin(GL_LINES);
+	prog.setAttributeValue(aColor, 0.0, 0.0, 1.0);
+	prog.setAttributeValue(aNormal, 0.0, 1.0, 0.0);
+	prog.setAttributeValue(aPos, 0.0, 0.0, 0.0);
+	prog.setAttributeValue(aPos, 0.0, 2 * d, 0.0);
+	glEnd();
+
+	// On dessine le modèle
+	u_translation.value().translate(u_model.value() * QVector3D(0, d, 0));
+	u_translation.update();
+	u_model.value().scale(R, 0.5f * L, R);
+	u_model.update();
+
+	cylinder.draw();
+}
+
 void ViewOpenGL::draw(ChineseTop const& top) {
 	// Valeurs specifiques au cone
 	double r(sqrt(pow(top.getRadius(), 2) - pow(top.getRadius() - top.getTruncatedHeight(), 2)));
 	double R(top.getRadius());
 	double L(top.getRadius() - top.getTruncatedHeight());
 
-	u_model.value().translate(0.0, R, 0.0);
+	u_translation.value().translate(0.0, R, 0.0);
+
 	u_model.value().scale(R);
 	u_model.update();
 
