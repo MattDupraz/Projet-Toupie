@@ -10,6 +10,7 @@
 #include "top_gyroscope.h"
 #include "top_simple_cone.h"
 #include "top_chinese.h"
+#include "top_general.h"
 #include "view_opengl.h"
 #include "vect.h"
 #include "math.h"
@@ -31,6 +32,11 @@ int main(int argc, char* argv[]) {
 		Vector {0, 0.5, 0},
 		Vector {0, 0, 5},
 		1.0, 0.1, 0.2, 1.0));
+	system->add(std::make_unique<GeneralTop>(view,
+		Vector {-3, 2, 0},
+		Vector {0, 0.5, 0},
+		Vector {0, 0, 25},
+		1.0, Vector{0.01, 0.1, 0.3, 0.6, 1.0}, 0.2));
 	system->add(std::make_unique<SimpleCone>(view,
 		Vector {2, 1, 0},
 		Vector {0,0.5,0},

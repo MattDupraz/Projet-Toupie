@@ -9,6 +9,7 @@
 #include "top_simple_cone.h"
 #include "top_chinese.h"
 #include "top_gyroscope.h"
+#include "top_general.h"
 
 #include "gl_uniform.h"
 
@@ -298,27 +299,22 @@ void ViewOpenGL::draw(Gyroscope const& top) {
 }
 
 void ViewOpenGL::draw(GeneralTop const& top) {
-	double R(1);
-	double L(1);
-	double d(1);
-
-
-	// Tige qui "supporte" le disque en rotation
-	glLineWidth(3.0);
-	glBegin(GL_LINES);
-	prog.setAttributeValue(aColor, 0.0, 0.0, 1.0);
-	prog.setAttributeValue(aNormal, 0.0, 1.0, 0.0);
-	prog.setAttributeValue(aPos, 0.0, 0.0, 0.0);
-	prog.setAttributeValue(aPos, 0.0, 2 * d, 0.0);
-	glEnd();
+	QMatrix4x4 model(u_model.value());
 
 	// On dessine le modèle
-	u_translation.value().translate(u_model.value() * QVector3D(0, d, 0));
-	u_translation.update();
-	u_model.value().scale(R, 0.5f * L, R);
-	u_model.update();
+	for (int i(0); i < top.getLayers().size(); ++i) {
+		double h = (2*i + 1) * 0.5 * top.getThickness();
+		double R = top.getLayers()[i];
 
-	cylinder.draw();
+		updateUniforms(top);
+		u_translation.value().translate(model
+			* QVector3D(0, h, 0));
+		u_translation.update();
+		u_model.value().scale(R, 0.5f * top.getThickness(), R);
+		u_model.update();
+		cylinder.draw();
+	}
+
 }
 
 void ViewOpenGL::draw(ChineseTop const& top) {
