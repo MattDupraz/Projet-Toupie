@@ -41,6 +41,12 @@ class Top : public Drawable {
 		virtual double z() const { return 0; }
 
 		virtual double getHeightCM() const { return 0; }
+
+		virtual double getI_1() const { return 0; }
+		virtual double getI_3() const { return 0; }
+		
+		virtual Matrix3x3 getI() const;
+		virtual Matrix3x3 getRgToRo() const;
 		
 		// Returns the second derivative
 		virtual Vector getDDP(Vector P, Vector DP) = 0;
@@ -49,8 +55,8 @@ class Top : public Drawable {
 		virtual std::ostream& print(std::ostream& os) const = 0;
 
 		virtual double getEnergy()const = 0;
-		virtual double getL_Ak()const = 0;
-		virtual double getL_Aa()const = 0;
+		virtual double getAngMomentumK() const = 0;
+		virtual double getAngMomentumA() const = 0;
 
 	protected :	
 		Vector P_; // Degrees of freedom
@@ -99,13 +105,14 @@ class NonRollingTop : public Top {
 		// Retourne l'énergie
 		virtual double getEnergy()const override;
 		// Retourne le moment cinétique en A
-		virtual double getL_Ak()const override;
-		virtual double getL_Aa()const override{return Vector{0,0,1}*getDP();}
+		virtual double getAngMomentumK() const override {return I_A3 * phi();}
+		virtual double getAngMomentumA() const override;
 	protected:	
 		NonRollingTop(std::shared_ptr<View> v, Vector const& A,
 				Vector const& P, Vector const& DP)
 			: Top(std::move(v), P, DP), A(A)
 		{}
+
 
 		Vector A; // Contact point
 
@@ -131,9 +138,9 @@ class SimpleCone : public NonRollingTop {
 		}
 		
 		// Accesseurs aux parametres du cone
-		double getDensity() const { return rho; };
-		double getHeight() const { return L; };
-		double getRadius() const { return R; };
+		double getDensity() const { return rho; }
+		double getHeight() const { return L; }
+		double getRadius() const { return R; }
 
 		// Methode d'affichage
 		virtual std::ostream& print(std::ostream& os) const override;
@@ -147,20 +154,8 @@ class SimpleCone : public NonRollingTop {
 class ToupiesGen : public NonRollingTop{
 	public:
 		ToupiesGen(std::shared_ptr<View> v, Vector const& A,
-				Vector const& P, Vector const& DP,
-				double rh, Vector rays, double th)
-		:NonRollingTop(std::move(v), A, P, DP), rho(rh), rayons(rays), thick(th)
-		{
-		L = thick*rayons.size();
-		this->masse_calcul();
-		this->center_mass();
-		this->CalculInertie();
-		}
-		
-		// Les différents calculs nécessaires pour les toupies générales
-		void masse_calcul();
-		void center_mass();		
-		void CalculInertie();
+			Vector const& P, Vector const& DP,
+			double rho, std::vector<double> layers, double thickness);
 
 		// Methode necessaire pour le dessin (single dispatch)
 		virtual void draw() const override {
@@ -171,15 +166,20 @@ class ToupiesGen : public NonRollingTop{
 		virtual std::ostream& print(std::ostream& os) const override;
 		
 		// Différents accesseurs
-		Vector getRayons()const{return rayons;}
-		double getThick()const{return thick;}
-		double getDensity()const{return rho;}
+		std::vector<double> getLayers() const { return layers; }
+		double getHeight() const { return L*layers.size(); }
+		double getThickness() const { return L; }
+		double getDensity() const { return rho; }
 
 private:
 	double rho;	// La masse volumique des cylindres
-	Vector rayons;	// Les rayons de chaque cylindre
-	double thick;	// L'épaisseur des cylindres
-	double L;	// Longueur de la toupie
+	double L;	// L'épaisseur des cylindres
+	std::vector<double> layers;	// Les rayons de chaque cylindre
+	
+	// Les différents calculs nécessaires pour les toupies générales
+	void init_mass();
+	void init_CM();		
+	void init_I_A();
 };
 
 
@@ -257,8 +257,8 @@ class ChineseTop : public Top {
 		virtual std::ostream& print(std::ostream& os) const override;
 
 		virtual double getEnergy()const override;
-		virtual double getL_Aa()const override{Vector a({psi(),theta(),phi()});return Vector{0,0,1}*a;}
-		virtual double getL_Ak()const override;
+		virtual double getAngMomentumK() const override { return I_3 * phi(); }
+		virtual double getAngMomentumA() const override;
 	protected:	
 		double h; // truncated height
 		double R; // sphere radius

@@ -83,7 +83,7 @@ std::ostream& ToupiesGen::print(std::ostream& os) const{
        << "paratmètre : " << getP() << std::endl
        << "dérivée    : " << getDP() << std::endl
        << "masse volumique (kg m-3) : " << getDensity() << std::endl
-       << "rayons     : " << getRayons() << std::endl
+       << "layers     : " << getlayers() << std::endl
        << "épaisseur : " << getThick() << std::endl;
 }
 
@@ -93,18 +93,37 @@ std::ostream &operator<<(std::ostream& os, Top const& a) {
 
 }
 
+Matrix3x3 Top::getI() const {
+	return Matrix3x3({
+		{getI_1(),0,0},
+		{0,getI_1(),0},
+		{0,0,getI_3()}
+	});
+}
+Matrix3x3 Top::getRgToRo() const {
+	double cos_theta(cos(theta()));
+	double sin_theta(sin(theta()));
+	double cos_psi(cos(psi()));
+	double sin_psi(sin(psi()));
+	Matrix3x3 S1({
+		{1,0,0},
+		{0,cos_theta,sin_theta},
+		{0,-sin_theta,cos_theta}
+	});
+	Matrix3x3 S2({
+		{cos_psi,sin_psi,0},
+		{-sin_psi,cos_psi,0},
+		{0,0,1}
+	});
+	return Matrix3x3(S1*S2);
+}
+
 double NonRollingTop::getEnergy()const{
 	using namespace constants;
 	Vector acc{0,0,g};
 	
-	double Psi(psi());
-	double Theta(theta());
-	
-	Matrix3x3 I_A({{I_A1,0,0},{0,I_A1,0},{0,0,I_A3}});		// Matrice d'inertie
-	
-	Matrix3x3 S1({{1,0,0},{0,cos(Theta),sin(Theta)},{0,-sin(Theta),cos(Theta)}});
-	Matrix3x3 S2({{cos(Psi),sin(Psi),0},{-sin(Psi),cos(Psi),0},{0,0,1}});
-	Matrix3x3 S(S1*S2);
+	Matrix3x3 I_A(getI()); // Matrice d'inertie
+	Matrix3x3 S(getRgToRo()); // Passage de base
 	
 	//On doit trouver le vecteur OG = OA + AG mais AG n'est pas connu dans
 	//le repere Ro donc il faut utiliser la matrice S (matrice de passage)
@@ -122,14 +141,8 @@ double ChineseTop::getEnergy()const{
 	using namespace constants;
 	Vector acc{0,0,g};
 	
-	double Psi(psi());
-	double Theta(theta());
-	
-	Matrix3x3 I_A({{I_1,0,0},{0,I_1,0},{0,0,I_3}});	
-	
-	Matrix3x3 S1({{1,0,0},{0,cos(Theta),sin(Theta)},{0,-sin(Theta),cos(Theta)}});
-	Matrix3x3 S2({{cos(Psi),sin(Psi),0},{-sin(Psi),cos(Psi),0},{0,0,1}});
-	Matrix3x3 S(S1*S2);
+	Matrix3x3 I_A(getI()); // Matrice d'inertie
+	Matrix3x3 S(getRgToRo()); // Passage de base
 	
 	//On doit trouver le vecteur OG = OA + AG mais AG n'est pas connu dans
 	//le repere Ro donc il faut utiliser la matrice S (matrice de passage)
@@ -149,15 +162,9 @@ double ChineseTop::getEnergy()const{
 	return Ec;
 }
 
-double NonRollingTop::getL_Ak()const{
-	double Psi(psi());
-	double Theta(theta());
-	
-	Matrix3x3 I_A({{I_A1,0,0},{0,I_A1,0},{0,0,I_A3}});	
-	
-	Matrix3x3 S1({{1,0,0},{0,cos(Theta),sin(Theta)},{0,-sin(Theta),cos(Theta)}});
-	Matrix3x3 S2({{cos(Psi),sin(Psi),0},{-sin(Psi),cos(Psi),0},{0,0,1}});
-	Matrix3x3 S(S1*S2);
+double NonRollingTop::getL_Ak()const{	
+	Matrix3x3 I_A(getI()); // Matrice d'inertie
+	Matrix3x3 S(getRgToRo()); // Passage de base
 	
 	Vector L_A(S*getDP());
 	L_A = S*L_A;
@@ -196,16 +203,12 @@ Vector NonRollingTop::getDDP(Vector P, Vector DP) {
 	return Vector {d2_psi, d2_theta, d2_phi};
 }
 
-
 double ChineseTop::getL_Ak()const{
 	double Psi(psi());
 	double Theta(theta());
 	
-	Matrix3x3 I_A({{I_1,0,0},{0,I_1,0},{0,0,I_3}});	
-	
-	Matrix3x3 S1({{1,0,0},{0,cos(Theta),sin(Theta)},{0,-sin(Theta),cos(Theta)}});
-	Matrix3x3 S2({{cos(Psi),sin(Psi),0},{-sin(Psi),cos(Psi),0},{0,0,1}});
-	Matrix3x3 S(S1*S2);
+	Matrix3x3 I(getI()); // Matrice d'inertie
+	Matrix3x3 S(getRgToRo()); // Passage de base
 	
 	Vector L_A(S*(Vector {psi(),theta(),phi()}));
 	L_A = S*L_A;
@@ -260,33 +263,40 @@ Vector ChineseTop::getDDP(Vector P, Vector DP) {
 }
 //================== Méthodes des toupies générales ==================//
 
+ToupiesGen::ToupiesGen(std::shared_ptr<View> v, Vector const& A,
+			Vector const& P, Vector const& DP,
+			double rho, std::vector<double> layers, double thickness)
+	:NonRollingTop(std::move(v), A, P, DP), rho(rho), layers(layers), L(thickness)
+{
+	init_mass();
+	init_CM();
+	init_I_A();
+}
 
-void ToupiesGen::masse_calcul(){
-	for (size_t i(0); i < rayons.size() ; ++i){
-		m+= M_PI*rho*thick*rayons[i]*rayons[i];
+void ToupiesGen::init_mass(){
+	for (size_t i(0); i < layers.size() ; ++i){
+		m+= M_PI*rho*L*layers[i]*layers[i];
 	}
 }
 
-void ToupiesGen::center_mass(){
+void ToupiesGen::init_CM(){
 	double a(0);
-	for (size_t j(0); j < rayons.size() ; ++j){
-		a += rayons[j]*rayons[j];			
-	}
 	double b(0);
-	for (size_t k(1); k <= rayons.size(); ++k){
-		b += (2*k-1)*0.5*thick*rayons[k-1]*rayons[k-1];
+	for (size_t k(0); k < layers.size() ; ++k){
+		double r2 = pow(layers[k], 2);
+		a += r2;
+		b += (2*k+1) * 0.5 * L * r2;	
 	}
+	
 	d = b/a;
 }		
 		
-void ToupiesGen::CalculInertie(){
-	for (size_t i(0); i < rayons.size(); ++i){
-		I_A3+=M_PI*0.5*rho*thick*std::pow(rayons[i], 4);
+void ToupiesGen::init_I_A(){
+	for (size_t i(0); i < layers.size(); ++i){
+		I_A3 += M_PI * 0.5 * rho * L * pow(layers[i], 4);
+		I_A1 += M_PI * rho * L * pow((0.5*(2*i+1)*L),2) * pow(layers[i],2);
 	}
-	for (size_t i(0); i < rayons.size(); ++i){
-		I_A1+=M_PI*rho*thick*std::pow((0.5*(2*i-1)*thick),2)*std::pow(rayons[i],2);
-	}
-I_A1+=0.5*I_A3-m*d*d;
+	I_A1 += 0.5 * I_A3 - m * pow(d, 2);
 }
 		
 		
