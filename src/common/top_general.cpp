@@ -3,7 +3,7 @@
 
 GeneralTop::GeneralTop(std::shared_ptr<View> v, Vector const& A,
 			Vector const& P, Vector const& DP,
-			double rho, std::vector<double> layers, double thickness)
+			double rho, Vector layers, double thickness)
 	:NonRollingTop(std::move(v), A, P, DP), rho(rho), layers(layers), L(thickness)
 {
 	init_mass();
@@ -17,8 +17,8 @@ std::ostream& GeneralTop::print(std::ostream& os) const{
        << "paratmètre : " << getP() << std::endl
        << "dérivée    : " << getDP() << std::endl
        << "masse volumique (kg m-3) : " << getDensity() << std::endl
-       << "layers     : " << getlayers() << std::endl
-       << "épaisseur : " << getThick() << std::endl;
+       << "layers     : " << getLayers() << std::endl
+       << "épaisseur : " << getThickness() << std::endl;
 }
 
 void GeneralTop::init_mass(){
