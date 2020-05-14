@@ -9,21 +9,30 @@ std::ostream &operator<<(std::ostream& os, Top const& a) {
 	return a.print(os);
 }
 
-Vector Top::getContactPoint() const {
+Vector Top::getAngVelocity() const {
+	return Vector({d_theta(), d_psi() * sin(theta()), 
+			d_psi() * cos(theta()) + d_phi()});
+}
+
+Vector Top::getPosA() const {
 	return Vector({x(), y(), z()});
 }
 
-Vector Top::getCenterMass() const {
+Vector Top::getPosCM() const {
 	Vector relative({0, getHeightCM(), 0});
 	relative = getOrientationMatrix() * relative;
 	return getContactPoint() + relative; 
 }
 
+Vector Top::getVelocityCM() const {
+	
+}
+
 Matrix3x3 Top::getInertiaMatrix() const {
 	return Matrix3x3({
-		{getI_xz(),0,0},
-		{0,getI_y(),0},
-		{0,0,getI_xz()}
+		{getI_xy(),0,0},
+		{0,getI_xy(),0},
+		{0,0,getI_z()}
 	});
 }
 Matrix3x3 Top::getOrientationMatrix() const {

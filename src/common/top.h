@@ -32,10 +32,15 @@ class Top : public Drawable {
 
 		// Returns the second derivative
 		virtual Vector getDDP(Vector P, Vector DP) = 0;
+
 		// Getters for euler angles of the top
 		virtual double psi() const = 0;
 		virtual double theta() const = 0;
 		virtual double phi() const = 0;
+
+		virtual double d_psi() const = 0;
+		virtual double d_theta() const = 0;
+		virtual double d_phi() const = 0;
 		
 		// Getters for coordinates of the top (contact point)
 		virtual double x() const = 0;
@@ -50,11 +55,16 @@ class Top : public Drawable {
 		virtual double getHeightCM() const = 0;
 
 		// Moments of inertia around principal axes
-		virtual double getI_xz() const = 0;
-		virtual double getI_y() const = 0;
+		virtual double getI_xy() const = 0;
+		virtual double getI_z() const = 0;
 
-		Vector getContactPoint() const;
-		Vector getCenterMass() const;
+		virtual double getMass() const = 0;
+
+		Vector getPosA() const;
+		Vector getPosCM() const;
+		Vector getVelocityA() const
+		Vector getVelocityCM() const;
+		Vector getAngVelocity() const;
 
 		// Matrix of inertia	
 		Matrix3x3 getInertiaMatrix() const;
@@ -66,10 +76,9 @@ class Top : public Drawable {
 		// Affiche les parametres de la toupie dans le ostream
 		virtual std::ostream& print(std::ostream& os) const = 0;
 
-		virtual double getMass() const = 0;
-		virtual double getEnergy()const = 0;
-		virtual double getAngMomentumK() const = 0;
-		virtual double getAngMomentumA() const = 0;
+		double getEnergy() const;
+		double getAngMomentumK() const;
+		double getAngMomentumA() const;
 
 	protected :	
 
