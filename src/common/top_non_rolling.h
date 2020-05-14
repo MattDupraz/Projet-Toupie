@@ -22,6 +22,15 @@ class NonRollingTop : public Top {
 		double x() const override { return A[0]; }
 		double y() const override { return A[1]; }
 		double z() const override { return A[2]; }
+		
+		double dx() const override { return 0;}
+		double dy() const override { return 0;}
+		double dz() const override { return 0;}
+
+		virtual double getMomentInertia_xy() const override{return I_A1;}
+		virtual double getMomentInertia_z() const override{return I_A1;}
+
+		virtual Vector getAG() const override;
 
 		// Retourne les derivees des angles d'euler
 		double d_psi() const { return DP_[0]; }

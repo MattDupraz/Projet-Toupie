@@ -3,6 +3,11 @@
 #include "top.h"
 #include "system.h"
 
+class SimpleCone;
+class Gyroscope;
+class GeneralTop;
+class ChineseTop;
+
 class ViewText : public View {
 public:
 	ViewText(bool verbose = false)
@@ -15,7 +20,7 @@ public:
 	// Dessine les objets dessinables specifiques
 	virtual void draw(SimpleCone const& top) override { drawTop(top); }
 	virtual void draw(Gyroscope const& top) override { drawTop(top); }
-	virtual void draw(ToupiesGen const& top)override { drawTop(top); }
+	virtual void draw(GeneralTop const& top)override { drawTop(top); }
 	virtual void draw(ChineseTop const& top) override { drawTop(top); }
 	virtual void draw(System const& system) override;
 
