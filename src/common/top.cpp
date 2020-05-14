@@ -45,12 +45,12 @@ double Top::getEnergy() const {
 	double E_c(0.5 * getMass() * pow(getVelocityG(), 2)
 			+ getAngMomentumG() * getAngVelocity());
 	Vector g({0, -constants::g, 0});
-	double E_g(-m * g * getPosG());
+	double E_g(-getMass() * g * getPosG());
 	return E_c + E_g;
 }
 
 double Top::getMomentInertiaA_xy() const {
-	return getMomentInertia_xy() + getMass() * pow(getDistAG(), 2);
+	return getMomentInertia_xy() + getMass() * getAG().norm2();
 }
 
 Matrix3x3 Top::getInertiaMatrixG() const {
