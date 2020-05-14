@@ -8,7 +8,7 @@ GeneralTop::GeneralTop(std::shared_ptr<View> v, Vector const& A,
 {
 	init_mass();
 	init_CM();
-	init_I_A();
+	init_I();
 }
 
 // Methode d'affichage
@@ -34,15 +34,14 @@ void GeneralTop::init_CM(){
 		double r2 = pow(layers[k], 2);
 		a += r2;
 		b += (2*k+1) * 0.5 * L * r2;	
-	}
-	
+	}	
 	d = b/a;
 }		
 		
-void GeneralTop::init_I_A(){
+void GeneralTop::init_I(){
 	for (size_t i(0); i < layers.size(); ++i){
-		I_A3 += M_PI * 0.5 * rho * L * pow(layers[i], 4);
-		I_A1 += M_PI * rho * L * pow((0.5*(2*i+1)*L),2) * pow(layers[i],2);
+		I_3 += M_PI * 0.5 * rho * L * pow(layers[i], 4);
+		I_1 += M_PI * rho * L * pow((0.5*(2*i+1)*L),2) * pow(layers[i],2);
 	}
-	I_A1 += 0.5 * I_A3 - m * pow(d, 2);
+	I_1 += 0.5 * I_3 - m * pow(d, 2);
 }

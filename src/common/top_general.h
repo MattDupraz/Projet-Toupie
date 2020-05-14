@@ -29,5 +29,5 @@ private:
 	// Les différents calculs nécessaires pour les toupies générales
 	void init_mass();
 	void init_CM();		
-	void init_I_A();
+	void init_I();
 };

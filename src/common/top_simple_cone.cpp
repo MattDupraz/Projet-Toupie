@@ -9,9 +9,8 @@ SimpleCone::SimpleCone(std::shared_ptr<View> v, Vector const& A,
 {
 	m = 1.0/3.0 * M_PI * rho * pow(R, 2) * L; // masse
 	d = 0.75 * L; // distance du CM du point de contact
-	I_A1 = (3 * m) / 20.0 * (pow(R, 2) + 0.25 * pow(L, 2)); // axe horizontal
-	I_A1 += m * pow(d, 2); // loi du transfert
-	I_A3 = (3 * m) / 10.0 * pow(R, 2); // axe vertical
+	I_1 = (3 * m) / 20.0 * (pow(R, 2) + 0.25 * pow(L, 2)); // axe horizontal
+	I_3 = (3 * m) / 10.0 * pow(R, 2); // axe vertical
 }
 
 // Methode d'affichage du cone

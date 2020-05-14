@@ -11,6 +11,9 @@
 #include "gl_mesh.h"
 #include "gl_uniform.h"
 
+class Top;
+class Vector;
+
 class ViewOpenGL : public View {
 	public:
 		ViewOpenGL()

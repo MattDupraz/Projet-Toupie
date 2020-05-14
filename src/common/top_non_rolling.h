@@ -7,7 +7,7 @@ class NonRollingTop : public Top {
 		NonRollingTop(std::shared_ptr<View> v, Vector const& A, 
 				Vector const& P,	Vector const& DP,
 				double m, double d, double I_1, double I_3)
-			: Top(std::move(v), P, DP), A(A), m(m), d(d), I_A1(I_1), I_A3(I_3)
+			: Top(std::move(v), P, DP), A(A), m(m), d(d), I_1(I_1), I_3(I_3)
 		{}
 
 		// Retourne la seconde derivee
@@ -27,8 +27,8 @@ class NonRollingTop : public Top {
 		double dy() const override { return 0;}
 		double dz() const override { return 0;}
 
-		virtual double getMomentInertia_xy() const override{return I_A1;}
-		virtual double getMomentInertia_z() const override{return I_A1;}
+		virtual double getMomentInertia_xy() const override { return I_1; }
+		virtual double getMomentInertia_z() const override { return I_3; }
 
 		virtual Vector getAG() const override;
 
@@ -57,6 +57,6 @@ class NonRollingTop : public Top {
 		double m; // Mass
 		double d; // Distance from contact point to center of mass
 		// Moments of inertia with respect to A (point of contact)
-		double I_A1; // Moment of inertia - horizontal axes
-		double I_A3; // Moment of inertia - vertical axis
+		double I_1; // Moment of inertia - horizontal axes
+		double I_3; // Moment of inertia - vertical axis
 };

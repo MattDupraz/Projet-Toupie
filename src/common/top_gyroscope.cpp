@@ -9,9 +9,8 @@ Gyroscope::Gyroscope(std::shared_ptr<View> v, Vector const& A,
 {
 	this->d = d; // distance du CM du point de contact
 	m = M_PI * pow(R, 2) * L * rho; // masse
-	I_A1 = 0.25 * m * pow(R, 2); // axe horizontal
-	I_A1 += m * pow(d, 2); // loi du transfert
-	I_A3 =  0.5 * m * pow(R, 2); // axe vertical
+	I_1 = 0.25 * m * pow(R, 2); // axe horizontal
+	I_3 =  0.5 * m * pow(R, 2); // axe vertical
 }
 
 // Methode d'affichage du gyroscope

@@ -7,6 +7,9 @@
 Vector NonRollingTop::getDDP(Vector P, Vector DP) {
 	using namespace constants;
 
+	double I_A1(getMomentInertiaA_xy());
+	double I_A3(getMomentInertia_z());
+
 	double cos_theta(cos(P[1]));
 	double sin_theta(sin(P[1]));
 
@@ -32,7 +35,7 @@ Vector NonRollingTop::getDDP(Vector P, Vector DP) {
 	return Vector {d2_psi, d2_theta, d2_phi};
 }
 
-Vector Top::getAG() const {
+Vector NonRollingTop::getAG() const {
 	Vector AG({0, getHeightCM(), 0});
 	AG = getOrientationMatrix() * AG;
 	return AG;
