@@ -1,4 +1,5 @@
 #include "top_chinese.h"
+#include "math.h"
 
 // Constructeur de la toupie chinoise
 ChineseTop::ChineseTop(std::shared_ptr<View> v,

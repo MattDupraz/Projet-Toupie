@@ -1,4 +1,5 @@
 #include "top_general.h"
+#include "math.h"
 
 GeneralTop::GeneralTop(std::shared_ptr<View> v, Vector const& A,
 			Vector const& P, Vector const& DP,
