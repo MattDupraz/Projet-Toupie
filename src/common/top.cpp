@@ -1,5 +1,6 @@
 #include "math.h"
 #include "top.h"
+#include "constants.h"
 
 // Operateur d'affichage de la toupie
 std::ostream &operator<<(std::ostream& os, Top const& a) {
@@ -20,7 +21,7 @@ Vector Top::getPosG() const {
 }
 
 Vector Top::getAG() const {
-	Vector AG({0, getHeightCM(), 0});
+	Vector AG({0, getDistAG(), 0});
 	AG = getOrientationMatrix() * AG;
 	return AG;
 }
@@ -36,23 +37,35 @@ Vector Top::getAngMomentumA() const {
 	return getInertiaMatrixA() * getAngVelocity();
 }
 
-double Top::getI_Axy() const {
-	return getI_z() + getMass() * pow(getHeightCM(), 2);
+Vector Top::getAngMomentumG() const {
+	return getInertiaMatrixG() * getAngVelocity();
 }
 
-Matrix3x3 Top::getInertiaMatrix() const {
+double Top::getEnergy() const {
+	double E_c(0.5 * getMass() * pow(getVelocityG(), 2)
+			+ getAngMomentumG() * getAngVelocity());
+	Vector g({0, -constants::g, 0});
+	double E_g(-m * g * getPosG());
+	return E_c + E_g;
+}
+
+double Top::getMomentInertiaA_xy() const {
+	return getMomentInertia_xy() + getMass() * pow(getDistAG(), 2);
+}
+
+Matrix3x3 Top::getInertiaMatrixG() const {
 	return Matrix3x3({
-		{getI_xy(),0,0},
-		{0,getI_xy(),0},
-		{0,0,getI_z()}
+		{getMomentInertia_xy(),0,0},
+		{0,getMomentInertia_xy(),0},
+		{0,0,getMomentInertia_z()}
 	});
 }
 
 Matrix3x3 Top::getInertiaMatrixA() const {
 	return Matrix3x3({
-		{getI_Axy(),0,0},
-		{0,getI_Axy(),0},
-		{0,0,getI_z()}
+		{getMomentInertiaA_xy(),0,0},
+		{0,getMomentInertiaA_xy(),0},
+		{0,0,getMomentInertia_z()}
 	});
 }
 
@@ -73,6 +86,3 @@ Matrix3x3 Top::getOrientationMatrix() const {
 	});
 	return Matrix3x3(rot_z*rot_x);
 }
-
-
-

@@ -51,19 +51,19 @@ class Top : public Drawable {
 		virtual double dz() const = 0;
 
 		// Height of the center of mass
-		virtual double getHeightG() const = 0;
+		virtual double getDistAG() const = 0;
 
 		// Moments of inertia around principal axes
-		virtual double getI_xy() const = 0;
-		virtual double getI_z() const = 0;
+		virtual double getMomentInertia_xy() const = 0;
+		virtual double getMomentInertia_z() const = 0;
 
 		virtual double getMass() const = 0;
 
-		double getI_Axy() const;
+		double getMomentInertiaA_xy() const;
 
 		Vector getPosA() const;
 		Vector getPosG() const;
-		Vectir getAG() const;
+		Vector getAG() const;
 		Vector getVelocityA() const;
 		Vector getVelocityG() const;
 
