@@ -4,15 +4,23 @@ SOURCES += src/common/vect.cpp \
            src/common/matrix_3x3.cpp \
            src/common/top.cpp \
            src/common/math_utils.cpp \
-           src/common/integrator.cpp \
+	   src/common/integrator_euler_cromer.cpp \
+	   src/common/integrator_newmark.cpp \
+	   src/common/integrator_runge_kutta.cpp \
            src/common/system.cpp \
            src/common/constants.cpp
 HEADERS += src/common/vect.h \
            src/common/matrix_3x3.h \
            src/common/view.h \
            src/common/top.h \
+           src/common/top_chinese.h \
+           src/common/top_general.h \
+           src/common/top.h \
            src/common/math_utils.h \
            src/common/integrator.h \
+           src/common/integrator_euler_cromer.h \
+           src/common/integrator_newmark.h \
+           src/common/integrator_runge_kutta.h \
            src/common/constants.h \
            src/common/system.h
 
