@@ -1,10 +1,13 @@
+#pragma once
+#include "top.h"
+
 class NonRollingTop : public Top {
 	// P = [psi, theta, phi]
 	public:	
 		NonRollingTop(std::shared_ptr<View> v, Vector const& A, 
 				Vector const& P,	Vector const& DP,
 				double m, double d, double I_1, double I_3)
-			: Top(std::move(v), P, DP), A(A), m(m), d(d), I_1(I_1), I_3(I_3)
+			: Top(std::move(v), P, DP), A(A), m(m), d(d), I_A1(I_1), I_A3(I_3)
 		{}
 
 		// Retourne la seconde derivee
@@ -33,11 +36,6 @@ class NonRollingTop : public Top {
 		// Retourne le vecteur position du point de contact
 		Vector getOrigin() const { return A; }
 
-		// Retourne l'énergie
-		virtual double getEnergy()const override;
-		// Retourne le moment cinétique en A
-		virtual double getAngMomentumK() const override {return I_A3 * phi();}
-		virtual double getAngMomentumA() const override;
 	protected:	
 		NonRollingTop(std::shared_ptr<View> v, Vector const& A,
 				Vector const& P, Vector const& DP)

@@ -1,3 +1,5 @@
+#include "top_general.h"
+
 GeneralTop::GeneralTop(std::shared_ptr<View> v, Vector const& A,
 			Vector const& P, Vector const& DP,
 			double rho, std::vector<double> layers, double thickness)

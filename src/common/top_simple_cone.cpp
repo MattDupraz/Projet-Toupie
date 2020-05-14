@@ -1,3 +1,5 @@
+#include "top_simple_cone.h"
+
 // Constructeur d'un cone simple
 SimpleCone::SimpleCone(std::shared_ptr<View> v, Vector const& A,
 		Vector const& P, Vector const& DP,

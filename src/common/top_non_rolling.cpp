@@ -1,31 +1,6 @@
-double NonRollingTop::getEnergy()const{
-	using namespace constants;
-	Vector acc{0,0,g};
-	
-	Matrix3x3 I_A(getI()); // Matrice d'inertie
-	Matrix3x3 S(getRgToRo()); // Passage de base
-	
-	//On doit trouver le vecteur OG = OA + AG mais AG n'est pas connu dans
-	//le repere Ro donc il faut utiliser la matrice S (matrice de passage)
-	Vector AGg {0,0,d};
-	Vector AGo(S*AGg);
-	Vector OGo(A+AGo);
-	
-	double Ec = 0.5*(getDP()*(I_A*getDP()));
-	double Eg = -m*(acc*OGo);
-	
-	return Ec+Eg;
-}
-
-
-double NonRollingTop::getL_Ak()const{	
-	Matrix3x3 I_A(getI()); // Matrice d'inertie
-	Matrix3x3 S(getRgToRo()); // Passage de base
-	
-	Vector L_A(S*getDP());
-	L_A = S*L_A;
-	return Vector {0,0,1}*L_A;
-}
+#include "top_non_rolling.h"
+#include "math.h"
+#include "constants.h"
 
 // Equation du mouvement d'une toupie sans roulement
 // c.f. complement mathematique page 12 eq. 13-15

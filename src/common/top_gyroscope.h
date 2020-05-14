@@ -1,3 +1,6 @@
+#pragma once
+#include "top_non_rolling.h"
+
 class Gyroscope : public NonRollingTop {
 	public:
 		Gyroscope(std::shared_ptr<View> v, Vector const& A,

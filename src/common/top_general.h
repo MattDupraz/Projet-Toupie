@@ -1,3 +1,6 @@
+#pragma once
+#include "top_non_rolling.h"
+
 class GeneralTop : public NonRollingTop{
 	public:
 		GeneralTop(std::shared_ptr<View> v, Vector const& A,

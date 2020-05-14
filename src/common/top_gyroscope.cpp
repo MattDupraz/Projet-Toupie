@@ -1,3 +1,5 @@
+#include "top_gyroscope.h"
+
 // Constructeur du Gyroscope
 Gyroscope::Gyroscope(std::shared_ptr<View> v, Vector const& A,
 		Vector const& P, Vector const& DP,

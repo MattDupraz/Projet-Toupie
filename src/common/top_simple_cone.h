@@ -1,3 +1,6 @@
+#pragma once
+#include "top_non_rolling.h"
+
 class SimpleCone : public NonRollingTop {
 	public:
 		// rho = masse volumique
