@@ -1,7 +1,6 @@
 #pragma once
 
 #include <ostream>
-#include <cmath>
 
 #include "vect.h"
 #include "drawable.h"
@@ -52,7 +51,7 @@ class Top : public Drawable {
 		virtual double dz() const = 0;
 
 		// Height of the center of mass
-		virtual double getHeightCM() const = 0;
+		virtual double getHeightG() const = 0;
 
 		// Moments of inertia around principal axes
 		virtual double getI_xy() const = 0;
@@ -60,14 +59,19 @@ class Top : public Drawable {
 
 		virtual double getMass() const = 0;
 
+		double getI_Axy() const;
+
 		Vector getPosA() const;
-		Vector getPosCM() const;
-		Vector getVelocityA() const
-		Vector getVelocityCM() const;
+		Vector getPosG() const;
+		Vectir getAG() const;
+		Vector getVelocityA() const;
+		Vector getVelocityG() const;
+
 		Vector getAngVelocity() const;
 
 		// Matrix of inertia	
-		Matrix3x3 getInertiaMatrix() const;
+		Matrix3x3 getInertiaMatrixG() const;
+		Matrix3x3 getInertiaMatrixA() const;
 		// Matrix of basis change from top's reference frame
 		// to inertial reference fram
 		Matrix3x3 getOrientationMatrix() const;
@@ -77,8 +81,8 @@ class Top : public Drawable {
 		virtual std::ostream& print(std::ostream& os) const = 0;
 
 		double getEnergy() const;
-		double getAngMomentumK() const;
-		double getAngMomentumA() const;
+		Vector getAngMomentumA() const;
+		Vector getAngMomentumG() const;
 
 	protected :	
 
