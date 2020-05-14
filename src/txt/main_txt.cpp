@@ -1,6 +1,10 @@
 #include "view_text.h"
 #include "system.h"
-#include "integrator.h"
+#include "integrator_newmark.h"
+#include "top_simple_cone.h"
+#include "top_gyroscope.h"
+#include "top_chinese.h"
+#include "top_general.h"
 
 #include <iostream>
 #include <fstream>
@@ -35,7 +39,7 @@ int main(){
 		Vector {0,0.5,0, 0, 0},
 		Vector {0,0,170, 0, 0},
 		0.1, 1.5, 0.2));
-	system.add(make_unique<ToupiesGen>(view,
+	system.add(make_unique<GeneralTop>(view,
 		Vector {0, 0, 2}, 
 		Vector {0, 0.5, 0}, 
 		Vector {0,0,70},
@@ -61,8 +65,7 @@ int main(){
 		system.evolve(dt);
 		system.draw();
 		file1 << system.getTop(0).getEnergy() << std::endl;
-		file2 << system.getTop(0).getL_Ak() << std::endl;
-		file3 << system.getTop(0).getL_Aa() << std::endl;
+		file2 << system.getTop(0).getAngMomentumA()*Vector {0,0,1} << std::endl;
 		
 	}	
 	

@@ -2,11 +2,10 @@
 
 #include "top.h"
 #include "system.h"
-
-class SimpleCone;
-class Gyroscope;
-class GeneralTop;
-class ChineseTop;
+#include "top_simple_cone.h"
+#include "top_gyroscope.h"
+#include "top_general.h"
+#include "top_chinese.h"
 
 class ViewText : public View {
 public:
