@@ -42,25 +42,30 @@ std::ostream& ChineseTop::print(std::ostream& os) const {
 // Equation du mouvement d'une toupie chinoise
 // c.f. complement mathematique page 20
 Vector ChineseTop::getDDP(Vector P, Vector DP) {
-	double cos_theta(cos(theta()));
-	double sin_theta(sin(theta()));
+	double cos_theta(cos(P[1]));
+	double sin_theta(sin(P[1]));
 
+	double d_psi(DP[0]);
+	double d_theta(DP[1]);
+	double d_phi(DP[2]);
+
+	// Auxilliary variables
 	double mR2 = m * pow(R, 2);
 
-	double f_1(d_phi() + d_psi() * cos_theta);
+	double f_1(d_phi + d_psi * cos_theta);
 	double f_3(I_1 * I_3);
 	f_3 += mR2 * pow(sin_theta, 2) * I_1;
 	f_3 += mR2 * pow(alpha - cos_theta, 2) * I_3;
-	double f_2(d_theta() / sin_theta * f_1);
+	double f_2(d_theta / sin_theta * f_1);
 	f_2 *= (I_3 * (I_3 + mR2 * (1.0 - alpha * cos_theta))) / f_3;
-	f_2 -= 2 * d_psi() * d_theta() * (cos_theta / sin_theta);
+	f_2 -= 2 * d_psi * d_theta * (cos_theta / sin_theta);
 
 	double a_1(-mR2 * (alpha - cos_theta) * (1 - alpha * cos_theta));
 	a_1 += I_1 * cos_theta;
-	a_1 *= pow(d_psi(), 2);
+	a_1 *= pow(d_psi, 2);
 	double a_2(mR2 * (alpha * cos_theta - 1) - I_3);
-	a_2 *= f_1 * d_psi();
-	a_2 -= mR2 * pow(d_theta(), 2) * alpha + m * R * alpha * constants::g;
+	a_2 *= f_1 * d_psi;
+	a_2 -= mR2 * pow(d_theta, 2) * alpha + m * R * alpha * constants::g;
 	double a_3(I_1 + mR2 * pow(alpha - cos_theta, 2) + pow(sin_theta, 2));
 
 	double d2_theta(sin_theta * (a_1 + a_2) / a_3);
@@ -68,15 +73,15 @@ Vector ChineseTop::getDDP(Vector P, Vector DP) {
 	double d2_psi(f_2);
 
 	double d2_phi(mR2 * (I_3 * (alpha - cos_theta) + I_1 * cos_theta) / f_3);
-	d2_phi *= -f_1 * d_theta() * sin_theta;
-	d2_phi += d_psi() * d_theta() * sin_theta - cos_theta * f_2;
+	d2_phi *= -f_1 * d_theta * sin_theta;
+	d2_phi += d_psi * d_theta * sin_theta - cos_theta * f_2;
 
-	double cos_psi(cos(psi()));
-	double sin_psi(sin(psi()));
+	double cos_psi(cos(P[0]));
+	double sin_psi(sin(P[0]));
 
-	double d_x(R*(d_theta() * sin_psi - d_phi() * cos_psi * sin_theta));
-	double d_y(-R*(d_theta() * cos_psi + d_phi() * sin_psi * sin_theta));
+	double d_x(R*(d_theta * sin_psi - d_phi * cos_psi * sin_theta));
+	double d_z(-R*(d_theta * cos_psi + d_phi * sin_psi * sin_theta));
 
-	DDP_cache = Vector{d2_psi, d2_theta, d2_phi, d_x, d_y};
+	DDP_cache = Vector{d2_psi, d2_theta, d2_phi, d_x, d_z};
 	return DDP_cache;
 }

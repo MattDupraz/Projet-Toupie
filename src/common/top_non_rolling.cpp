@@ -36,7 +36,7 @@ Vector NonRollingTop::getDDP(Vector P, Vector DP) {
 }
 
 Vector NonRollingTop::getAG() const {
-	Vector AG({0, getHeightCM(), 0});
+	Vector AG({0, 0, getHeightCM()});
 	AG = getOrientationMatrix() * AG;
 	return AG;
 }

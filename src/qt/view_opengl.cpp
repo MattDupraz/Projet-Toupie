@@ -85,6 +85,8 @@ void ViewOpenGL::draw(System const& system) {
 	if (shouldDrawTrajectories)
 		drawTrajectories();
 
+	drawBasis();
+
 	// Dessine les toupies du systeme
 	for (std::size_t i(0); i < system.size(); ++i) {
 		Top const& top(system.getTop(i)); 
@@ -92,10 +94,31 @@ void ViewOpenGL::draw(System const& system) {
 		// Ajoute le centre de masse a la trajectoire
 		Vector A = top.getPosA();
 		Vector G = top.getPosG();
-		addToTrajectory(trajectoriesCM[top.objectID], QVector3D(G[0], G[2], G[1]));
-		addToTrajectory(trajectoriesA[top.objectID], QVector3D(A[0], A[2] + 0.05, A[1]));
+		addToTrajectory(trajectoriesCM[top.objectID], QVector3D(G[1], G[2], G[0]));
+		addToTrajectory(trajectoriesA[top.objectID], QVector3D(A[1], A[2] + 0.01, A[0]));
 		top.draw();
 	}
+}
+
+void ViewOpenGL::drawBasis() {
+	// Axe X
+	prog.setAttributeValue(aColor, 1.0, 0.0, 0.0);
+	glBegin(GL_LINE_STRIP);
+	prog.setAttributeValue(aPos, 0.0, 0.01, 0.0);
+	prog.setAttributeValue(aPos, 0.0, 0.01, 1.0);
+	glEnd();
+	// Axe Y
+	prog.setAttributeValue(aColor, 0.0, 1.0, 0.0);
+	glBegin(GL_LINE_STRIP);
+	prog.setAttributeValue(aPos, 0.0, 0.01, 0.0);
+	prog.setAttributeValue(aPos, 1.0, 0.01, 0.0);
+	glEnd();
+	// Axe Z
+	prog.setAttributeValue(aColor, 0.0, 0.0, 1.0);
+	glBegin(GL_LINE_STRIP);
+	prog.setAttributeValue(aPos, 0.0, 0.01, 0.0);
+	prog.setAttributeValue(aPos, 0.0, 1.01, 0.0);
+	glEnd();
 }
 
 // Methode pour modifier l'orientation de la camera
@@ -207,7 +230,7 @@ void ViewOpenGL::updateView(System const& system) {
 	if (cameraFollow) {
 		// Positionne la caméra de manière qu'elle regarde directement la toupie
 		Top const& top(system.getTop(followedTop % system.size())); 
-		QVector3D absolute(top.x(), top.z(), top.y()); // Les coordonnees physiques et graphiques diffèrent
+		QVector3D absolute(top.y(), top.z(), top.x()); // Les coordonnees physiques et graphiques diffèrent
 		// note: On purait ajouter une touche pour controler la distance de la caméra de la toupie
 		QVector3D relative(0.0, 0.0, 4.0);
 		QMatrix4x4 rotation;
@@ -226,13 +249,13 @@ void ViewOpenGL::updateUniforms(Top const& top) {
 	// Initialize la matrice de translation pour cette toupie
 	u_translation.reset();
 	// z est négatif pour suivre la règle de la main droite
-	u_translation.value().translate(top.x(), top.z(), top.y()); // Les coordonees physiques et graphiques diffèrent
+	u_translation.value().translate(top.y(), top.z(), top.x()); // Les coordonees physiques et graphiques diffèrent
 	u_translation.update();
 
 	// Matrice de rotation à partir des angles d'euler
 	u_model.reset();
 	u_model.value().rotate(toDegrees(top.psi()), 0.0, 1.0, 0.0);
-	u_model.value().rotate(toDegrees(top.theta()), 1.0, 0.0, 0.0);
+	u_model.value().rotate(toDegrees(top.theta()), 0.0, 0.0, 1.0);
 	u_model.value().rotate(toDegrees(top.phi()), 0.0, 1.0, 0.0);
 	u_model.update();
 }
@@ -305,6 +328,7 @@ void ViewOpenGL::draw(ChineseTop const& top) {
 	double L(top.getRadius() - top.getTruncatedHeight());
 
 	u_translation.value().translate(0.0, R, 0.0);
+	u_translation.update();
 
 	u_model.value().scale(R);
 	u_model.update();

@@ -27,12 +27,12 @@ int main(int argc, char* argv[]) {
 	std::unique_ptr<System> system = std::make_unique<System>(view, integrator);
 	// Ajoute des toupies au systeme
 	system->add(std::make_unique<Gyroscope>(view,
-		Vector {-1, 0, -2},
+		Vector {-1, -2, 0},
 		Vector {0, 0.5, 0},
-		Vector {0, 0, 160},
+		Vector {0, 0, 5},
 		1.0, 0.1, 0.2, 1.0));
 	system->add(std::make_unique<SimpleCone>(view,
-		Vector {2, 0, 1},
+		Vector {2, 1, 0},
 		Vector {0,0.5,0},
 		Vector {0,0,170},
 		0.1, 1.5, 0.75));

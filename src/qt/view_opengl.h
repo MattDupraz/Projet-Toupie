@@ -42,6 +42,9 @@ class ViewOpenGL : public View {
 		// Dessine le sol
 		void drawFloor();
 
+		// Dessine la base du systeme de coordonne x, y, z en rouge, vert, bleu
+		void drawBasis();
+
 		// Initialise le support de dessin au moment de la creation de la fenetre
 		void init();
 		// Emploi une matrice de projection
