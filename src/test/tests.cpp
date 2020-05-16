@@ -6,7 +6,11 @@
 #include "matrix_3x3.h"
 #include "view_text.h"
 #include "system.h"
-#include "integrator.h"
+#include "top_test_fall.h"
+#include "top_test_sine.h"
+#include "integrator_euler_cromer.h"
+#include "integrator_newmark.h"
+#include "integrator_runge_kutta.h"
 #include "constants.h"
 #include <memory>
 #include <utility>
@@ -138,7 +142,7 @@ void Tests::testTop(){
 		Vector {0,0.5,0}, 
 		Vector {0,0,70},
 		0.1, 1.5, 0.75));
-	system.add(make_unique<ToupiesGen>(view,
+	system.add(make_unique<GeneralTop>(view,
 		Vector {0, 0, 2}, 
 		Vector {0, 0.5, 0}, 
 		Vector {0,0,70},

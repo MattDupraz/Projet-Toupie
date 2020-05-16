@@ -15,10 +15,22 @@ public:
 		os << P_ << " " << DP_;
 		return os;}
 
-	virtual double getEnergy()const override{return 0;}
-	virtual double getL_Ak()const override{return 0;}
-	virtual double getL_Aa()const override{return 0;}
-
+	virtual double psi()const override{return 0;}
+	virtual double theta()const override{return 0;}
+	virtual double phi()const override{return 0;}
+	virtual double d_psi()const override{return 0;}
+	virtual double d_theta()const override{return 0;}
+	virtual double d_phi()const override{return 0;}
+	virtual double x()const override{return 0;}
+	virtual double y()const override{return 0;}
+	virtual double z()const override{return 0;}
+	virtual double dx()const override{return 0;}
+	virtual double dy()const override{return 0;}
+	virtual double dz()const override{return 0;}
+	virtual double getMomentInertia_xy()const override{return 0;}
+	virtual double getMomentInertia_z()const override{return 0;}
+	virtual double getMass()const override{return 0;}
+	virtual Vector getAG()const override{return Vector {0,0,0};}
 protected :
 	Vector DDP_;
 
