@@ -40,8 +40,8 @@ Vector Top::getAngMomentumG() const {
 }
 
 double Top::getEnergy() const {
-	double E_c(0.5 * getMass() * getVelocityG().norm2()
-			+ getAngMomentumG() * getAngVelocity());
+	double E_c(0.5 * (getMass() * getVelocityG().norm2()
+			+ getAngMomentumG() * getAngVelocity()));
 	Vector g({0, -constants::g, 0});
 	double E_g(-getMass() * g * getPosG());
 	return E_c + E_g;

@@ -32,16 +32,28 @@ int main(int argc, char* argv[]) {
 		Vector {0, 0.5, 0},
 		Vector {0, 0, 5},
 		1.0, 0.1, 0.2, 1.0));
+
+	double rho = 0.1;
+	double L = 1.5;
+	double R = 0.75;
+	int n_layers = 50;
+	Vector layers;
+	for (int i(0); i < n_layers; ++i) {
+		layers.augment(R * ((double(i) + 0.5) / double(n_layers)));
+	}
+
 	system->add(std::make_unique<GeneralTop>(view,
 		Vector {-3, 2, 0},
 		Vector {0, 0.5, 0},
-		Vector {0, 0, 25},
-		1.0, Vector{0.01, 0.1, 0.3, 0.6, 1.0}, 0.2));
+		Vector {0, 0, 170},
+		rho, layers, L / double(n_layers)));
 	system->add(std::make_unique<SimpleCone>(view,
 		Vector {2, 1, 0},
 		Vector {0,0.5,0},
 		Vector {0,0,170},
-		0.1, 1.5, 0.75));
+		rho, L, R));
+
+
 	system->add(std::make_unique<ChineseTop>(view,
 		Vector {0,0.5,0, 0, 0},
 		Vector {0,0,15, 0, 0},
