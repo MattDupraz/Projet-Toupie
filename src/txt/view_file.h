@@ -7,9 +7,14 @@
 #include "top_general.h"
 #include "top_chinese.h"
 
-class ViewText : public View {
+#include <map>
+#include <fstream>
+#include <memory>
+
+class ViewFile : public View {
 public:
-	ViewText(){}
+	ViewFile();
+	~ViewFile() override;
 
 	// Dessine une toupie generique
 	void drawTop(Top const& top);
@@ -20,4 +25,6 @@ public:
 	virtual void draw(GeneralTop const& top)override { drawTop(top); }
 	virtual void draw(ChineseTop const& top) override { drawTop(top); }
 	virtual void draw(System const& system) override;
+private:
+	std::map<unsigned int, std::shared_ptr<std::ofstream>> files;
 };
