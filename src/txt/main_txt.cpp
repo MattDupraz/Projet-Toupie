@@ -61,6 +61,11 @@ int main(){
 	cout << "Le système évolue et se dessine à chaque pas (dt = " << dt << "): "
 			<< endl;
 	
+	// Evolue le systeme nIterations fois
+	for (int i(0); i < nIterations; ++i) {
+		system.evolve(dt);
+		system.draw();
+	}
 	
 	return 0;
 }
