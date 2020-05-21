@@ -4,6 +4,16 @@
 #include "vect.h"
 #include "math_utils.h"
 
+// Accesseurs
+double Vector::operator[](std::size_t i) const {
+	if (i >= size()) throw VECTOR_INDEX_OUT_OF_BOUNDS;
+	return coords_[i];
+}
+double& Vector::operator[](std::size_t i) {
+	if (i >= size()) throw VECTOR_INDEX_OUT_OF_BOUNDS;
+	return coords_[i];
+}
+
 // Operateurs d'assignment
 Vector& Vector::operator*=(double d) {
 	for (std::size_t i(0); i < size(); ++i){

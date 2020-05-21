@@ -5,7 +5,7 @@
 #include <initializer_list>
 
 // Exception lors des operation erronnees
-enum VectorException { INCOMPATIBLE_VECTOR_SIZE };
+enum VectorException { VECTOR_INDEX_OUT_OF_BOUNDS, INCOMPATIBLE_VECTOR_SIZE };
 
 class Vector {
 	public:
@@ -31,8 +31,8 @@ class Vector {
 		std::size_t size() const { return coords_.size(); }
 		
 		// Accesseurs aux coordonnees du vecteur
-		double operator[](std::size_t i) const { return coords_[i]; } // Si le vecteur est constant
-		double& operator[](std::size_t i) { return coords_[i]; }
+		double operator[](std::size_t i) const;
+		double& operator[](std::size_t i);
 		
 		// Multiplie ce vecteur par un scalaire
 		Vector& operator*=(double d);
