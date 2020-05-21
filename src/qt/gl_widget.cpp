@@ -193,8 +193,14 @@ void GLWidget::keyPressEvent(QKeyEvent* event) {
 			case Qt::Key_T:
 				view_->triggerTrajectories();
 				break;
+			case Qt::Key_B:
+				view_->triggerBasis();
+				break;
 			case Qt::Key_C:
-				view_->followNext();
+				view_->followNext(false);
+				break;
+			case Qt::Key_R:
+				view_->followNext(true);
 				break;
 			case Qt::Key_Escape:
 				cameraSpeed_ = Vector {0, 0, 0};

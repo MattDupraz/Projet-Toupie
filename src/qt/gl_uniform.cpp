@@ -16,6 +16,13 @@ void UniformValue<T>::bind(QOpenGLShaderProgram* sp, const char* name) {
 }
 
 template <class T>
+void UniformValue<T>::bind(QOpenGLShaderProgram* sp, const char* name,
+		T const& val) {
+	this->val = val;
+	bind(sp, name);
+}
+
+template <class T>
 void UniformValue<T>::update() {
 	// Termine le programme si bind n'a pas été appelé avant d'utiliser update()
 	assert(prog != nullptr);
@@ -23,3 +30,5 @@ void UniformValue<T>::update() {
 }
 
 template class UniformValue<QMatrix4x4>;
+template class UniformValue<QVector3D>;
+template class UniformValue<float>;

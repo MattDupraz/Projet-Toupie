@@ -8,7 +8,10 @@
 #include <vector>
 
 #include "view.h"
-#include "gl_mesh.h"
+#include "gl_cone.h"
+#include "gl_cylinder.h"
+#include "gl_circle.h"
+#include "gl_sphere.h"
 #include "gl_uniform.h"
 
 class Top;
@@ -16,15 +19,7 @@ class Vector;
 
 class ViewOpenGL : public View {
 	public:
-		ViewOpenGL()
-			: shouldDrawFloor(true),
-			shouldDrawTrajectories(true),
-			cameraYaw(0.0),
-			cameraPitch(-20.0),
-			cameraPos(0.0, 0.4, 5.0),
-			cameraFollow(false),
-			followedTop(0)
-			{}
+		ViewOpenGL();
 
 		// Methodes pour dessiner des objets dessinables
 		virtual void draw(SimpleCone const& top) override;
@@ -50,12 +45,14 @@ class ViewOpenGL : public View {
 		// Emploi une matrice de projection
 		void setProjection(QMatrix4x4 const& matrix);
 		
-		// Declenge/arrete le dessin du sol
+		// Declenche/arrete le dessin du sol
 		void triggerFloor() {shouldDrawFloor = !shouldDrawFloor;}
-		// Declenge/arrete le dessin des trajectoires
+		// Declenche/arrete le dessin des trajectoires
 		void triggerTrajectories() {shouldDrawTrajectories = !shouldDrawTrajectories;}
+		// Declenche/arrete le dessin de la base de coordonnees
+		void triggerBasis() {shouldDrawBasis = !shouldDrawBasis;}
 		// Enable following and follow next top
-		void followNext();
+		void followNext(bool rotate);
 		// Disable following
 		void stopFollow();
 
@@ -77,18 +74,31 @@ class ViewOpenGL : public View {
 
 		bool shouldDrawFloor;
 		bool shouldDrawTrajectories;
+		bool shouldDrawBasis;
 		double cameraYaw;
 		double cameraPitch;
 		QVector3D cameraPos;
 
 		bool cameraFollow; // true locks camera to followedTop
+		bool cameraRotateWithTop; // true puts camera into the top's reference frame
 		int followedTop; // Index of followed top modulo number of tops
+
+		// Meshes used for rendering
+		GLCone cone;
+		GLCylinder cylinder;
+		GLCircle circle;
+		GLSphere sphere;
 
 		// Valeurs uniformes
 		UniformMatrix4x4 u_projection;
 		UniformMatrix4x4 u_view;
 		UniformMatrix4x4 u_translation;
 		UniformMatrix4x4 u_model;
+		UniformFloat u_clipMaxY;
+		UniformFloat u_clipMinY;
+		UniformVector3D u_lightPos;
+		UniformVector3D u_lightColor;
+		UniformVector3D u_viewPos;
 
 		// Dictionaire de trajectoires
 		std::map<unsigned int, std::vector<QVector3D>> trajectoriesA;
@@ -96,10 +106,4 @@ class ViewOpenGL : public View {
 
 		// Nombre maximum de vecteurs dans une trajectoire
 		int maxTrajectoryLength = 1000;
-
-		// Meshes used for rendering
-		GLMesh cone;
-		GLMesh cylinder;
-		GLMesh circle;
-		GLMesh sphere;
 };

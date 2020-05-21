@@ -13,6 +13,22 @@
 
 #include "gl_uniform.h"
 
+ViewOpenGL::ViewOpenGL()
+	: shouldDrawFloor(true),
+	shouldDrawTrajectories(true),
+	shouldDrawBasis(false),
+	cameraYaw(0.0),
+	cameraPitch(-20.0),
+	cameraPos(0.0, 0.4, 5.0),
+	cameraFollow(false),
+	cameraRotateWithTop(false),
+	followedTop(0),
+	cone(25),
+	cylinder(25),
+	circle(25),
+	sphere(10, 25)
+{}
+
 void ViewOpenGL::init() {
 	// Charge les shaders qui s'occupent de l'affichage
 	// Les fichiers sont accessibles avec l'addresse virtuelle
@@ -56,23 +72,17 @@ void ViewOpenGL::init() {
 	u_view.bind(&prog, "view");
 	u_translation.bind(&prog, "translation");
 	u_model.bind(&prog, "model");
-
-	// Definie la position et couleur de la source de lumiere
-	prog.setUniformValue("lightPos", 0.0, 20.0, 0.0);
-	prog.setUniformValue("lightColor", 1.0, 1.0, 1.0);
-
-	// Definie la position de la caméra
-	prog.setUniformValue("viewPos", 0.0, 0.0, 0.0);
-
-	// Initialise les valeur de découpage (utile pour dessiner la sphère tronquée)
-	prog.setUniformValue("clipMaxY",  1.0e6f);
-	prog.setUniformValue("clipMinY", -1.0e6f);
+	u_clipMaxY.bind(&prog, "clipMaxY", 1.0e6f);
+	u_clipMinY.bind(&prog, "clipMinY", -1.0e6f);
+	u_lightPos.bind(&prog, "lightPos", QVector3D(0.0f, 20.0f, 0.0f));
+	u_lightColor.bind(&prog, "lightColor", QVector3D(1.0f, 1.0f, 1.0f));
+	u_viewPos.bind(&prog, "viewPos");
 
 	// Initialise les modèles à dessiner
-	cone.init_cone(prog, 25);
-	cylinder.init_cylinder(prog, 25);
-	circle.init_circle(prog, 25);
-	sphere.init_sphere(prog, 10, 25);
+	cone.initialize(prog);
+	cylinder.initialize(prog);
+	circle.initialize(prog);
+	sphere.initialize(prog);
 }
 
 void ViewOpenGL::draw(System const& system) {
@@ -85,8 +95,9 @@ void ViewOpenGL::draw(System const& system) {
 	// Dessine les trajectoires des toupies
 	if (shouldDrawTrajectories)
 		drawTrajectories();
-
-	drawBasis();
+	// Dessine la base du systeme de coordonnees
+	if (shouldDrawBasis)
+		drawBasis();
 
 	// Dessine les toupies du systeme
 	for (std::size_t i(0); i < system.size(); ++i) {
@@ -203,8 +214,9 @@ void ViewOpenGL::drawFloor() {
 	glEnd();
 }
 
-void ViewOpenGL::followNext() {
+void ViewOpenGL::followNext(bool rotate) {
 	cameraFollow = true;
+	cameraRotateWithTop = rotate;
 	++followedTop;
 }
 
@@ -231,19 +243,35 @@ void ViewOpenGL::updateView(System const& system) {
 	if (cameraFollow) {
 		// Positionne la caméra de manière qu'elle regarde directement la toupie
 		Top const& top(system.getTop(followedTop % system.size())); 
-		QVector3D absolute(top.y(), top.z(), top.x()); // Les coordonnees physiques et graphiques diffèrent
+
+		Vector posG(top.getPosG());
+		QVector3D absolute(posG[1], posG[2], posG[0]); // Les coordonnees physiques et graphiques diffèrent
 		// note: On purait ajouter une touche pour controler la distance de la caméra de la toupie
 		QVector3D relative(0.0, 0.0, 4.0);
 		QMatrix4x4 rotation;
-		rotation.rotate(cameraYaw, 0.0, 1.0, 0.0);
-		rotation.rotate(cameraPitch, 1.0, 0.0, 0.0);
+
+		if (cameraRotateWithTop) {
+			u_view.reset();
+			//u_view.value().rotate(-toDegrees(top.phi()), 0.0, 1.0, 0.0);
+			u_view.value().rotate(-toDegrees(top.theta()), 0.0, 0.0, 1.0);
+			u_view.value().rotate(-toDegrees(top.psi()), 0.0, 1.0, 0.0);
+
+			rotation.rotate(toDegrees(top.psi()), 0.0, 1.0, 0.0);
+			rotation.rotate(toDegrees(top.theta()), 0.0, 0.0, 1.0);
+			//rotation.rotate(toDegrees(top.phi()), 0.0, 1.0, 0.0);
+		} else {
+			rotation.rotate(cameraYaw, 0.0, 1.0, 0.0);
+			rotation.rotate(cameraPitch, 1.0, 0.0, 0.0);
+		}
+
 		relative = rotation * relative;
 		cameraPos = absolute + relative;
 	}
 	u_view.value().translate(-cameraPos);
 	u_view.update();
 
-	prog.setUniformValue("viewPos", cameraPos);
+	u_viewPos.setValue(cameraPos);
+	u_viewPos.update();
 }
 
 void ViewOpenGL::updateUniforms(Top const& top) {
@@ -329,9 +357,13 @@ void ViewOpenGL::draw(ChineseTop const& top) {
 	u_model.value().scale(R);
 	u_model.update();
 
-	prog.setUniformValue("clipMaxY", float(L));
+	u_clipMaxY.setValue(float(L));
+	u_clipMaxY.update();
+
 	sphere.draw();
-	prog.setUniformValue("clipMaxY", 10e6f);
+
+	u_clipMaxY.setValue(10e6f);
+	u_clipMaxY.update();
 
 	u_model.value().translate(0.0, L, 0.0);
 	u_model.value().scale(r/R);
