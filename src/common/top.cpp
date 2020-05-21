@@ -52,7 +52,7 @@ double Top::getMomentInertiaA_xy() const {
 }
 
 double Top::getProduitMixte()const{
-	return (getAngVelocity()^getAngMomentumG())*Vector {0,0,1};
+	return (getAngVelocity()^getAngMomentumG())[2];
 }
 
 Matrix3x3 Top::getInertiaMatrixG() const {

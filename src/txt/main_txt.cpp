@@ -1,4 +1,5 @@
 #include "view_text.h"
+#include "view_file.h"
 #include "system.h"
 #include "integrator_euler_cromer.h"
 #include "integrator_newmark.h"
@@ -17,11 +18,10 @@ using namespace std;
 
 int main(){
 	constexpr double dt = 0.01;
-	constexpr bool verbose = true;
 	constexpr int nIterations = 2000;
 
 	// Initialise le support de dessin
-	shared_ptr<View> view = make_shared<ViewText>(verbose);
+	shared_ptr<View> view = make_shared<ViewFile>();
 	// Initialise l'integrateur choisi
 	shared_ptr<Integrator> integrator = make_shared<NewmarkIntegrator>();
 	// Initialise le systeme
@@ -58,27 +58,13 @@ int main(){
 
 	// Affiche les conditions initialles du systeme
 	cout << system;
-	
-	ofstream file1("energie0.txt");
-	ofstream file2("energie1.txt");
-	ofstream file3("energie2.txt");
-	ofstream file4("energie3.txt");
-	
-	if (verbose) {
-		cout << "Le système évolue et se dessine à chaque pas (dt = " << dt << "): "
+	cout << "Le système évolue et se dessine à chaque pas (dt = " << dt << "): "
 			<< endl;
-	} else {
-		cout << "format: toupie\ttemps\tparamètre\tdérivée" << endl;
-	}
 	
 	// Evolue le systeme nIterations fois
 	for (int i(0); i < nIterations; ++i) {
 		system.evolve(dt);
 		system.draw();
-		file1 << system.getTop(0).getEnergy() << std::endl;
-		file2 << system.getTop(1).getEnergy() << std::endl;
-		file3 << system.getTop(2).getEnergy() << std::endl;
-		file4 << system.getTop(3).getEnergy() << std::endl;
 	}	
 	
 	return 0;

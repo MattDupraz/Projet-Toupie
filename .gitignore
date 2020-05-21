@@ -1,6 +1,7 @@
 bin/
 build/
 tests/
+out/
 
 Makefile
 .qmake.stash
