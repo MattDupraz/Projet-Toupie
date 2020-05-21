@@ -8,15 +8,16 @@ void ViewText::drawTop(Top const& top) {
 			<< "\tdérivée : " << top.getDP() << std::endl
 			<< "\tEnergie : " << top.getEnergy() << std::endl
 			<< "\tProjection L sur a : " 
-			<< top.getAngMomentumG()*Vector{0,0,1} << std::endl
+			<< top.getAngMomentumA()[2] << std::endl
 			<< "\tProjection L sur k : " 
-			<< top.getAngMomentumA()*Vector{0,0,1} << std::endl
+			<< (top.getOrientationMatrix() * top.getAngMomentumA())[2]
+		  		<< std::endl
 			<< "\tProduit mixte : " << top.getProduitMixte() << std::endl;
 	} else {
 		std::cout << top.getP() << '\t' << top.getDP() << "\t" 
 				  << top.getEnergy() << "\t" 
-				  << top.getAngMomentumA()*Vector {0,0,1} << "\t" 
-				  << top.getAngMomentumG()*Vector {0,0,1} << "\t"
+				  << top.getAngMomentumA()[2] << "\t" 
+				  << (top.getOrientationMatrix() * top.getAngMomentumA())[2] << "\t"
 				  << top.getProduitMixte() << std::endl;
 	}
 }
