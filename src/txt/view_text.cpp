@@ -5,9 +5,19 @@
 void ViewText::drawTop(Top const& top) {
 	if (verbose) {
 		std::cout << "\tparamètre: " << top.getP() << std::endl
-			<< "\tdérivée : " << top.getDP() << std::endl;
+			<< "\tdérivée : " << top.getDP() << std::endl
+			<< "\tEnergie : " << top.getEnergy() << std::endl
+			<< "\tProjection L sur a : " 
+			<< top.getAngMomentumG()*Vector{0,0,1} << std::endl
+			<< "\tProjection L sur k : " 
+			<< top.getAngMomentumA()*Vector{0,0,1} << std::endl
+			<< "\tProduit mixte : " << top.getProduitMixte() << std::endl;
 	} else {
-		std::cout << top.getP() << '\t' << top.getDP() << std::endl;
+		std::cout << top.getP() << '\t' << top.getDP() << "\t" 
+				  << top.getEnergy() << "\t" 
+				  << top.getAngMomentumA()*Vector {0,0,1} << "\t" 
+				  << top.getAngMomentumG()*Vector {0,0,1} << "\t"
+				  << top.getProduitMixte() << std::endl;
 	}
 }
 
