@@ -91,8 +91,9 @@ commenté.
 ## Semaine 10 :
 
 Nous commençons l'implétentation des toupies générales. On a amelioré certains
-aspets graphiques, à présent la caméra peut suivre les toupies. La toupie chinoise est affichée correctement à présent. On a netoyé un
-peu notre code ainsi que éliminé de noumbreux beugs.
+aspets graphiques, à présent la caméra peut suivre les toupies. La toupie
+chinoise est affichée correctement à présent. On a netoyé un peu notre code
+ainsi que éliminé de noumbreux beugs.
 
 --------------------------------------------------
 ## Semaine 11 :
@@ -108,7 +109,11 @@ fonctionalités communes à toutes les toupies.
 --------------------------------------------------
 ## Semaine 12 :
 
-
+On a refactoré la partie graphique, et implémenté la caméra fixé dans le
+référentiel de la toupie. Nous se sommes assurés que les indicateurs marchent
+bien avec chaque intégrateur, en comparant avec les résultats sur ProgMaPh. Nous
+avons travaillé sur les fichiers de documentation. On a bien relu les consignes
+du projet.
 
 --------------------------------------------------
 ## Semaine 13 :
