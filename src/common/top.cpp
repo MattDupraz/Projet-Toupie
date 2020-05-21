@@ -42,13 +42,17 @@ Vector Top::getAngMomentumG() const {
 double Top::getEnergy() const {
 	double E_c(0.5 * (getMass() * getVelocityG().norm2()
 			+ getAngMomentumG() * getAngVelocity()));
-	Vector g({0, -constants::g, 0});
+	Vector g({0, 0, -constants::g});
 	double E_g(-getMass() * g * getPosG());
-	return E_c + E_g;
+	return E_c+E_g;
 }
 
 double Top::getMomentInertiaA_xy() const {
 	return getMomentInertia_xy() + getMass() * getAG().norm2();
+}
+
+double Top::getProduitMixte()const{
+	return (getAngVelocity()^getAngMomentumG())*Vector {0,0,1};
 }
 
 Matrix3x3 Top::getInertiaMatrixG() const {

@@ -81,6 +81,7 @@ class Top : public Drawable {
 		double getEnergy() const;
 		Vector getAngMomentumA() const;
 		Vector getAngMomentumG() const;
+		double getProduitMixte() const;
 
 	protected :	
 

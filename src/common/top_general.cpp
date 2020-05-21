@@ -18,7 +18,8 @@ std::ostream& GeneralTop::print(std::ostream& os) const{
        << "dérivée    : " << getDP() << std::endl
        << "masse volumique (kg m-3) : " << getDensity() << std::endl
        << "layers     : " << getLayers() << std::endl
-       << "épaisseur : " << getThickness() << std::endl;
+       << "épaisseur : " << getThickness() << std::endl
+       << "masse     : " << getMass() << std::endl;
 }
 
 void GeneralTop::init_mass(){

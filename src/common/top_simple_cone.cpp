@@ -21,5 +21,6 @@ std::ostream& SimpleCone::print(std::ostream& os) const {
 		<< "masse volumique (kg m-3) : " << getDensity() << std::endl
 		<< "hauteur (m) : " << getHeight() << std::endl
 		<< "rayon   (m) : " << getRadius() << std::endl
-		<< "origine (A) : " << getOrigin() << std::endl;
+		<< "origine (A) : " << getOrigin() << std::endl
+		<< "masse : " << getMass() << std:: endl;
 }
