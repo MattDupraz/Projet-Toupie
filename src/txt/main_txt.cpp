@@ -75,8 +75,8 @@ int main(){
 	for (int i(0); i < nIterations; ++i) {
 		system.evolve(dt);
 		system.draw();
-		file1 << system.getTop(0).getEnergy() << std::endl;
-		file2 << system.getTop(1).getEnergy() << std::endl;
+		file1 << system.getTop(1).getAngMomentumA()*Vector {0,0,1} << std::endl;
+		file2 << system.getTop(1).getAngMomentumG()*Vector {0,0,1} << std::endl;
 		file3 << system.getTop(2).getEnergy() << std::endl;
 		file4 << system.getTop(3).getEnergy() << std::endl;
 	}	
