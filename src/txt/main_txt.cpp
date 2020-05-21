@@ -61,18 +61,6 @@ int main(){
 	cout << "Le système évolue et se dessine à chaque pas (dt = " << dt << "): "
 			<< endl;
 	
-	// Evolue le systeme nIterations fois
-	for (int i(0); i < nIterations; ++i) {
-		system.evolve(dt);
-		system.draw();
-<<<<<<< HEAD
-		file1 << system.getTop(1).getAngMomentumA()*Vector {0,0,1} << std::endl;
-		file2 << system.getTop(1).getAngMomentumG()*Vector {0,0,1} << std::endl;
-		file3 << system.getTop(2).getEnergy() << std::endl;
-		file4 << system.getTop(3).getEnergy() << std::endl;
-=======
->>>>>>> f4bd8b1571b6fd7f24f5e3d4b2523e64cbebd953
-	}	
 	
 	return 0;
 }
