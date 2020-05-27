@@ -27,7 +27,7 @@ Vector Top::getVelocityA() const {
 Vector Top::getVelocityG() const {
 	Vector v_A(getVelocityA());
 	Vector omega(getMatrixToGlobal() * getAngVelocity());
-	Vector v_G(v_A + omega ^ getAG());
+	Vector v_G(v_A + (omega ^ getAG()));
 	return v_G;
 }
 
@@ -69,6 +69,18 @@ Matrix3x3 Top::getInertiaMatrixA() const {
 			{-AGz*AGx, -AGz*AGy, AGx*AGx + AGy*AGy}
 		});
 	return I + getMass() * D;
+}
+
+Matrix3x3 Top::getDerInertiaMatrixA() const {
+	Vector AG(getMatrixFromGlobal()*getAG());
+	double AGx(AG[0]), AGy(AG[1]), AGz(AG[2]);
+	Vector dAG(getAngVelocity() ^ AG);
+	double dAGx(dAG[0]), dAGy(dAG[1]), dAGz(dAG[2]);
+	return Matrix3x3({
+			{2*AGy*dAGy + 2*AGz*dAGz, -dAGx*AGy - AGx*dAGy, -dAGx*AGz - AGx*dAGz},
+			{-dAGy*AGx - AGy*dAGx, 2*AGx*dAGx + 2*dAGz*AGz, -dAGy*AGz - AGy*dAGz},
+			{-dAGz*AGx - AGz*dAGx, -dAGz*AGy - AGz*dAGy, 2*AGx*dAGx + 2*AGy*dAGy}
+		});
 }
 
 Matrix3x3 Top::getMatrixToGlobal() const {

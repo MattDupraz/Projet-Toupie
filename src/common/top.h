@@ -68,6 +68,7 @@ class Top : public Drawable {
 		// Matrix of inertia	
 		Matrix3x3 getInertiaMatrixG() const;
 		Matrix3x3 getInertiaMatrixA() const;
+		Matrix3x3 getDerInertiaMatrixA() const;
 		// Matrix of basis change from top's reference frame
 		// to inertial reference fram
 		Matrix3x3 getMatrixToGlobal() const;
