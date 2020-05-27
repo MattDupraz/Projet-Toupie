@@ -43,9 +43,8 @@ int main(int argc, char* argv[]) {
 	}
 
 	system->add(std::make_unique<GeneralTop>(view,
-		Vector {-3, 2, 0},
-		Vector {0, 0.5, 0},
-		Vector {0, 0, 170},
+		Vector {0, 0.5, 0, 0, 0},
+		Vector {0, 0, 170, -3, 2},
 		rho, layers, L / double(n_layers)));
 	system->add(std::make_unique<SimpleCone>(view,
 		Vector {2, 1, 0},

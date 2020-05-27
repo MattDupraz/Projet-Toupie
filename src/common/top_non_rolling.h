@@ -57,7 +57,6 @@ class NonRollingTop : public Top {
 
 		double m; // Mass
 		double d; // Distance from contact point to center of mass
-		// Moments of inertia with respect to A (point of contact)
 		double I_1; // Moment of inertia - horizontal axes
 		double I_3; // Moment of inertia - vertical axis
 };
