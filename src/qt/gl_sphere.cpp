@@ -2,6 +2,7 @@
 
 #include "math.h"
 
+// Sphère centrée en 0 de rayon 1
 void GLSphere::initialize(QOpenGLShaderProgram& prog) {
 	QVector<Vertex> vertices;
 	vertices.reserve(6 * sides * slices - 2 * 3 * sides);

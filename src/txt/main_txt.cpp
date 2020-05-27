@@ -17,7 +17,9 @@
 using namespace std;
 
 int main(){
+	// Pas de temps utilisé
 	constexpr double dt = 0.01;
+	// Nombre d'itérations avant que le programme s'arrête
 	constexpr int nIterations = 2000;
 
 	// Initialise le support de dessin
@@ -41,6 +43,9 @@ int main(){
 		Vector {0,0.5,0, 0, 0},
 		Vector {0,0,17, 0, 0},
 		0.1, 1.5, 0.2));
+		
+	// On initialise la toupie générale en approximant un cône par des
+	// disques:
 	double rho = 0.1;
 	double L = 1.5;
 	double R = 0.75;
@@ -49,7 +54,6 @@ int main(){
 	for (int i(0); i < n_layers; ++i) {
 		layers.augment(R * ((double(i) + 0.5) / double(n_layers)));
 	}
-
 	system.add(std::make_unique<GeneralTop>(view,
 		Vector {-3, 2, 0},
 		Vector {0, 0.5, 0},

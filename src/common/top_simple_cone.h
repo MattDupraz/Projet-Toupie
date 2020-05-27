@@ -1,6 +1,7 @@
 #pragma once
 #include "top_non_rolling.h"
 
+// Cone simple - toupie conique parfaite sans roulement
 class SimpleCone : public NonRollingTop {
 	public:
 		// rho = masse volumique

@@ -35,6 +35,7 @@ class Matrix3x3 {
 		Matrix3x3 inv() const;
 		double getMinor(std::size_t i, std::size_t j) const;
 		double cofactor(std::size_t i, std::size_t j) const;
+		// Matrice des cofacteurs
 		Matrix3x3 cofactorMatrix() const;
 
 		// Operations elementaires sur les matrices

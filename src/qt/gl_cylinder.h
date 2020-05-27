@@ -2,8 +2,7 @@
 
 #include "gl_mesh.h"
 
-// Cylinder
-// Two bases of radius 1 at y = 1, -1
+// Cylindre, deux bases (cercles) de rayon 1 à y = +- 1
 class GLCylinder : public GLMesh {
 	public:
 		GLCylinder(unsigned int sides)

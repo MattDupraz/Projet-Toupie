@@ -16,6 +16,7 @@
 #include "integrator.h"
 #include "system.h"
 
+// La `fenêtre` principale du programme (plus précisément le contenu)
 class GLWidget : public QOpenGLWidget {
 	public:
 		// le tickInterval est la duree en millisecondes d'un pas de temps

@@ -1,29 +1,21 @@
 #include "tests.h"
-#include "system.h"
-#include "top.h"
-#include "integrator.h"
-
-#include <iostream>
-#include <memory>
-#include <utility>
-using namespace std;
 
 int main() {
-
+	// Changer selon les besoins
 	const bool TEST_VECTOR = true;
 	const bool TEST_MATRIX = true;
 	const bool TEST_INTEGRATOR = true;
 	const bool TEST_TOP = true;
 
-	Tests tests;
+	// On effectue les tests
 	if (TEST_VECTOR)
-		tests.testVector();
+		tests::testVector();
 	if (TEST_MATRIX)
-		tests.testMatrix3x3();
+		tests::testMatrix3x3();
 	if (TEST_TOP)
-		tests.testTop();
-	if (TEST_INTEGRATOR)            // On teste les différents intégrateurs
-		tests.testIntegration();
+		tests::testTop();
+	if (TEST_INTEGRATOR)
+		tests::testIntegration();
 	
 		
 }

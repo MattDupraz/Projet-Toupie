@@ -4,6 +4,9 @@
 #include <QMatrix4x4>
 #include <QVector3D>
 
+// Encapsulation pour les valeurs uniformes des shaders OpenGL
+// Ceci permet de travailler avec les valeurs uniformes sur le CPU
+// d'une manière qui rend l'utilisation avec le shader assez simple
 template <class T>
 class UniformValue {
 	public:

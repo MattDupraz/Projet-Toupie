@@ -1,12 +1,12 @@
 #pragma once
 #include "top.h"
 
-class Tests {
-	public:
-		void testVector();
-		void testMatrix3x3();
-		void testTop();
-		void testIntegration();
+// Déclaration des méthodes de tests
+namespace tests {
+	void testVector();
+	void testMatrix3x3();
+	void testTop();
+	void testIntegration();
 };
 
 

@@ -2,6 +2,7 @@
 
 #include "math.h"
 
+// Cylindre, deux bases (cercles) de rayon 1 à y = +- 1
 void GLCylinder::initialize(QOpenGLShaderProgram& prog) {
 	QVector<Vertex> vertices;
 	vertices.reserve(6 * sides + 2 * 3 * sides);

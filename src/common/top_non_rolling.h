@@ -1,6 +1,7 @@
 #pragma once
 #include "top.h"
 
+// Toupie abstraite qui ne roule pas
 class NonRollingTop : public Top {
 	// P = [psi, theta, phi]
 	public:	
@@ -10,7 +11,7 @@ class NonRollingTop : public Top {
 			: Top(std::move(v), P, DP), A(A), m(m), d(d), I_1(I_1), I_3(I_3)
 		{}
 
-		// Retourne la seconde derivee
+		// Retourne la seconde derivee de P
 		virtual Vector getDDP(Vector P, Vector DP) override;	
 
 		// Retourne les angles d'euler
@@ -23,12 +24,15 @@ class NonRollingTop : public Top {
 		double y() const override { return A[1]; }
 		double z() const override { return A[2]; }
 		
+		// Dérivées de x, y, z resp. (nulles, car la toupie ne bouge pas)
 		double dx() const override { return 0;}
 		double dy() const override { return 0;}
 		double dz() const override { return 0;}
 
+		// Moments d'inertie en G par rapport aux axes principaux
 		virtual double getMomentInertia_xy() const override { return I_1; }
 		virtual double getMomentInertia_z() const override { return I_3; }
+		// Moment d'inertie en A par raport aux axes horizontaux
 		double getMomentInertiaA_xy() const;
 
 		virtual Vector getAG() const override;
@@ -52,11 +56,10 @@ class NonRollingTop : public Top {
 			: Top(std::move(v), P, DP), A(A)
 		{}
 
+		Vector A; // Position du point de contact
 
-		Vector A; // Contact point
-
-		double m; // Mass
-		double d; // Distance from contact point to center of mass
-		double I_1; // Moment of inertia - horizontal axes
-		double I_3; // Moment of inertia - vertical axis
+		double m; // Masse
+		double d; // Distance AG
+		double I_1; // Moment d'inertie par rapport aux axes horizontaux
+		double I_3; // Moment d'inertie par rapport à l'axe vertical
 };

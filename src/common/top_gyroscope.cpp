@@ -7,7 +7,7 @@ Gyroscope::Gyroscope(std::shared_ptr<View> v, Vector const& A,
 		double d, double rho, double L, double R)
 	: NonRollingTop(std::move(v), A, P, DP), rho(rho), L(L), R(R)
 {
-	this->d = d; // distance du CM du point de contact
+	this->d = d; // distance du CM du point de contact = hauteur du disque
 	m = M_PI * pow(R, 2) * L * rho; // masse
 	I_1 = 0.25 * m * pow(R, 2); // axe horizontal
 	I_3 =  0.5 * m * pow(R, 2); // axe vertical

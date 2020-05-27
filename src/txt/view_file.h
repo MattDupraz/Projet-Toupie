@@ -11,10 +11,14 @@
 #include <fstream>
 #include <memory>
 
+// Vue qui `dessine` en écrivant dans un fichier (par toupie)
 class ViewFile : public View {
 public:
 	ViewFile();
 	~ViewFile() override;
+	
+	ViewFile(ViewFile const&) = delete;
+	ViewFile& operator=(ViewFile const&) = delete;
 
 	// Dessine une toupie generique
 	void drawTop(Top const& top);
@@ -26,5 +30,7 @@ public:
 	virtual void draw(ChineseTop const& top) override { drawTop(top); }
 	virtual void draw(System const& system) override;
 private:
+	// Un dictionnaire qui utilise les ID des toupies pour accéder
+	// aux fstreams appropriés pour l'écriture
 	std::map<unsigned int, std::shared_ptr<std::ofstream>> files;
 };

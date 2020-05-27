@@ -8,6 +8,8 @@ ChineseTop::ChineseTop(std::shared_ptr<View> v,
 		double rho, double R, double h)
 	: Top(std::move(v), P, DP), h(h), R(R), rho(rho)
 {
+	// C.f. complément page 9
+	
 	// Masse de la toupie
 	m = M_PI * rho * (4.0/3.0 * pow(R, 3) - pow(h, 2)*(R - 1.0/3.0 * h));
 	// Distance CG / rayon ou C est le centre de la sphere
@@ -22,7 +24,9 @@ ChineseTop::ChineseTop(std::shared_ptr<View> v,
 }
 
 Vector ChineseTop::getAG() const {
+	// C = centre de la boule
 	Vector AC{0, 0, R};
+	// alpha*R = distance du CM de C
 	Vector CG{0, 0, -alpha * R};
 	CG = getMatrixToGlobal() * CG;
 	return AC + CG;
@@ -49,7 +53,6 @@ Vector ChineseTop::getDDP(Vector P, Vector DP) {
 	double d_theta(DP[1]);
 	double d_phi(DP[2]);
 
-	// Auxilliary variables
 	double mR2 = m * pow(R, 2);
 
 	double f_1(d_phi + d_psi * cos_theta);
@@ -80,8 +83,9 @@ Vector ChineseTop::getDDP(Vector P, Vector DP) {
 	double sin_psi(sin(P[0]));
 
 	double d_x(R*(d_theta * sin_psi - d_phi * cos_psi * sin_theta));
-	double d_z(-R*(d_theta * cos_psi + d_phi * sin_psi * sin_theta));
+	double d_y(-R*(d_theta * cos_psi + d_phi * sin_psi * sin_theta));
 
-	DDP_cache = Vector{d2_psi, d2_theta, d2_phi, d_x, d_z};
+	// Sauvegarde la valeur en `cache` pour pouvoir l'afficher sans la recalculer
+	DDP_cache = Vector{d2_psi, d2_theta, d2_phi, d_x, d_y};
 	return DDP_cache;
 }

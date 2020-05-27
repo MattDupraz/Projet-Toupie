@@ -2,6 +2,7 @@
 
 #include "math.h"
 
+// Cercle centré en 0, de rayon 1, dans le plan x-z
 void GLCircle::initialize(QOpenGLShaderProgram& prog) {
 	QVector<Vertex> vertices;
 	vertices.reserve(3 * sides);

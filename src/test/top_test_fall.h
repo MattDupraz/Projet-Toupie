@@ -1,6 +1,9 @@
 #pragma once
 #include "top.h"
 
+// Toupie test "chute libre"
+// C'est un peu bricolé pour que ça marche, car ça ne rentre pas
+// dans la conception du projet
 class TopTestFall : public Top{
 public:
 	TopTestFall(std::shared_ptr<View> v, Vector const& P, Vector const& DP, Vector const& DDP)
@@ -8,13 +11,19 @@ public:
 
 	void setP(Vector const& DDP) { DDP_ = DDP; }
 
-	virtual void draw()const{;}
+	virtual void draw() const {}
 
-	virtual Vector getDDP(Vector P, Vector DP)override{return DDP_;}
-	virtual std::ostream& print(std::ostream& os)const override{
+	virtual Vector getDDP(Vector P, Vector DP) override { 
+		return DDP_;
+	}
+	
+	virtual std::ostream& print(std::ostream& os) const override {
 		os << P_ << " " << DP_;
-		return os;}
+		return os;
+	}
 
+	// Méthodes ajoutées qui n'ont rien à faire avec cette toupie
+	// car le test est obsolète et ne marcherai pas sinon
 	virtual double psi()const override{return 0;}
 	virtual double theta()const override{return 0;}
 	virtual double phi()const override{return 0;}

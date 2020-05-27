@@ -7,6 +7,7 @@
 // Exception lors des operation erronnees
 enum VectorException { VECTOR_INDEX_OUT_OF_BOUNDS, INCOMPATIBLE_VECTOR_SIZE };
 
+// Vecteur de taille dynamique contenant des doubles
 class Vector {
 	public:
 		// Construit un vecteur de dimension 0
@@ -52,12 +53,12 @@ std::ostream &operator<<(std::ostream& os, Vector const& v);
 Vector operator*(double d, Vector v); // Multiplication par un scalaire
 Vector operator*(Vector v, double d); // Multiplication par un scalaire
 Vector operator~(Vector const& v); // Retourne le vecteur unitaire
-Vector operator-(Vector const& v); // Retourne le vecteur oppose
+Vector operator-(Vector const& v); // Retourne le vecteur opposé
 Vector operator+(Vector u, Vector const& v); // Addition
 Vector operator-(Vector u, Vector const& v); // Soustraction
 Vector operator^(Vector const& u, Vector const& v); // Produit vectoriel
 double operator*(Vector const& u, Vector const& v); // Produit scalaire
 bool operator==(Vector const& u, Vector const& v); // Operateur d'egalite
-bool operator!=(Vector const& u, Vector const& v);
+bool operator!=(Vector const& u, Vector const& v); 
 
 

@@ -17,6 +17,7 @@
 class Top;
 class Vector;
 
+// Classe qui s'occupe de l'affichage OpenGL
 class ViewOpenGL : public View {
 	public:
 		ViewOpenGL();

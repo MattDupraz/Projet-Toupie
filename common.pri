@@ -1,5 +1,7 @@
 CONFIG += c++14
 
+QMAKE_CXXFLAGS += -pedantic
+
 SOURCES += src/common/vect.cpp \
            src/common/matrix_3x3.cpp \
            src/common/top.cpp \

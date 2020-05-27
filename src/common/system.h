@@ -7,6 +7,8 @@
 #include <vector>
 #include <ostream>
 
+// System est le "monde physique" contenant une liste de toupie qu'il
+// fait évoluer avec l'intégrateur choisi
 class System : public Drawable {
 	public :
 		System(std::shared_ptr<View> v, std::shared_ptr<Integrator> i)

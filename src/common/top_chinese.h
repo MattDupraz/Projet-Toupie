@@ -3,7 +3,7 @@
 #include "top.h"
 
 class ChineseTop : public Top {
-	// P = [psi, theta, phi, antiderivative of x, antiderivative of y]
+	// P = [psi, theta, phi, primitive de x, primitive de y]
 	public:	
 		ChineseTop(std::shared_ptr<View> v,
 				Vector const& P,	Vector const& DP,
@@ -56,15 +56,14 @@ class ChineseTop : public Top {
 		virtual std::ostream& print(std::ostream& os) const override;
 
 	protected:	
-		double h; // truncated height
-		double R; // sphere radius
-		double rho; // density
-		double m; // Mass
-		double alpha; //Distance from center of mass from center of sphere
-		// Moments of inertia with respect to A (point of contact)
-		double I_1; // Moment of inertia - horizontal axis
-		double I_3; // Moment of inertia - vertical axis
+		double h; // Hauteur tronquée
+		double R; // Rayon de la sphère
+		double rho; // Masse volumique
+		double m; // Masse
+		double alpha; // 1/R * Distance CG
+		double I_1; // Moment d'inertie - axes horizontales
+		double I_3; // Moment d'inertie - axe vertical
 
-		// Saves DDP so we don't reevaluate when we need d_x and d_z
+		// Sauvegarde DDP pour ne pas devoir à le recalculer pour l'affichage
 		Vector DDP_cache = Vector(std::size_t(5));
 };

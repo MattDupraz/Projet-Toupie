@@ -2,6 +2,8 @@
 
 #include "math.h"
 
+// Cône avec sommet en 0, de hauteur 1 (dans la direction y)
+// et diamètre de base 1
 void GLCone::initialize(QOpenGLShaderProgram& prog) {
 	QVector<Vertex> vertices;
 	vertices.reserve(6 * sides);

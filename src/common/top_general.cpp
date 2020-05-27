@@ -8,6 +8,8 @@ GeneralTop::GeneralTop(std::shared_ptr<View> v,
 			double rho, Vector layers, double thickness)
 	:Top(std::move(v), P, DP), rho(rho), layers(layers), L(thickness)
 {
+	// c.f. page 9 du complément
+	
 	// Initialise m
 	for (size_t i(0); i < layers.size() ; ++i){
 		m += M_PI*rho*L*layers[i]*layers[i];
@@ -43,32 +45,38 @@ Vector GeneralTop::getDDP(Vector P, Vector DP) {
 	double d_theta(DP[1]);
 	double d_phi(DP[2]);
 
+	// Vecteur unitaire dans la direction x vue dans le repère de la toupie
 	Vector u(Vector {1.0, 0.0, 0.0});
+	// Moment de la force de gravitation par rapport à A
 	Vector M_A(m * g * d * sin_theta * u);
-
+	// Matrice d'inertie en A
 	Matrix3x3 I_A(getInertiaMatrixA());
-	Matrix3x3 dI_A(getDerInertiaMatrixA());
 
-
-	Vector omega { d_theta, d_psi * sin_theta, d_psi * cos_theta + d_phi };
-	Vector omega_e(omega - Vector{0, 0, d_phi});
-
+	// Vitesse de rotation du repère
+	Vector omega_e { d_theta, d_psi * sin_theta, d_psi * cos_theta };
+	// Vitesse de rotation de la toupie
+	Vector omega(omega_e + Vector{0, 0, d_phi});
+	
+	// Dérivée d'omega
+	// On utilise la simplification dI_A = 0
 	Vector d_omega(M_A - (omega_e ^ (I_A * omega)));// - dI_A * omega);
 	d_omega = I_A.inv() * d_omega;
 
-
+	// On calcule les valeurs de DDP
 	double d2_theta(d_omega[0]);
 	double d2_psi(0);
 	double d2_phi(d_omega[2]);
-
-	if (!isEqual(theta(), 0.0)) {
+	// Si theta n'est pas nul
+	if (!math::isEqual(theta(), 0.0)) {
 		d2_psi += (d_omega[1] - d_psi * d_theta * cos_theta) / sin_theta;
 		d2_phi += (d_psi * d_theta - d_omega[1] * cos_theta) / sin_theta;
 	}
-
+	// Déplacement de la toupie
 	double d_x(0);
 	double d_y(0);
 
+	// On sauvegarde la valeur de DDP pour pouvoir l'utiliser pour
+	// l'affichage sans la recalculer
 	DDP_cache = Vector{d2_psi, d2_theta, d2_phi, d_x, d_y};
 	return DDP_cache;
 }

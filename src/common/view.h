@@ -7,6 +7,8 @@ class GeneralTop;
 class System;
 class TopTest;
 
+// Vue est une interface générale pour les différentes méthodes
+// d'affichage
 class View {
 	public:
 		virtual ~View() {}

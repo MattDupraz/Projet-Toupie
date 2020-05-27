@@ -5,6 +5,7 @@
 
 class View;
 
+// Objet "dessinable"
 class Drawable {
 	public:
 		Drawable(std::shared_ptr<View> v)
@@ -18,6 +19,6 @@ class Drawable {
 		virtual void draw() const = 0;
 
 	protected:
-		// Supprt de dessin utilise
+		// Support de dessin utilisé
 		std::shared_ptr<View> view_;
 };

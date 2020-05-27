@@ -5,16 +5,16 @@
 #include "math_utils.h"
 
 // Accesseurs
-double Vector::operator[](std::size_t i) const {
+double Vector::operator[](std::size_t i) const { // constant
 	if (i >= size()) throw VECTOR_INDEX_OUT_OF_BOUNDS;
 	return coords_[i];
 }
-double& Vector::operator[](std::size_t i) {
+double& Vector::operator[](std::size_t i) { // non-constant
 	if (i >= size()) throw VECTOR_INDEX_OUT_OF_BOUNDS;
 	return coords_[i];
 }
 
-// Operateurs d'assignment
+// Operateurs d'affectation
 Vector& Vector::operator*=(double d) {
 	for (std::size_t i(0); i < size(); ++i){
 		coords_[i] *= d;
@@ -102,7 +102,7 @@ bool operator==(Vector const& u, Vector const& v) {
 		return false;
 	} else {
 		for (std::size_t i(0); i < u.size(); ++i){
-			if (!isEqual(u[i], v[i])){
+			if (!math::isEqual(u[i], v[i])){
 				return false;
 			}
 		}

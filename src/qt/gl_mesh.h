@@ -6,21 +6,24 @@
 
 #include "vertex.h"
 
-// GL Mesh Represents a drawable object pre-buffered into the GPU
+// GL Mesh est un objet 3D préparé pour l'affichage efficace en le
+// envoyant directement au cache du GPU
 class GLMesh
 {
 	public:
-		// Constructor doesn't actually do anything
-		// To initialize the mesh, refer to the functions below
+		// Le constructeur ne fait rien, l'objet doit être initialisé
+		// à l'aide de la méthode initialize quand le shader program
+		// est disponible
 		GLMesh() {}
 		virtual ~GLMesh() {}
 
+		// Prépare l'objet et initialise le VAO
 		virtual void initialize(QOpenGLShaderProgram& prog) = 0;
 
-		// Draw the mesh (needs to be initialized first)
+		// Déssine l'objet (doit être initialisé à priori)
 		void draw();
 	protected:
-		// initialize vao
+		// Initialise le VAO
 		void create_vao(QOpenGLShaderProgram& prog,
 				QVector<Vertex>& vertices);
 

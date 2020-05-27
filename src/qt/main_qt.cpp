@@ -33,19 +33,21 @@ int main(int argc, char* argv[]) {
 		Vector {0, 0, 5},
 		1.0, 0.1, 0.2, 1.0));
 
+	// On prépare la toupie générale t.q. elle approxime la toupie conique
+	// aussi près que possible
 	double rho = 0.1;
 	double L = 1.5;
 	double R = 0.75;
-	int n_layers = 50;
+	int n_layers = 100;
 	Vector layers;
 	for (int i(0); i < n_layers; ++i) {
 		layers.augment(R * ((double(i) + 0.5) / double(n_layers)));
 	}
-
 	system->add(std::make_unique<GeneralTop>(view,
 		Vector {0, 0.5, 0, 0, 0},
 		Vector {0, 0, 170, -3, 2},
 		rho, layers, L / double(n_layers)));
+	
 	system->add(std::make_unique<SimpleCone>(view,
 		Vector {2, 1, 0},
 		Vector {0,0.5,0},

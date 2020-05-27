@@ -11,8 +11,6 @@
 #include "top_gyroscope.h"
 #include "top_general.h"
 
-#include "gl_uniform.h"
-
 ViewOpenGL::ViewOpenGL()
 	: shouldDrawFloor(true),
 	shouldDrawTrajectories(true),
@@ -145,9 +143,9 @@ void ViewOpenGL::rotateCamera(double yaw, double pitch) {
 void ViewOpenGL::translateCamera(Vector diff) {
 	// La translation horizontalle depend de l'orientation de la camera
 	cameraPos += QVector3D(
-		cos(toRadians(cameraYaw)) * diff[0] + sin(toRadians(cameraYaw)) * diff[2],
+		cos(math::toRadians(cameraYaw)) * diff[0] + sin(math::toRadians(cameraYaw)) * diff[2],
 		diff[1],	
-		cos(toRadians(cameraYaw)) * diff[2] - sin(toRadians(cameraYaw)) * diff[0]
+		cos(math::toRadians(cameraYaw)) * diff[2] - sin(math::toRadians(cameraYaw)) * diff[0]
 		);
 }
 
@@ -214,21 +212,25 @@ void ViewOpenGL::drawFloor() {
 	glEnd();
 }
 
+// Commence à suivre la toupie suivante
 void ViewOpenGL::followNext(bool rotate) {
 	cameraFollow = true;
 	cameraRotateWithTop = rotate;
 	++followedTop;
 }
 
+// Arrète de suivre de toupie
 void ViewOpenGL::stopFollow() {
 	cameraFollow = false;
 }
 
+// Emploie la matrice de projection choisie
 void ViewOpenGL::setProjection(QMatrix4x4 const& matrix) {
 	u_projection.setValue(matrix);
 	u_projection.update();
 }
 
+// Réinitialize les matrices de transformations de l'objet
 void ViewOpenGL::resetUniforms() {
 	u_translation.reset();
 	u_translation.update();
@@ -236,6 +238,7 @@ void ViewOpenGL::resetUniforms() {
 	u_model.update();
 }
 
+// Initialize la matrice de vue
 void ViewOpenGL::updateView(System const& system) {
 	u_view.reset();
 	u_view.value().rotate(-cameraPitch, 1.0, 0.0, 0.0);
@@ -250,16 +253,14 @@ void ViewOpenGL::updateView(System const& system) {
 		QVector3D relative(0.0, 0.0, 4.0);
 		QMatrix4x4 rotation;
 
-		if (cameraRotateWithTop) {
+		if (cameraRotateWithTop) { // Met la caméra dans le repère de la toupie (elle tourne avec)
 			u_view.reset();
-			//u_view.value().rotate(-toDegrees(top.phi()), 0.0, 1.0, 0.0);
-			u_view.value().rotate(-toDegrees(top.theta()), 0.0, 0.0, 1.0);
-			u_view.value().rotate(-toDegrees(top.psi()), 0.0, 1.0, 0.0);
+			u_view.value().rotate(-math::toDegrees(top.theta()), 0.0, 0.0, 1.0);
+			u_view.value().rotate(-math::toDegrees(top.psi()), 0.0, 1.0, 0.0);
 
-			rotation.rotate(toDegrees(top.psi()), 0.0, 1.0, 0.0);
-			rotation.rotate(toDegrees(top.theta()), 0.0, 0.0, 1.0);
-			//rotation.rotate(toDegrees(top.phi()), 0.0, 1.0, 0.0);
-		} else {
+			rotation.rotate(math::toDegrees(top.psi()), 0.0, 1.0, 0.0);
+			rotation.rotate(math::toDegrees(top.theta()), 0.0, 0.0, 1.0);
+		} else { // Sinon oriente la caméra selon son orientation précedente
 			rotation.rotate(cameraYaw, 0.0, 1.0, 0.0);
 			rotation.rotate(cameraPitch, 1.0, 0.0, 0.0);
 		}
@@ -274,6 +275,8 @@ void ViewOpenGL::updateView(System const& system) {
 	u_viewPos.update();
 }
 
+// Initialize les matrices du modèle en fonction de la position
+// et orientation de la toupie
 void ViewOpenGL::updateUniforms(Top const& top) {
 	// Initialize la matrice de translation pour cette toupie
 	u_translation.reset();
@@ -283,9 +286,9 @@ void ViewOpenGL::updateUniforms(Top const& top) {
 
 	// Matrice de rotation à partir des angles d'euler
 	u_model.reset();
-	u_model.value().rotate(toDegrees(top.psi()), 0.0, 1.0, 0.0);
-	u_model.value().rotate(toDegrees(top.theta()), 0.0, 0.0, 1.0);
-	u_model.value().rotate(toDegrees(top.phi()), 0.0, 1.0, 0.0);
+	u_model.value().rotate(math::toDegrees(top.psi()), 0.0, 1.0, 0.0);
+	u_model.value().rotate(math::toDegrees(top.theta()), 0.0, 0.0, 1.0);
+	u_model.value().rotate(math::toDegrees(top.phi()), 0.0, 1.0, 0.0);
 	u_model.update();
 }
 
@@ -330,7 +333,7 @@ void ViewOpenGL::draw(GeneralTop const& top) {
 	QMatrix4x4 model(u_model.value());
 
 	// On dessine le modèle
-	for (int i(0); i < top.getLayers().size(); ++i) {
+	for (unsigned int i(0); i < top.getLayers().size(); ++i) {
 		double h = (2*i + 1) * 0.5 * top.getThickness();
 		double R = top.getLayers()[i];
 
@@ -357,11 +360,15 @@ void ViewOpenGL::draw(ChineseTop const& top) {
 	u_model.value().scale(R);
 	u_model.update();
 
+	// On coupe le bout de la sphère (pour la tronquer)
+	// ceci est par rapport au modèle non-transformé
+	// c.f. l'implémentation dans le shader
 	u_clipMaxY.setValue(float(L));
 	u_clipMaxY.update();
 
 	sphere.draw();
 
+	// On enlève le clipPlane
 	u_clipMaxY.setValue(10e6f);
 	u_clipMaxY.update();
 

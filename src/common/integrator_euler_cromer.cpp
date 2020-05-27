@@ -1,5 +1,4 @@
 #include "integrator_euler_cromer.h"
-#include "math.h"
 
 // Implementation de la methode d'Euler
 void EulerCromerIntegrator::evolve(

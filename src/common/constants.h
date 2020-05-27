@@ -1,6 +1,6 @@
 #pragma once
-#include "vect.h"
 
+// Constantes physiques
 namespace constants {
 	// Accelleration gravitationelle;
 	extern const double g;

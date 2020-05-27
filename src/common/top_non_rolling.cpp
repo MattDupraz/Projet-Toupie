@@ -42,5 +42,6 @@ Vector NonRollingTop::getAG() const {
 }
 
 double NonRollingTop::getMomentInertiaA_xy() const {
+	// Theorème du transfert
 	return getMomentInertia_xy() + getMass() * getDistAG();
 }

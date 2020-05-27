@@ -2,7 +2,7 @@
 
 #include "gl_mesh.h"
 
-// Circle centered around origin, radius 1
+// Cercle centré en 0, de rayon 1, dans le plan x-z
 class GLCircle : public GLMesh {
 	public:
 		GLCircle(unsigned int sides)

@@ -3,7 +3,7 @@
 #include "matrix_3x3.h"
 #include "math_utils.h"
 
-// Constructeur d'une  matrice scalaire
+// Constructeur d'une matrice scalaire
 Matrix3x3::Matrix3x3(double val) {
 	for (std::size_t i(0); i < 3; ++i) {
 		for (std::size_t j(0); j < 3; ++j) {
@@ -11,7 +11,7 @@ Matrix3x3::Matrix3x3(double val) {
 		}
 	}
 }
-// Constructeur permettant d'intialiser
+// Constructeur prenant un tableau 3x3
 Matrix3x3::Matrix3x3(double (&&data)[3][3]) {
 	for (std::size_t i(0); i < 3; ++i) {
 		for (std::size_t j(0); j < 3; ++j) {
@@ -25,7 +25,7 @@ Matrix3x3::Matrix3x3(DoubleArray3x3& data)
 	: data_(std::move(data))
 {}
 
-// Retourne la transposee
+// Retourne la transposée
 Matrix3x3 Matrix3x3::transp() const{
 	Matrix3x3 result(*this);	
 	for (std::size_t i(0); i < 3; ++i) {
@@ -79,7 +79,7 @@ double Matrix3x3::det() const {
 // Retourne l'inverse de la matrice
 Matrix3x3 Matrix3x3::inv() const {
 	double determinant(det());
-	if (isEqual(determinant, 0.0)) {
+	if (math::isEqual(determinant, 0.0)) {
 		throw NOT_INVERSIBLE;
 	}
 	return (1.0 / determinant) * cofactorMatrix().transp();
@@ -178,7 +178,7 @@ Vector operator*(Matrix3x3 const& A, Vector const& v){
 bool operator==(Matrix3x3 const& A, Matrix3x3 const& B){
 	for (std::size_t i(0); i < 3 ; ++i){
 		for (std::size_t j(0); j < 3 ; ++j){
-			if (!isEqual(A[i][j], B[i][j])){
+			if (!math::isEqual(A[i][j], B[i][j])){
 				return false;
 			}
 		}
@@ -201,7 +201,7 @@ std::ostream& operator<<(std::ostream& os, Matrix3x3 const& A){
 			os.width(7);
 			double val(A[i][j]);
 			// Check pour eviter d'imprimmer des 0 negatifs
-			os << (isEqual(val, 0.0) ? 0 : val);
+			os << (math::isEqual(val, 0.0) ? 0 : val);
 			if (j != 2) 
 				os << " ";
 		}
