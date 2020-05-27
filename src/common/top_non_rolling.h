@@ -29,6 +29,7 @@ class NonRollingTop : public Top {
 
 		virtual double getMomentInertia_xy() const override { return I_1; }
 		virtual double getMomentInertia_z() const override { return I_3; }
+		double getMomentInertiaA_xy() const;
 
 		virtual Vector getAG() const override;
 
@@ -38,7 +39,7 @@ class NonRollingTop : public Top {
 		double d_phi() const { return DP_[2]; }
 
 		// Retourne la distance du centre de masse du point de contact
-		double getHeightCM() const { return d; }
+		double getDistAG() const { return d; }
 		// Retourne la masee
 		double getMass() const { return m; }
 

@@ -24,7 +24,7 @@ ChineseTop::ChineseTop(std::shared_ptr<View> v,
 Vector ChineseTop::getAG() const {
 	Vector AC{0, 0, R};
 	Vector CG{0, 0, -alpha * R};
-	CG = getOrientationMatrix() * CG;
+	CG = getMatrixToGlobal() * CG;
 	return AC + CG;
 }
 

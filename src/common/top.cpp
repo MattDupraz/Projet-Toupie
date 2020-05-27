@@ -26,7 +26,7 @@ Vector Top::getVelocityA() const {
 
 Vector Top::getVelocityG() const {
 	Vector v_A(getVelocityA());
-	Vector omega(getOrientationMatrix() * getAngVelocity());
+	Vector omega(getMatrixToGlobal() * getAngVelocity());
 	Vector v_G(v_A + omega ^ getAG());
 	return v_G;
 }
@@ -47,10 +47,6 @@ double Top::getEnergy() const {
 	return E_c+E_g;
 }
 
-double Top::getMomentInertiaA_xy() const {
-	return getMomentInertia_xy() + getMass() * getAG().norm2();
-}
-
 double Top::getProduitMixte()const{
 	return (getAngVelocity()^getAngMomentumG())[2];
 }
@@ -64,14 +60,18 @@ Matrix3x3 Top::getInertiaMatrixG() const {
 }
 
 Matrix3x3 Top::getInertiaMatrixA() const {
-	return Matrix3x3({
-		{getMomentInertiaA_xy(),0,0},
-		{0,getMomentInertiaA_xy(),0},
-		{0,0,getMomentInertia_z()}
-	});
+	Matrix3x3 I(getInertiaMatrixG());
+	Vector AG(getMatrixFromGlobal()*getAG());
+	double AGx(AG[0]), AGy(AG[1]), AGz(AG[2]);
+	Matrix3x3 D({
+			{AGy*AGy + AGz*AGz, -AGx*AGy, -AGx*AGz},
+			{-AGy*AGx, AGx*AGx + AGz*AGz, -AGy*AGz},
+			{-AGz*AGx, -AGz*AGy, AGx*AGx + AGy*AGy}
+		});
+	return I + getMass() * D;
 }
 
-Matrix3x3 Top::getOrientationMatrix() const {
+Matrix3x3 Top::getMatrixToGlobal() const {
 	double cos_theta(cos(theta()));
 	double sin_theta(sin(theta()));
 	double cos_psi(cos(psi()));
@@ -87,4 +87,22 @@ Matrix3x3 Top::getOrientationMatrix() const {
 		{0,sin_theta,cos_theta}
 	});
 	return Matrix3x3(rot_z*rot_x);
+}
+
+Matrix3x3 Top::getMatrixFromGlobal() const {
+	double cos_theta(cos(theta()));
+	double sin_theta(sin(theta()));
+	double cos_psi(cos(psi()));
+	double sin_psi(sin(psi()));
+	Matrix3x3 rot_x({
+		{1,0,0},
+		{0,cos_theta,sin_theta},
+		{0,-sin_theta,cos_theta}
+	});
+	Matrix3x3 rot_z({
+		{cos_psi,sin_psi,0},
+		{-sin_psi,cos_psi,0},
+		{0,0,1}
+	});
+	return Matrix3x3(rot_x*rot_z);
 }

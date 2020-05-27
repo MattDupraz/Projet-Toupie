@@ -58,8 +58,6 @@ class Top : public Drawable {
 
 		virtual Vector getAG() const = 0;
 
-		double getMomentInertiaA_xy() const;
-
 		Vector getPosA() const;
 		Vector getPosG() const;
 		Vector getVelocityA() const;
@@ -72,7 +70,8 @@ class Top : public Drawable {
 		Matrix3x3 getInertiaMatrixA() const;
 		// Matrix of basis change from top's reference frame
 		// to inertial reference fram
-		Matrix3x3 getOrientationMatrix() const;
+		Matrix3x3 getMatrixToGlobal() const;
+		Matrix3x3 getMatrixFromGlobal() const;
 
 
 		// Affiche les parametres de la toupie dans le ostream
