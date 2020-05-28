@@ -17,7 +17,8 @@ GLWidget::GLWidget(std::unique_ptr<System> system,
 	focus_(true),
 	cameraYawSpeed_(0.0),
 	cameraPitchSpeed_(0.0),
-	cameraSpeed_({0.0, 0.0, 0.0})
+	cameraSpeed_({0.0, 0.0, 0.0}),
+	pause_(false)
 {}  
 
 
@@ -43,8 +44,10 @@ void GLWidget::timerEvent(QTimerEvent* event) {
 	double dt = timer_.restart() / 1000.0; // Il faut convertir de ms en s
 	dt = std::min(dt, throttleFactor * (tickInterval_ / 1000.0));
 
-	// Evolue le systeme
-	system_->evolve(dt);
+	if (!pause_) {
+		// Evolue le systeme
+		system_->evolve(dt);
+	}
 	
 	// Met a jour la position et orientation de la camera
 	view_->rotateCamera(cameraYawSpeed_ * dt,
@@ -193,7 +196,7 @@ void GLWidget::keyPressEvent(QKeyEvent* event) {
 			case Qt::Key_T:
 				view_->triggerTrajectories();
 				break;
-			case Qt::Key_B:
+			case Qt::Key_Z:
 				view_->triggerBasis();
 				break;
 			case Qt::Key_C:
@@ -201,6 +204,15 @@ void GLWidget::keyPressEvent(QKeyEvent* event) {
 				break;
 			case Qt::Key_R:
 				view_->followNext(true);
+				break;
+			case Qt::Key_P:
+				pause_ = !pause_;
+				break;
+			case Qt::Key_N:
+				system_->evolve(tickInterval_/1000.0);
+				break;
+			case Qt::Key_B:
+				system_->evolve(-tickInterval_/1000.0);
 				break;
 			case Qt::Key_Escape:
 				cameraSpeed_ = Vector {0, 0, 0};

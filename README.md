@@ -42,10 +42,15 @@ Tout autre fichier temporaire serait cree dans le repertoire `build/`.
 Contrôle (partie graphique):
   - Mouvement horizontal: `W`, `A`, `S`, `D`
   - Mouvement vertical: `Shift`, `Space`
-  - Caméra: souris ou `←`, `↓`, `↑`, `→`
+  - Caméra: `←`, `↓`, `↑`, `→`
   - Afficher/cacher le sol: `F`
   - Afficher/cacher les traces: `T`
+  - Afficher/cacher la base du système de coordonnées: `Z`
   - Suivre une toupie: `C` (mouvement directionnel pour se libérer)
+  - Se mettre dans le réfèrentiel d'une toupie: `R`
+  - Pause: `P`
+  - Un pas de temps physique en avant/arrière: `N`/`B` (il est possible de tenir
+la touche)
 
 Affichage des tests:
   - Les fichiers sont au format : temps    vecteur degré liberté

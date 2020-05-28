@@ -70,6 +70,8 @@ class GLWidget : public QOpenGLWidget {
 		double cameraPitchSpeed_;
 		// Vitesse de translation de la camera
 		Vector cameraSpeed_;
+		// Pause de la simulation physique
+		bool pause_;
 		
 		// Attribut qui autorise l'utilisation de la souris
 		// Attention!!! la souris ne marche pas bien dans les machines virtuelles!
