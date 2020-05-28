@@ -29,12 +29,24 @@ const double DT = 10;
 const int N_ITERATIONS = 2000;
 
 // Modifier ici pour choisir l'intégrateur
+// Intégrateurs disponibles:
+//   - EulerCromerIntegrator
+//   - RungeKuttaIntegrator
+//   - NewmarkIntegrator
+// (ils sont définis dans le répertoire `src/common`)
 shared_ptr<Integrator> get_integrator() {
 	// Définit l'intégrateur utilisé
 	return make_shared<RungeKuttaIntegrator>();
 }
 
 // Configurer ici les toupies utilisées
+// Toupies disponibles:
+//   - SimpleCone
+//   - Gyroscope
+//   - ChineseTop
+//   - GeneralTop
+// (elles sont définies dans le répertoire `src/common`,
+//  voir les headers pour plus de détails sur leur initialisation)
 void add_tops(System& system, shared_ptr<View> view) {
 	// Pour ajouteur une toupie:
 
