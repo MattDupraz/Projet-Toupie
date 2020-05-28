@@ -8,10 +8,10 @@ QMAKE_CXXFLAGS += -DVER_TEXT
 
 INCLUDEPATH += src/txt
 
-SOURCES += src/main.cpp\
-	   src/txt/view_text.cpp\	
-		src/txt/view_file.cpp
+SOURCES += src/main.cpp \
+           src/txt/view_text.cpp \
+           src/txt/view_file.cpp
 
 HEADERS += src/txt/view_text.h
-		src/txt/view_file.h
+           src/txt/view_file.h
 
