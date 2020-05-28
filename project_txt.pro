@@ -4,7 +4,11 @@
 
 TARGET = project_txt
 
-SOURCES += src/txt/main_txt.cpp\
+QMAKE_CXXFLAGS += -DVER_TEXT
+
+INCLUDEPATH += src/txt
+
+SOURCES += src/main.cpp\
 	   src/txt/view_text.cpp\	
 		src/txt/view_file.cpp
 

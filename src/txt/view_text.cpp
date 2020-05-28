@@ -9,9 +9,9 @@ void ViewText::drawTop(Top const& top) {
 		<< "\tProjection L sur a : " 
 		<< top.getAngMomentumA()[2] << std::endl
 		<< "\tProjection L sur k : " 
-		<< (top.getOrientationMatrix() * top.getAngMomentumA())[2]
+		<< (top.getMatrixToGlobal() * top.getAngMomentumA())[2]
 			<< std::endl
-		<< "\tProduit mixte : " << top.getProduitMixte() << std::endl;
+		<< "\tProduit mixte : " << top.getMixedProduct() << std::endl;
 }
 
 void ViewText::draw(System const& system) {

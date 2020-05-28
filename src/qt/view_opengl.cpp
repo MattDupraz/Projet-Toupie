@@ -5,11 +5,7 @@
 #include "math_utils.h"
 #include "math.h"
 
-#include "top.h"
-#include "top_simple_cone.h"
-#include "top_chinese.h"
-#include "top_gyroscope.h"
-#include "top_general.h"
+#include "tops.h"
 
 ViewOpenGL::ViewOpenGL()
 	: shouldDrawFloor(true),

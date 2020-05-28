@@ -24,8 +24,8 @@ void ViewFile::drawTop(Top const& top) {
 		<< top.getDP() << '\t'
 		<< top.getEnergy() << '\t'
 		<< top.getAngMomentumA()[2] << '\t'
-		<< (top.getOrientationMatrix() * top.getAngMomentumA())[2] << '\t'
-		<< top.getProduitMixte() << std::endl;
+		<< (top.getMatrixToGlobal() * top.getAngMomentumA())[2] << '\t'
+		<< top.getMixedProduct() << std::endl;
 }
 
 void ViewFile::draw(System const& system) {

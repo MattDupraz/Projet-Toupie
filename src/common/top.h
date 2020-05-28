@@ -84,6 +84,7 @@ class Top : public Drawable {
 		// Tenseurs d'inertie (dans le repère de la toupie)
 		Matrix3x3 getInertiaMatrixG() const; // Par rapport à G
 		Matrix3x3 getInertiaMatrixA() const; // Par rapport à A
+		Matrix3x3 getInertiaMatrix(Vector const&) const; // Par rapport à un point quelconque
 		// Matrice de passage du repère de la toupie, au repère d'inertie
 		Matrix3x3 getMatrixToGlobal() const;
 		// Matrice de passage du repère d'inertie, au repère de la toupie

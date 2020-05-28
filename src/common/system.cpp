@@ -1,5 +1,13 @@
 #include "system.h"
 
+// Evolue le systeme en fonction du pas de temps dt
+void System::evolve(double dt){
+	t += dt;
+	for (std::unique_ptr<Top>& top : tops){
+		integrator->evolve(*top, dt);
+	}
+}
+
 // Affiche les details du systeme dans ostream
 std::ostream &operator<<(std::ostream& os, System const& system) {
 	os << "Le système est constitué de " << system.size()

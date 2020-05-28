@@ -73,16 +73,20 @@ Matrix3x3 Top::getInertiaMatrixG() const {
 	});
 }
 
+Matrix3x3 Top::getInertiaMatrixA() const {
+	return getInertiaMatrix(getPosA());
+}
+
 // Matrice d'inertie en A
 // Theorème d'Huygens-Steiner
-Matrix3x3 Top::getInertiaMatrixA() const {
+Matrix3x3 Top::getInertiaMatrix(Vector const& P) const {
 	Matrix3x3 I(getInertiaMatrixG());
-	Vector AG(getMatrixFromGlobal()*getAG());
-	double AGx(AG[0]), AGy(AG[1]), AGz(AG[2]);
+	Vector PG(getMatrixFromGlobal()*(getPosG() - P));
+	double PGx(PG[0]), PGy(PG[1]), PGz(PG[2]);
 	Matrix3x3 D({
-			{AGy*AGy + AGz*AGz, -AGx*AGy, -AGx*AGz},
-			{-AGy*AGx, AGx*AGx + AGz*AGz, -AGy*AGz},
-			{-AGz*AGx, -AGz*AGy, AGx*AGx + AGy*AGy}
+			{PGy*PGy + PGz*PGz, -PGx*PGy, -PGx*PGz},
+			{-PGy*PGx, PGx*PGx + PGz*PGz, -PGy*PGz},
+			{-PGz*PGx, -PGz*PGy, PGx*PGx + PGy*PGy}
 		});
 	return I + getMass() * D;
 }

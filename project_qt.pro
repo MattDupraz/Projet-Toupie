@@ -7,7 +7,11 @@ TARGET = project_qt
 win32:LIBS += -lopengl32
 QT += core gui opengl widgets
 
-SOURCES += src/qt/main_qt.cpp \
+QMAKE_CXXFLAGS += -DVER_GRAPHIC
+
+INCLUDEPATH += src/qt
+
+SOURCES += src/main.cpp \
            src/qt/gl_widget.cpp \
            src/qt/view_opengl.cpp \
 			  src/qt/gl_mesh.cpp \

@@ -24,12 +24,7 @@ class System : public Drawable {
 		}
 
 		// Evolue le systeme en fonction du pas de temps dt
-		void evolve(double dt){
-			t += dt;
-			for (std::unique_ptr<Top>& top : tops){
-				integrator->evolve(*top, dt);
-			}
-		}
+		void evolve(double dt);
 
 		// Ajoute une toupie au systeme
 		void add(std::unique_ptr<Top> t) {

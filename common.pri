@@ -19,6 +19,7 @@ SOURCES += src/common/vect.cpp \
 HEADERS += src/common/vect.h \
            src/common/matrix_3x3.h \
            src/common/view.h \
+           src/common/tops.h \
            src/common/top.h \
            src/common/top_non_rolling.h \
            src/common/top_simple_cone.h \
@@ -26,6 +27,7 @@ HEADERS += src/common/vect.h \
            src/common/top_general.h \
            src/common/top_gyroscope.h \
            src/common/math_utils.h \
+           src/common/integrators.h \
            src/common/integrator.h \
            src/common/integrator_euler_cromer.h \
            src/common/integrator_newmark.h \
@@ -33,18 +35,19 @@ HEADERS += src/common/vect.h \
            src/common/constants.h \
            src/common/system.h
 
-INCLUDEPATH = src/common
+INCLUDEPATH = src src/common
 
 unix|macx {
 	system(mkdir -p build)
 	system(mkdir -p bin)
+	system(rm -f build/main.o)
 }
 
 win32|win64 {
 	system(md build)
 	system(md bin)
+	system(del build/main.o)
 }
-
 
 DESTDIR = bin
 OBJECTS_DIR = build
