@@ -118,3 +118,10 @@ du projet.
 --------------------------------------------------
 ## Semaine 13 :
 
+Nous finalisons le projet. Nous avons terminé l'approche générale pour
+l'évolution de GeneralTop, nous avons implémentés des touches clavier en plus
+pour mettre l'évolution en pause et pouvoir avancer/reculer dans le temps. Nous
+avons réuni les fichiers main de la partie graphique et textuelle sous un
+fichier en utilisant des preprocessor directives, afin de faciliter la
+configuration du système. On a revu les documents à rendre et les commentaires
+dans le code.
