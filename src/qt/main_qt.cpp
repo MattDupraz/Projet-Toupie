@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
 	int n_layers = 100;
 	Vector layers;
 	for (int i(0); i < n_layers; ++i) {
-		layers.augment(R * ((double(i) + 0.5) / double(n_layers)));
+		layers.augment(R * abs(sin(M_PI*pow((double(i) + 0.5) / double(n_layers), 2.0))));
 	}
 	system->add(std::make_unique<GeneralTop>(view,
 		Vector {0, 0.5, 0, 0, 0},
