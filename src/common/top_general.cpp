@@ -89,11 +89,11 @@ Vector GeneralTop::getAG() const {
 
 // Methode d'affichage
 std::ostream& GeneralTop::print(std::ostream& os) const{
-		return os << "Toupie générales" << std::endl
+		return os << "Toupie générale" << std::endl
        << "paratmètre : " << getP() << std::endl
        << "dérivée    : " << getDP() << std::endl
        << "masse volumique (kg m-3) : " << getDensity() << std::endl
-       << "layers     : " << getLayers() << std::endl
-       << "épaisseur : " << getThickness() << std::endl
-       << "masse     : " << getMass() << std::endl;
+       << "couches    : " << getLayers() << std::endl
+       << "épaisseur des couches    : " << getThickness() << std::endl
+       << "masse      : " << getMass() << std::endl;
 }

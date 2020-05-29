@@ -18,6 +18,7 @@
 #include <memory>
 #include <utility>
 #include <iostream>
+#include <string.h>
 
 using namespace std;
 
@@ -111,7 +112,18 @@ int main(int argc, char* argv[]) {
 	shared_ptr<ViewOpenGL> view = make_shared<ViewOpenGL>();
 #endif
 #ifdef VER_TEXT
-	shared_ptr<View> view = make_shared<ViewFile>();
+	shared_ptr<View> view;
+	bool draw_to_file(false);
+  	if (argc == 1) {
+		view = make_shared<ViewText>();
+	} else if (argc == 2 && strcmp(argv[1], "-f") == 0) {
+		view = make_shared<ViewFile>();	
+		draw_to_file = true;
+	} else {
+		cout << "Invalid " << (argc == 1 ? "argument" : "arguments") << "!\n"
+			<< "To dump data into files, use the -f option" << endl;
+		return 0;
+	}
 #endif
 	// Initialise l'integrateur choisi
 	shared_ptr<Integrator> integrator = get_integrator();
@@ -134,8 +146,10 @@ int main(int argc, char* argv[]) {
 	return a.exec();
 #endif
 #ifdef VER_TEXT
-	cout << "Le système évolue et se dessine à chaque pas (dt = " << DT << "ms): "
-			<< endl;
+	if (!draw_to_file) {
+		cout << "Le système évolue et se dessine à chaque pas (dt = " << DT << "ms): "
+				<< endl;
+	}
 	
 	// Evolue le systeme nIterations fois
 	for (int i(0); i < N_ITERATIONS; ++i) {

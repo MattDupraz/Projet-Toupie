@@ -8,11 +8,13 @@
 ViewFile::ViewFile() {
 	// On essaie de créer le répertoire `out`
 	// rmq: marche seulement sous Linux!
+	std::cout << "Création du répertoire out/..." << std::endl;
 	system("mkdir -p out");
 }
 
 ViewFile::~ViewFile() {
 	// On ferme tous les streams ouvert
+	std::cout << "Fermeture des fichiers..." << std::endl;
 	for (auto& entry : files) {
 		entry.second->close();
 	}
@@ -40,12 +42,16 @@ void ViewFile::draw(System const& system) {
 			// Nom du fichier utilise l'ID comme identifiant
 			filename << "out/top" << top.objectID << ".txt";
 			// Le stream est fermé quand la vue est détruite
-			files[top.objectID] = std::make_shared<std::ofstream>();
-			files[top.objectID]->open(filename.str());
+			std::shared_ptr<std::ofstream> strm = std::make_shared<std::ofstream>();
+
+			std::cout << "Ouverture du fichier " << filename.str() << "..." << std::endl;
+			strm->open(filename.str());
+
 			// Légende au début du fichier
-			*(files[top.objectID])
-				<< "# paramètre\tdérivée\ténergie\tL_Ak\tL_Aa\tproduit mixte"
+			*strm << "# paramètre\tdérivée\ténergie\tL_Ak\tL_Aa\tproduit mixte"
 				<< std::endl;
+
+			files[top.objectID] = strm;
 		}
 		*(files[top.objectID]) << system.getElapsedTime() << '\t';
 		system.getTop(i).draw();

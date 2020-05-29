@@ -39,6 +39,11 @@ Tout autre fichier temporaire serait cree dans le repertoire `build/`.
 
 ## Utilisation
 
+### Interface graphique
+
+Pour affichage graphique, ouvrir le fichier exécutable `project_qt` (situé dans
+le répertoire `bin/` après compilation)
+
 Contrôle (partie graphique):
   - Mouvement horizontal: `W`, `A`, `S`, `D`
   - Mouvement vertical: `Shift`, `Space`
@@ -52,7 +57,21 @@ Contrôle (partie graphique):
   - Un pas de temps physique en avant/arrière: `N`/`B` (il est possible de tenir
 la touche)
 
-Affichage des tests:
-  - Les fichiers sont au format : temps    vecteur degré liberté
-  1.ouvrir gnuplot
-  2.taper : `plot "nom_fichier.txt" w linesp`
+### Mode texte
+
+Pour affichage normal (dans la ligne de commande), simplement ouvrir le fichier
+exécutable `project_txt` (situé dans le répértoire `bin/` après compilation).
+
+Pour écrire les données dans des fichiers séparés pour analyse avec `gnuplot`
+par exemple, ouvrir l'éxecutable `project_txt` avec l'option `-f` (taper
+`./bin/project_txt -f` dans un terminal qui est ouvert dans le répertoire
+principal du projet). Les fichiers seront créés dans un nouveau répertoire `out/`
+qui sera situé dans le répertoire ouvert de la ligne de commande.
+
+Pour afficher les données avec `gnuplot`:
+  1. Ouvrir `gnuplot`
+  2. Taper: `plot "nom_fichier.txt" using 1:N w linesp` où N est le numéro de la
+	  colonne de la donnée spécifiée (voir en haut des fichiers pour une légende,
+     attention les vecteurs P et DP contiennent un nombre variable de valeurs
+     selon la toupie)
+
